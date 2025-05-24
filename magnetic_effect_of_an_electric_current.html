@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guided Learning: Magnetic Effect of an Electric Current</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fefce8; /* Tailwind yellow-50 */
+        }
+        .content-card {
+            background-color: white;
+            border-radius: 0.75rem; 
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            transition: all 0.3s ease-in-out;
+        }
+        .nav-button {
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        .nav-button:hover {
+            transform: translateY(-2px);
+        }
+        .nav-button:disabled {
+            background-color: #fef9c3; /* Tailwind yellow-100 */
+            color: #ca8a04; /* Tailwind yellow-600 */
+            cursor: not-allowed;
+            opacity: 0.8;
+        }
+        .diagram-placeholder {
+            border: 2px dashed #eab308; /* Tailwind yellow-500 */
+            padding: 2rem;
+            margin: 1.5rem 0;
+            text-align: center;
+            background-color: #fefce8; /* Tailwind yellow-50 */
+            border-radius: 0.5rem;
+            color: #a16207; /* Tailwind yellow-700 */
+            font-style: italic;
+        }
+        .explanation-box {
+            background-color: #fef9c3; /* Tailwind yellow-100 */
+            border-left: 4px solid #ca8a04; /* Tailwind yellow-600 */
+            padding: 1rem;
+            margin-top: 1.5rem;
+            border-radius: 0.375rem;
+        }
+        .explanation-box h3 {
+            color: #854d0e; /* Tailwind yellow-800 */
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        .progress-bar-container {
+            width: 100%;
+            background-color: #fef9c3; /* Tailwind yellow-100 */
+            border-radius: 0.25rem;
+            overflow: hidden;
+            height: 10px;
+            margin-bottom: 0.5rem; 
+        }
+        .progress-bar {
+            height: 100%;
+            background-color: #ca8a04; /* Tailwind yellow-600 */
+            transition: width 0.3s ease-in-out;
+        }
+        h1.main-header { 
+             color: #713f12; /* Tailwind yellow-900 */
+        }
+        h2 { /* Main topic titles in content card */
+            font-size: 1.75rem; 
+            font-weight: 700; 
+            color: #854d0e; /* Tailwind yellow-800 */
+            margin-bottom: 0.75rem;
+        }
+        h3 { /* Sub-headings within content */
+            font-size: 1.25rem; 
+            font-weight: 600; 
+            color: #a16207; /* Tailwind yellow-700 */
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        p, li {
+            line-height: 1.6;
+            color: #422006; /* Darker for readability on yellow theme */
+        }
+        ul {
+            list-style-type: disc;
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Dropdown Menu Styles */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+            width: 100%; 
+            margin-bottom: 1.5rem;
+        }
+        .dropdown-button {
+            background-color: #a16207; /* Tailwind yellow-700 */
+            color: white;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            border-radius: 0.5rem;
+            width: 100%;
+            text-align: left;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .dropdown-button:hover {
+            background-color: #854d0e; /* Tailwind yellow-800 */
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 100%; 
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 10;
+            border-radius: 0.5rem;
+            max-height: 300px; 
+            overflow-y: auto;
+        }
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            font-size: 0.9rem;
+            border-bottom: 1px solid #eee;
+        }
+        .dropdown-content a:last-child {
+            border-bottom: none;
+        }
+        .dropdown-content a:hover {
+            background-color: #f1f1f1;
+        }
+        .dropdown-content a.active-topic {
+            background-color: #ca8a04; /* Tailwind yellow-600 */
+            color: white;
+            font-weight: 600;
+        }
+        .show-dropdown {
+            display: block;
+        }
+        .arrow {
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            display: inline-block;
+            padding: 3px;
+            margin-left: 8px;
+        }
+        .down {
+            transform: rotate(45deg);
+            -webkit-transform: rotate(45deg);
+        }
+        .up {
+            transform: rotate(-135deg);
+            -webkit-transform: rotate(-135deg);
+        }
+        .cite {
+            font-size: 0.75em;
+            color: #71717a; /* zinc-500 */
+            margin-left: 4px;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center p-4 md:p-8">
+
+    <div class="w-full max-w-3xl">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-bold main-header">Guided Learning: Magnetic Effect of an Electric Current</h1>
+            <p class="text-gray-600 mt-2">Discovering how electricity creates magnetism and its applications.</p>
+        </header>
+
+    <div class="mb-4 text-center">
+        <a href="../physics_dashboard.html" class="text-yellow-600 hover:text-yellow-800 hover:underline font-semibold">&larr; Back to Physics Dashboard</a>
+    </div>
+
+        <div class="dropdown mb-6">
+            <button id="topic-menu-button" class="dropdown-button">
+                <span>Select a Topic</span>
+                <i id="menu-arrow" class="arrow down"></i>
+            </button>
+            <div id="topic-menu-content" class="dropdown-content">
+                </div>
+        </div>
+
+        <div id="progress-bar-container" class="progress-bar-container">
+            <div id="progress-bar" class="progress-bar"></div>
+        </div>
+        <p id="progress-text" class="text-center text-sm text-gray-600 mb-6">Topic 1 of N</p>
+
+        <div id="content-area" class="content-card p-6 md:p-8">
+            <h2 id="topic-title" class="text-2xl font-bold text-blue-700 mb-4">Topic Title</h2>
+            <div id="topic-content" class="prose max-w-none">
+                </div>
+            <div id="diagram-area">
+                </div>
+            <div id="explanation-area" class="explanation-box" style="display: none;">
+                <h3>Key Idea / Simplified</h3>
+                <p id="explanation-text"></p>
+            </div>
+        </div>
+
+        <div id="navigation" class="mt-8 flex justify-between items-center">
+            <button id="prev-button" class="nav-button bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-2 px-6 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-opacity-75">
+                Previous
+            </button>
+            <button id="next-button" class="nav-button bg-amber-500 hover:bg-amber-600 text-white font-semibold py-2 px-6 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-amber-400 focus:ring-opacity-75">
+                Next
+            </button>
+        </div>
+         <p class="text-center text-xs text-gray-500 mt-8">This effect is the basis for many technologies we use every day, like motors and speakers!</p>
+    </div>
+
+    <script>
+        const interTopicNavigationLinks = [
+            { title: "Magnetism", href: "../magnetism.html" },
+            { title: "Measurement (II)", href: "../measurment_2.html" },
+            { title: "Turning Effect of a Force", href: "turning_effect_of_a_force.html" },
+            { title: "Equilibrium and Centre of Gravity", href: "../equillibrium_and_center_of_gravity.html" },
+            { title: "Reflection of Curved Surfaces", href: "../reflection_at_curved_surfaces.html" },
+            { title: "Magnetic Effect of an Electric Current", href: "magnetic_effect_of_an_electric_current.html" },
+            { title: "Hooke’s Law", href: "../hookes_law.html" },
+            { title: "Waves", href: "../waves.html" },
+            { title: "Sound I", href: "../sound_1.html" },
+            { title: "Fluid Flow", href: "../fluid_flow.html" }
+        ];
+
+        const topics = [
+            {
+                title: "Discovery of Magnetic Effect",
+                content: `
+                    <p>The concept that electric current produces a magnetic field is a fundamental principle in physics<span class="cite">[cite: 1]</span>.</p>
+                    <p><strong>Discovery:</strong> This effect was discovered by Professor of Physics, Hans Oersted, in <strong>1819</strong> or <strong>1820</strong><span class="cite">[cite: 2]</span>. He found that a conductor carrying current has a <strong>magnetic field around it</strong><span class="cite: 3]</span>. This led to the understanding that a <strong>flow of charge generates a magnetic field</strong><span class="cite: 4]</span>.</p>
+                    <p><strong>Observation:</strong> Oersted observed that the direction of a compass needle near a current-carrying conductor <strong>changes immediately</strong> when the current is switched on<span class="cite: 5]</span>. The compass needle deflects<span class="cite: 6]</span>. The <strong>extent of deflection increases with the strength of the current</strong><span class="cite: 6]</span>. <strong>Reversing the direction of the current reverses the direction of deflection</strong><span class="cite: 7]</span>. When the current is switched off, the compass needles return to their original positions<span class="cite: 8]</span>. This shows a <strong>relationship between an electric current and magnetism</strong><span class="cite: 9]</span>.</p>
+                `,
+                explanation: "A big discovery! Around 1820, Hans Oersted found that electricity flowing through a wire creates a magnetic field around that wire. If you put a compass near a wire with current, the needle moves! More current = bigger needle movement. Change current direction = needle moves the other way.",
+                diagramPlaceholder: "[Diagram: A straight wire connected to a battery and switch. Show a compass needle nearby. Diagram A: Switch open, needle points North. Diagram B: Switch closed, current flows, needle deflects. Diagram C: Current reversed, needle deflects in opposite direction.]"
+            },
+            {
+                title: "Magnetic Field Patterns: Straight Conductor",
+                content: `
+                    <p>Electric currents create magnetic fields, and the pattern of this field depends on the shape of the conductor<span class="cite: 10]</span>.</p>
+                    <h3>Straight Current-Carrying Conductor:</h3>
+                    <p>The magnetic field pattern around a straight conductor carrying current is a pattern of <strong>concentric circles</strong> around the conductor<span class="cite: 11]</span>. Using iron filings, they settle in these concentric circles when sprinkled on a card around the wire<span class="cite: 12]</span>. The circles become less significant farther from the wire<span class="cite: 13]</span>. Using magnetic compasses, they align in a circle around the conductor, pointing in a direction that depends on the current direction<span class="cite: 13]</span>.</p>
+                `,
+                explanation: "If electricity flows through a straight wire, the magnetic field around it forms circles, like ripples in a pond, with the wire at the center. The circles get weaker further away from the wire. You can see this pattern with iron filings or by placing small compasses around the wire.",
+                diagramPlaceholder: "[Diagram: A straight wire passing perpendicularly through a horizontal cardboard. Show concentric circles of iron filings on the cardboard around the wire. Also, show small compasses placed on these circles, all pointing tangentially to indicate field direction.]"
+            },
+            {
+                title: "Magnetic Field Patterns: Circular Loop & Solenoid",
+                content: `
+                    <h3>Circular Current-Carrying Loop:</h3>
+                    <p>The magnetic field pattern due to a circular current-carrying loop is similar to that of a <strong>small magnet</strong><span class="cite: 14]</span>. Iron filings form a pattern similar to a small magnet. Magnetic compasses trace this pattern<span class="cite: 15]</span>.</p>
+                    <h3>Solenoid Carrying Current:</h3>
+                    <p>A solenoid is a long cylindrical coil with <strong>many connected loops</strong> of wire<span class="cite: 16]</span>. The magnetic field set up by a solenoid is <strong>similar to that of a permanent magnet</strong><span class="cite: 17]</span>. It is referred to as an <strong>electromagnet</strong> because its magnetism comes from the flow of electric current<span class="cite: 18]</span>.</p>
+                    <p>The field near the ends is <strong>non-uniform</strong> and <strong>weaker</strong> compared to the field inside the solenoid<span class="cite: 19]</span>. The field outside the solenoid is <strong>oppositely directed</strong> and <strong>less</strong> than the field inside<span class="cite: 20]</span>.</p>
+                `,
+                explanation: "A single loop of wire with current acts like a tiny bar magnet. If you make a coil of many loops (a solenoid), its magnetic field looks just like a regular bar magnet's field! This is called an electromagnet. The field is strongest and uniform inside the coil, and weaker outside.",
+                diagramPlaceholder: "[Diagram 1: A circular loop carrying current, showing magnetic field lines looping through and around it, resembling a small bar magnet's field. Diagram 2: A solenoid (coil) carrying current, showing magnetic field lines inside (straight, dense) and outside (looping around, like a bar magnet), labeling N and S poles.]"
+            },
+            {
+                title: "Rules for Field Direction: Straight Conductor",
+                content: `
+                    <p>Several rules help predict the direction of the magnetic field produced by a current<span class="cite: 21]</span>.</p>
+                    <p><strong>Maxwell's Right-hand Grip Rule (for a straight conductor):</strong> If you <strong>grasp the conductor in your right hand</strong> with your <strong>thumb pointing in the direction of the conventional current</strong>, your <strong>fingers will encircle the conductor in the direction of the magnetic field</strong><span class="cite: 22]</span>.</p>
+                    <p><strong>Maxwell's Corkscrew Rule:</strong> If a <strong>right-handed screw is driven forward in the direction of the conventional current</strong>, the <strong>direction of rotation of the screw is the direction of the field lines</strong><span class="cite: 23]</span>.</p>
+                `,
+                explanation: "How do you know which way the magnetic field circles go? Use rules! For a straight wire: 1. Right-Hand Grip Rule: Point your right thumb in the direction of the current, and your fingers will curl in the direction of the magnetic field. 2. Corkscrew Rule: Imagine a normal (right-handed) screw. If you turn it so it moves forward in the direction of the current, the way you're turning it is the direction of the field.",
+                diagramPlaceholder: "[Diagram 1: Illustrating Maxwell's Right-Hand Grip Rule for a straight conductor – a hand gripping a wire with thumb pointing in current direction and fingers showing field direction. Diagram 2: Illustrating Maxwell's Corkscrew Rule – a corkscrew turning and advancing in the direction of current, rotation shows field direction.]"
+            },
+            {
+                title: "Rules for Field Direction: Loop & Solenoid",
+                content: `
+                    <p><strong>Right-hand Grip Rule (for a current-carrying loop):</strong> If the <strong>fingers of your right hand encircle the current loop</strong> such that they <strong>point in the direction of the current</strong>, your <strong>thumb points in the direction of the magnetic field formed through the inside</strong> of the loop<span class="cite: 24]</span>.</p>
+                    <p><strong>Clock Rule (for a solenoid):</strong> On viewing one end of the solenoid, if the current flows in a <strong>clockwise</strong> direction, that end is a <strong>South pole</strong><span class="cite: 25]</span>. If the current is <strong>anticlockwise</strong>, that end becomes a <strong>North pole</strong><span class="cite: 26]</span>.</p>
+                    <p><strong>Right-hand Grip Rule (for a solenoid):</strong> If you <strong>hold the coil in your right hand</strong> such that your <strong>fingers encircle the loops pointing in the direction of current flow</strong>, your <strong>thumb points in the direction of the North pole</strong> of the electromagnet<span class="cite: 27]</span>.</p>
+                `,
+                explanation: "For loops and coils (solenoids): 1. Loop Grip Rule: Curl your right-hand fingers in the direction of current in the loop, your thumb points to the North pole inside the loop. 2. Clock Rule (for ends of a solenoid): If looking at an end and current is Clockwise, it's a South pole. If AntiClockwise, it's a North pole. 3. Solenoid Grip Rule: Grip the coil with your right hand, fingers pointing with the current, your thumb points to the North pole.",
+                diagramPlaceholder: "[Diagram 1: Right-hand grip rule for a loop. Diagram 2: Clock rule illustrated for both N and S poles of a solenoid end. Diagram 3: Right-hand grip rule for a solenoid.]"
+            },
+            {
+                title: "Force on a Current-Carrying Conductor",
+                content: `
+                    <p>A conductor carrying current experiences a force when placed in an external magnetic field<span class="cite: 28, 29]</span>. The force is due to the interaction between the magnetic field of the conductor and the external magnetic field<span class="cite: 30]</span>. The fields concentrate on one side, creating a "catapult effect" that pushes the conductor<span class="cite: 31]</span>.</p>
+                    <p>The <strong>direction of this force changes when either the direction of the current or the direction of the magnetic field is reversed</strong><span class="cite: 32]</span>. The <strong>magnitude of the force increases with the strength of the current</strong> and the strength of the field<span class="cite: 33]</span>. The force is <strong>maximum when the conductor is perpendicular (at 90°) to the magnetic field</strong><span class="cite: 34]</span>, and <strong>minimum (zero) when the conductor is parallel to the magnetic field</strong><span class="cite: 35]</span>. The force also <strong>increases with the length of the conductor</strong> within the magnetic field<span class="cite: 36]</span>.</p>
+                `,
+                explanation: "If you put a wire with current flowing through it into another magnetic field (like between two magnets), the wire will feel a PUSH or PULL (a force)! This happens because the wire's own magnetic field interacts with the external one. Bigger current or stronger external magnet = bigger force. The force is strongest if the wire is at 90 degrees to the magnetic field lines.",
+                diagramPlaceholder: "[Diagram: A current-carrying conductor placed between the poles of a magnet (e.g., horseshoe magnet). Show the magnetic field lines of the magnet, the field lines around the conductor, and how they interact to create a stronger field on one side and weaker on the other, resulting in a force (catapult effect). Indicate current direction and force direction.]"
+            },
+            {
+                title: "Fleming's Left-Hand Rule (Motor Rule)",
+                content: `
+                    <p>This rule predicts the direction of the force on a current-carrying conductor in a magnetic field<span class="cite: 37]</span>.</p>
+                    <p><strong>Rule:</strong> If you hold your <strong>left hand</strong> with the <strong>thumb, first finger, and second finger mutually at right angles</strong>, such that:</p>
+                    <ul>
+                        <li>The <strong>First finger points in the direction of the magnetic Field</strong> (North to South)<span class="cite: 38]</span>.</li>
+                        <li>The <strong>SeCond finger points in the direction of the conventional Current</strong><span class="cite: 39]</span>.</li>
+                        <li>Then, your <strong>ThuMb points in the direction of the Motion (or Force)</strong><span class="cite: 40]</span>.</li>
+                    </ul>
+                    <p>This rule applies when the magnetic field and current are perpendicular to each other<span class="cite: 41]</span>.</p>
+                `,
+                explanation: "To find the direction of the force on the wire, use Fleming's Left-Hand Rule! Hold your left hand with Thumb, First finger, and SeCond finger all at 90 degrees to each other. Point your First finger with the magnetic Field. Point your SeCond finger with the Current. Your ThuMb will then point in the direction of the Force (Motion). (Remember: F-B-I or F-M-C for Thumb-First-Second).",
+                diagramPlaceholder: "[Diagram: A left hand clearly showing the thumb, first finger, and second finger at right angles. Label Thumb = Motion/Force, First finger = Field, Second finger = Current.]"
+            },
+            {
+                title: "Force Between Parallel Conductors",
+                content: `
+                    <p>Two parallel conductors carrying current exert forces on each other<span class="cite: 42]</span>.</p>
+                    <p>If the current is flowing in the <strong>same direction</strong> in both conductors, they <strong>attract each other</strong><span class="cite: 43]</span>. This is because the magnetic fields between them cancel out, leaving a region of zero field, and the stronger fields outside push them together<span class="cite: 44]</span>.</p>
+                    <p>If the current is flowing in <strong>opposite directions</strong>, they <strong>repel each other</strong><span class="cite: 45]</span>. This is because the magnetic fields between them reinforce, and the repelling field lines push them apart<span class="cite: 46]</span>. Fleming's left-hand rule can also be used to confirm these effects<span class="cite: 47]</span>.</p>
+                `,
+                explanation: "Wires with current next to each other also feel forces! If currents flow in the SAME direction, the wires PULL together (attract). If currents flow in OPPOSITE directions, they PUSH apart (repel). This is because their magnetic fields interact.",
+                diagramPlaceholder: "[Diagram 1: Two parallel conductors with current flowing in the same direction. Show magnetic field lines around each and the combined field, illustrating attraction and the weaker field between them. Diagram 2: Two parallel conductors with current in opposite directions. Show field lines and the combined field, illustrating repulsion and the stronger field between them.]"
+            },
+            {
+                title: "Strength of an Electromagnet",
+                content: `
+                    <p>Practical electromagnets are made by winding coils on a core, typically soft iron, to increase their magnetic power<span class="cite: 48]</span>. The strength of such an electromagnet depends on:</p>
+                    <ul>
+                        <li>The <strong>size of the current</strong> in the solenoid: Strength increases with current, but levels off beyond a certain point (saturation)<span class="cite: 49]</span>.</li>
+                        <li>The <strong>number of turns of wire</strong> in the solenoid: Strength increases with the number of turns<span class="cite: 50]</span>.</li>
+                        <li>The <strong>length of the solenoid</strong>: Strength decreases with the length of the solenoid (for a fixed number of turns per unit length, overall strength depends on total turns)<span class="cite: 51]</span>. (Note: This can be nuanced; typically more turns packed in a shorter length is stronger, or more turns overall).</li>
+                        <li>The <strong>shape of the core</strong>: A <strong>U-shaped core produces a stronger magnet</strong> than a straight core because it uses both poles for attraction and completes the magnetic field path<span class="cite: 52]</span>.</li>
+                    </ul>
+                `,
+                explanation: "To make an electromagnet (a magnet powered by electricity) stronger, you can: 1. Increase the electric current. 2. Add more turns of wire in the coil. 3. Use a core made of soft iron (this helps a lot!). 4. Shape the core cleverly (like a U-shape) to concentrate the magnetic field.",
+                diagramPlaceholder: "[Diagram: Illustrate factors affecting electromagnet strength. E.g., a solenoid with few turns vs many turns. A solenoid with low current vs high current. A straight core vs a U-shaped core electromagnet picking up iron filings.]"
+            },
+            {
+                title: "Applications of Electromagnets",
+                content: `
+                    <p>The magnetic effect of electric current and the properties of electromagnets are utilized in many devices<span class="cite: 53]</span>. Some common examples mentioned include<span class="cite: 54]</span>:</p>
+                    <ul>
+                        <li>Electric Bells<span class="cite: 54]</span></li>
+                        <li>Telephone Receivers (Earpieces)<span class="cite: 54]</span></li>
+                        <li>Electromagnetic Relays (used as electrical switches, controlling a high-current circuit with a small current)<span class="cite: 54]</span></li>
+                        <li>Loudspeakers (convert electrical signals to sound using interacting magnetic fields)<span class="cite: 54]</span></li>
+                        <li>Moving-Coil Meters (measure current or voltage based on the force on a coil in a magnetic field)<span class="cite: 54]</span></li>
+                        <li>Circuit Breakers (use electromagnet to open a switch when current is excessive)<span class="cite: 54]</span></li>
+                        <li>Magnetic Tape Pick-ups (Heads) (used in tape recorders to magnetise tape according to varying current)<span class="cite: 54]</span></li>
+                        <li>Electric Motors (convert electrical energy to rotational kinetic energy using the force on a coil in a magnetic field)<span class="cite: 54]</span></li>
+                    </ul>
+                    <p>These applications demonstrate the widespread use of the magnetic effect of electric current in various technologies<span class="cite: 55]</span>.</p>
+                `,
+                explanation: "Electromagnets are super useful! They're the heart of electric bells, telephone earpieces, loudspeakers (making the cone vibrate), electric motors (making things spin), relays (electrical switches), circuit breakers (safety devices), and even in old tape recorders.",
+                diagramPlaceholder: "[Diagram: A collage of icons representing various applications of electromagnets: electric bell, loudspeaker, electric motor, relay, circuit breaker.]"
+            }
+            // Revision questions are not included in these interactive steps.
+        ];
+
+        let currentTopicIndex = 0;
+
+        const topicTitleElement = document.getElementById('topic-title');
+        const topicContentElement = document.getElementById('topic-content');
+        const diagramAreaElement = document.getElementById('diagram-area');
+        const explanationAreaElement = document.getElementById('explanation-area');
+        const explanationTextElement = document.getElementById('explanation-text');
+        const prevButton = document.getElementById('prev-button');
+        const nextButton = document.getElementById('next-button');
+        const progressBar = document.getElementById('progress-bar');
+        const progressText = document.getElementById('progress-text');
+        const topicMenuButton = document.getElementById('topic-menu-button');
+        const topicMenuContent = document.getElementById('topic-menu-content');
+        const menuArrow = document.getElementById('menu-arrow');
+
+
+        function displayTopic(index) {
+            currentTopicIndex = index; 
+            const topic = topics[index];
+            topicTitleElement.textContent = topic.title;
+            topicContentElement.innerHTML = topic.content; 
+
+            if (topic.diagramPlaceholder) {
+                diagramAreaElement.innerHTML = `<div class="diagram-placeholder">${topic.diagramPlaceholder}</div>`;
+                diagramAreaElement.style.display = 'block';
+            } else {
+                diagramAreaElement.innerHTML = '';
+                diagramAreaElement.style.display = 'none';
+            }
+
+            if (topic.explanation) {
+                explanationTextElement.textContent = topic.explanation;
+                explanationAreaElement.style.display = 'block';
+            } else {
+                explanationTextElement.textContent = '';
+                explanationAreaElement.style.display = 'none';
+            }
+
+            updateNavigationButtons();
+            updateProgressBar();
+            // updateActiveMenuItem(); // Removed
+            // topicMenuButton.firstChild.textContent = topic.title; // Removed
+        }
+
+        function updateNavigationButtons() {
+            prevButton.disabled = currentTopicIndex === 0;
+            nextButton.disabled = currentTopicIndex === topics.length - 1;
+        }
+
+        function updateProgressBar() {
+            const progressPercentage = ((currentTopicIndex + 1) / topics.length) * 100;
+            progressBar.style.width = `${progressPercentage}%`;
+            progressText.textContent = `Topic ${currentTopicIndex + 1} of ${topics.length}`;
+        }
+
+        function populateInterTopicMenu() {
+            const menuContent = document.getElementById('topic-menu-content');
+            const menuButton = document.getElementById('topic-menu-button');
+            const menuButtonSpan = menuButton.querySelector('span');
+            menuContent.innerHTML = ''; 
+
+            interTopicNavigationLinks.forEach(topicLink => {
+                const menuItem = document.createElement('a');
+                menuItem.href = topicLink.href;
+                menuItem.textContent = topicLink.title;
+                menuItem.classList.add('block', 'px-4', 'py-3', 'text-sm', 'text-gray-700', 'hover:bg-yellow-50', 'hover:text-yellow-700'); 
+                
+                const currentPageFilename = window.location.pathname.split('/').pop();
+                
+                if (currentPageFilename === topicLink.href.split('/').pop()) { 
+                    menuItem.classList.add('active-topic', 'bg-yellow-600', 'text-white'); 
+                    if (menuButtonSpan) {
+                        menuButtonSpan.textContent = topicLink.title; 
+                    } else if (menuButton.firstChild && menuButton.firstChild.nodeType === Node.TEXT_NODE) {
+                        menuButton.firstChild.textContent = topicLink.title; 
+                    }
+                } else {
+                     menuItem.classList.remove('active-topic', 'bg-yellow-600', 'text-white');
+                }
+                menuContent.appendChild(menuItem);
+            });
+
+            if (menuButtonSpan && menuButtonSpan.textContent === 'Select a Topic' && interTopicNavigationLinks.length > 0) {
+                 // Default to first item or keep as "Select a Topic"
+            }
+        }
+
+        topicMenuButton.addEventListener('click', () => {
+            topicMenuContent.classList.toggle('show-dropdown');
+            menuArrow.classList.toggle('up');
+            menuArrow.classList.toggle('down');
+        });
+
+        window.addEventListener('click', function(event) {
+            if (!topicMenuButton.contains(event.target) && !topicMenuContent.contains(event.target)) {
+                if (topicMenuContent.classList.contains('show-dropdown')) {
+                    topicMenuContent.classList.remove('show-dropdown');
+                    menuArrow.classList.remove('up');
+                    menuArrow.classList.add('down');
+                }
+            }
+        });
+
+        prevButton.addEventListener('click', () => {
+            if (currentTopicIndex > 0) {
+                displayTopic(currentTopicIndex - 1);
+                 window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        });
+
+        nextButton.addEventListener('click', () => {
+            if (currentTopicIndex < topics.length - 1) {
+                displayTopic(currentTopicIndex + 1);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        });
+
+        // populateTopicMenu(); // Remove this old call
+        populateInterTopicMenu(); // Add this new call
+        displayTopic(currentTopicIndex); // Keep this call
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guided Learning: Turning Effect of a Force</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fdf2f8; /* Tailwind pink-50 */
+        }
+        .content-card {
+            background-color: white;
+            border-radius: 0.75rem; 
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            transition: all 0.3s ease-in-out;
+        }
+        .nav-button {
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        .nav-button:hover {
+            transform: translateY(-2px);
+        }
+        .nav-button:disabled {
+            background-color: #fbcfe8; /* Tailwind pink-100 */
+            color: #9d174d; /* Tailwind pink-700 */
+            cursor: not-allowed;
+            opacity: 0.8;
+        }
+        .diagram-placeholder {
+            border: 2px dashed #ec4899; /* Tailwind pink-500 */
+            padding: 2rem;
+            margin: 1.5rem 0;
+            text-align: center;
+            background-color: #fdf2f8; /* Tailwind pink-50 */
+            border-radius: 0.5rem;
+            color: #c026d3; /* Tailwind fuchsia-600 */
+            font-style: italic;
+        }
+        .explanation-box {
+            background-color: #fce7f3; /* Tailwind pink-100 */
+            border-left: 4px solid #db2777; /* Tailwind pink-600 */
+            padding: 1rem;
+            margin-top: 1.5rem;
+            border-radius: 0.375rem;
+        }
+        .explanation-box h3 {
+            color: #9d174d; /* Tailwind pink-700 */
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        .progress-bar-container {
+            width: 100%;
+            background-color: #fce7f3; /* Tailwind pink-100 */
+            border-radius: 0.25rem;
+            overflow: hidden;
+            height: 10px;
+            margin-bottom: 0.5rem; 
+        }
+        .progress-bar {
+            height: 100%;
+            background-color: #db2777; /* Tailwind pink-600 */
+            transition: width 0.3s ease-in-out;
+        }
+        h1.main-header { 
+             color: #831843; /* Tailwind pink-800 */
+        }
+        h2 { /* Main topic titles in content card */
+            font-size: 1.75rem; 
+            font-weight: 700; 
+            color: #9d174d; /* Tailwind pink-700 */
+            margin-bottom: 0.75rem;
+        }
+        h3 { /* Sub-headings within content */
+            font-size: 1.25rem; 
+            font-weight: 600; 
+            color: #db2777; /* Tailwind pink-600 */
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        p, li {
+            line-height: 1.6;
+            color: #500724; /* Tailwind pink-900 */
+        }
+        ul {
+            list-style-type: disc;
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Dropdown Menu Styles */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+            width: 100%; 
+            margin-bottom: 1.5rem;
+        }
+        .dropdown-button {
+            background-color: #be185d; /* Tailwind pink-700 */
+            color: white;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            border-radius: 0.5rem;
+            width: 100%;
+            text-align: left;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .dropdown-button:hover {
+            background-color: #9d174d; /* Tailwind pink-800 */
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 100%; 
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 10;
+            border-radius: 0.5rem;
+            max-height: 300px; 
+            overflow-y: auto;
+        }
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            font-size: 0.9rem;
+            border-bottom: 1px solid #eee;
+        }
+        .dropdown-content a:last-child {
+            border-bottom: none;
+        }
+        .dropdown-content a:hover {
+            background-color: #f1f1f1;
+        }
+        .dropdown-content a.active-topic {
+            background-color: #db2777; /* Tailwind pink-600 */
+            color: white;
+            font-weight: 600;
+        }
+        .show-dropdown {
+            display: block;
+        }
+        .arrow {
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            display: inline-block;
+            padding: 3px;
+            margin-left: 8px;
+        }
+        .down {
+            transform: rotate(45deg);
+            -webkit-transform: rotate(45deg);
+        }
+        .up {
+            transform: rotate(-135deg);
+            -webkit-transform: rotate(-135deg);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center p-4 md:p-8">
+
+    <div class="w-full max-w-3xl">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-bold main-header">Guided Learning: Turning Effect of a Force</h1>
+            <p class="text-gray-600 mt-2">Understanding moments and how forces make things rotate.</p>
+        </header>
+
+    <div class="mb-4 text-center">
+        <a href="../physics_dashboard.html" class="text-pink-600 hover:text-pink-800 hover:underline font-semibold">&larr; Back to Physics Dashboard</a>
+    </div>
+
+        <div class="dropdown mb-6">
+            <button id="topic-menu-button" class="dropdown-button">
+                <span>Select a Topic</span>
+                <i id="menu-arrow" class="arrow down"></i>
+            </button>
+            <div id="topic-menu-content" class="dropdown-content">
+                </div>
+        </div>
+
+        <div id="progress-bar-container" class="progress-bar-container">
+            <div id="progress-bar" class="progress-bar"></div>
+        </div>
+        <p id="progress-text" class="text-center text-sm text-gray-600 mb-6">Topic 1 of N</p>
+
+        <div id="content-area" class="content-card p-6 md:p-8">
+            <h2 id="topic-title" class="text-2xl font-bold text-blue-700 mb-4">Topic Title</h2>
+            <div id="topic-content" class="prose max-w-none">
+                </div>
+            <div id="diagram-area">
+                </div>
+            <div id="explanation-area" class="explanation-box" style="display: none;">
+                <h3>Key Idea / Simplified</h3>
+                <p id="explanation-text"></p>
+            </div>
+        </div>
+
+        <div id="navigation" class="mt-8 flex justify-between items-center">
+            <button id="prev-button" class="nav-button bg-pink-500 hover:bg-pink-600 text-white font-semibold py-2 px-6 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-pink-400 focus:ring-opacity-75">
+                Previous
+            </button>
+            <button id="next-button" class="nav-button bg-fuchsia-500 hover:bg-fuchsia-600 text-white font-semibold py-2 px-6 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-fuchsia-400 focus:ring-opacity-75">
+                Next
+            </button>
+        </div>
+         <p class="text-center text-xs text-gray-500 mt-8">Try using a spanner or opening a door and think about the moments involved!</p>
+    </div>
+
+    <script>
+        const interTopicNavigationLinks = [
+            { title: "Magnetism", href: "../magnetism.html" },
+            { title: "Measurement (II)", href: "../measurment_2.html" },
+            { title: "Turning Effect of a Force", href: "turning_effect_of_a_force.html" },
+            { title: "Equilibrium and Centre of Gravity", href: "../equillibrium_and_center_of_gravity.html" },
+            { title: "Reflection of Curved Surfaces", href: "../reflection_at_curved_surfaces.html" },
+            { title: "Magnetic Effect of an Electric Current", href: "magnetic_effect_of_an_electric_current.html" },
+            { title: "Hooke’s Law", href: "../hookes_law.html" },
+            { title: "Waves", href: "../waves.html" },
+            { title: "Sound I", href: "../sound_1.html" },
+            { title: "Fluid Flow", href: "../fluid_flow.html" }
+        ];
+
+        const topics = [
+            {
+                title: "Introduction: Moment of a Force",
+                content: `
+                    <p>This chapter focuses on the effects of a force that cause an object to turn about a specific point. [cite: 1]</p>
+                    <p><strong>Moment of a Force:</strong> This is defined as the turning effect of a force. [cite: 2] It is also described as the ability of a force to make an object turn about a given point. [cite: 3]</p>
+                    <p>The turning effect occurs when a force is applied on an object, causing it to turn about a point known as the <strong>pivot</strong> or <strong>fulcrum</strong>. [cite: 4]</p>
+                `,
+                explanation: "When you push or pull something and it spins or rotates around a point, that's the 'turning effect' of your force. We call this turning effect the 'Moment of a Force'. The point it turns around is the 'pivot' or 'fulcrum' (like the hinge of a door).",
+                diagramPlaceholder: "[Diagram: A door with a hinge (pivot) and an arrow showing a force applied to the handle, causing the door to turn.]"
+            },
+            {
+                title: "Calculating Moment of a Force",
+                content: `
+                    <p>The moment of a force is calculated as the <strong>product of the force (F)</strong> and the <strong>perpendicular distance (d)</strong> between the point of support (pivot) and the line of action of the force. [cite: 5]</p>
+                    <p style="text-align:center; font-weight:bold;">Moment = Force × perpendicular distance</p>
+                    <p style="text-align:center; font-weight:bold;">Moment = F × d</p>
+                    <p><strong>SI Unit:</strong> The standard SI unit for the moment of a force is <strong>Newton-metre (Nm)</strong>. [cite: 6]</p>
+                `,
+                explanation: "To calculate how much turning effect (moment) a force has, you multiply the force (F) by the perpendicular distance (d) from the pivot to where the force is acting. So, Moment = F × d. The unit is Newton-metres (Nm).",
+                diagramPlaceholder: "[Diagram: A lever (e.g., a ruler on a pivot). Show a force F acting downwards at one end, and clearly label the perpendicular distance 'd' from the pivot to the line of action of F.]"
+            },
+            {
+                title: "Factors Affecting Moment & Examples",
+                content: `
+                    <p>The turning effect (moment) of a force feels greater as the mass or force is moved farther from the pivot. [cite: 7]</p>
+                    <p>The maximum turning effect is obtained when the force is applied perpendicularly to the distance from the point of support. [cite: 8]</p>
+                    <p>The moment is increased when this perpendicular distance is increased, which is why a spanner with a long handle is easier to use for tightening/loosening a nut. [cite: 9]</p>
+                    <p>Examples of activities where a force produces a turning effect include closing/opening a door, steering a car, turning a water tap, cycling or riding on a see-saw, tightening a nut with a spanner, and opening a soda bottle. [cite: 10]</p>
+                `,
+                explanation: "Two things make a bigger turning effect: 1. A bigger force. 2. Applying the force further away from the pivot (longer distance). That's why a long spanner makes it easier to undo a tight nut – more distance means more moment for the same push!",
+                diagramPlaceholder: "[Diagram: Show two spanners trying to turn the same nut. One spanner is short, the other is long. Indicate the same force applied to both, highlighting that the longer spanner produces a larger moment due to greater 'd'.]"
+            },
+            {
+                title: "The Principle of Moments",
+                content: `
+                    <p>This principle is related to the equilibrium of a system. [cite: 12] A force can cause a rule to turn in either an anticlockwise or clockwise direction about a pivot. [cite: 13]</p>
+                    <p>The moment due to a force causing anticlockwise rotation is called an <strong>anticlockwise moment</strong>, and similarly for a <strong>clockwise moment</strong>. [cite: 14]</p>
+                    <p>The <strong>Principle of Moments states that for a system in equilibrium, the sum of clockwise moments about a point must be equal to the sum of anticlockwise moments about the same point</strong>. [cite: 16] This is also referred to as the law of the lever. [cite: 17]</p>
+                    <p>At equilibrium, if W1 and W2 are forces at distances d1 and d2 from the pivot, W1d1 = W2d2 (assuming they produce opposing moments and balance). [cite: 18]</p>
+                `,
+                explanation: "Imagine a balanced seesaw. The Principle of Moments says that for it to be balanced (in equilibrium), the total turning effect in one direction (say, clockwise) must exactly equal the total turning effect in the opposite direction (anticlockwise) around the pivot. So, Clockwise Moments = Anticlockwise Moments.",
+                diagramPlaceholder: "[Diagram: A seesaw (lever) pivoted at the center. Show a weight W1 at distance d1 on one side causing an anticlockwise moment, and another weight W2 at distance d2 on the other side causing a clockwise moment. Label moments W1d1 and W2d2 and state W1d1 = W2d2 for balance.]"
+            },
+            {
+                title: "Considering Weight of the Rule/Object",
+                content: `
+                    <p>If the pivot is not at the centre of a uniform metre rule, the weight of the metre rule (acting at its midpoint) must be considered in calculating moments. [cite: 19]</p>
+                `,
+                explanation: "If you're balancing something like a ruler and the pivot isn't right in the middle, you also have to think about the ruler's own weight! The ruler's weight acts downwards from its centre of gravity (usually its midpoint if it's uniform) and can create its own moment.",
+                diagramPlaceholder: "[Diagram: A uniform metre rule pivoted off-center (e.g., at the 30cm mark). Show an arrow indicating the weight of the rule acting downwards from its center (50cm mark). Also show another weight placed on the rule, illustrating that both create moments about the pivot.]"
+            },
+            {
+                title: "Moments of Parallel Forces in Equilibrium",
+                content: `
+                    <p>For a system of parallel forces in equilibrium, the <strong>sum of forces in one direction is equal to the sum of forces in the opposite direction</strong>. [cite: 20] The algebraic sum of parallel forces is zero. [cite: 21]</p>
+                    <p>Also, the algebraic sum of the moments of parallel forces about a point is zero (which means the sum of clockwise moments equals the sum of anticlockwise moments). [cite: 22, 23]</p>
+                `,
+                explanation: "If an object isn't moving up/down or left/right AND isn't rotating, it's in complete equilibrium. This means: 1. All upward forces balance all downward forces. 2. All clockwise turning effects (moments) balance all anticlockwise turning effects.",
+                diagramPlaceholder: "[Diagram: A beam supported by two upward forces (e.g., from spring balances or supports) with one or two downward weights on it. Label all forces and show that Sum of Upward Forces = Sum of Downward Forces, and Sum of Clockwise Moments = Sum of Anticlockwise Moments about a chosen pivot.]"
+            },
+            {
+                title: "Couple (Anti-parallel Forces)",
+                content: `
+                    <p>These are a pair of forces that are <strong>equal, parallel, and acting in opposite directions</strong>. [cite: 24] Examples include forces applied when steering a car, opening a water tap, or using a wheel spanner. [cite: 25] Such pairs of forces assist each other in producing a turning effect. [cite: 26]</p>
+                    <p>The <strong>moment produced by a pair of anti-parallel forces (a couple) is the product of one of the forces and the perpendicular distance between them</strong>. [cite: 27]</p>
+                    <p style="text-align:center; font-weight:bold;">Total moment = F × d</p>
+                    <p>(where F is the magnitude of one force and d is the perpendicular distance between them).</p>
+                    <p>The moment of anti-parallel forces causes rotation about an axis. [cite: 29]</p>
+                `,
+                explanation: "A 'couple' is when you have two equal forces acting in opposite directions but parallel to each other (not along the same line). Think of turning a tap or a car's steering wheel – you push one way with one hand and the other way with the other. This creates a pure turning effect. The moment of a couple = one of the forces × the distance between them.",
+                diagramPlaceholder: "[Diagram: Illustrating a couple. Show two equal and opposite parallel forces F acting on an object (e.g., a rod or a steering wheel), separated by a perpendicular distance 'd'. Indicate the rotation produced.]"
+            },
+            {
+                title: "Applications of Anti-parallel Forces (Couples)",
+                content: `
+                    <h3>Steering Wheel:</h3> <p>Two equal and opposite forces applied tangentially to the wheel cause it to rotate about its centre. [cite: 30] Larger steering wheels in heavy vehicles enhance the turning effect. [cite: 31]</p>
+                    <h3>Water Tap:</h3> <p>Opening or closing a tap involves applying two equal and opposite forces that produce a moment about the axis of rotation. [cite: 32]</p>
+                    <h3>Bicycle Handle-bars:</h3> <p>Turning a bicycle involves applying two equal and opposite forces on the handle-bars, creating a moment about the axis of rotation. [cite: 33]</p>
+                    <p><strong>Wheel Spanners</strong> and <strong>Water Sprinklers</strong> also involve the application of anti-parallel forces and their moments. [cite: 34]</p>
+                `,
+                explanation: "Couples are used everywhere! Turning a steering wheel (bigger wheel = easier turn for heavy trucks), opening a water tap, turning bicycle handlebars, using a wheel spanner – all these use two equal and opposite forces to create a strong turning effect.",
+                diagramPlaceholder: "[Diagrams: Small icons or simple sketches for: 1. Hands applying a couple to a steering wheel. 2. Hands applying a couple to a water tap handle. 3. Hands applying a couple to bicycle handlebars.]"
+            }
+            // Revision questions are not included as interactive steps
+        ];
+
+        let currentTopicIndex = 0;
+
+        const topicTitleElement = document.getElementById('topic-title');
+        const topicContentElement = document.getElementById('topic-content');
+        const diagramAreaElement = document.getElementById('diagram-area');
+        const explanationAreaElement = document.getElementById('explanation-area');
+        const explanationTextElement = document.getElementById('explanation-text');
+        const prevButton = document.getElementById('prev-button');
+        const nextButton = document.getElementById('next-button');
+        const progressBar = document.getElementById('progress-bar');
+        const progressText = document.getElementById('progress-text');
+        const topicMenuButton = document.getElementById('topic-menu-button');
+        const topicMenuContent = document.getElementById('topic-menu-content');
+        const menuArrow = document.getElementById('menu-arrow');
+
+
+        function displayTopic(index) {
+            currentTopicIndex = index; 
+            const topic = topics[index];
+            topicTitleElement.textContent = topic.title;
+            topicContentElement.innerHTML = topic.content; 
+
+            if (topic.diagramPlaceholder) {
+                diagramAreaElement.innerHTML = `<div class="diagram-placeholder">${topic.diagramPlaceholder}</div>`;
+                diagramAreaElement.style.display = 'block';
+            } else {
+                diagramAreaElement.innerHTML = '';
+                diagramAreaElement.style.display = 'none';
+            }
+
+            if (topic.explanation) {
+                explanationTextElement.textContent = topic.explanation;
+                explanationAreaElement.style.display = 'block';
+            } else {
+                explanationTextElement.textContent = '';
+                explanationAreaElement.style.display = 'none';
+            }
+
+            updateNavigationButtons();
+            updateProgressBar();
+            // updateActiveMenuItem(); // Removed as per instructions
+            // topicMenuButton.firstChild.textContent = topic.title; // Removed as per instructions
+        }
+
+        function updateNavigationButtons() {
+            prevButton.disabled = currentTopicIndex === 0;
+            nextButton.disabled = currentTopicIndex === topics.length - 1;
+        }
+
+        function updateProgressBar() {
+            const progressPercentage = ((currentTopicIndex + 1) / topics.length) * 100;
+            progressBar.style.width = `${progressPercentage}%`;
+            progressText.textContent = `Topic ${currentTopicIndex + 1} of ${topics.length}`;
+        }
+
+        function populateInterTopicMenu() {
+            const menuContent = document.getElementById('topic-menu-content');
+            const menuButton = document.getElementById('topic-menu-button');
+            const menuButtonSpan = menuButton.querySelector('span');
+            menuContent.innerHTML = ''; 
+
+            interTopicNavigationLinks.forEach(topicLink => {
+                const menuItem = document.createElement('a');
+                menuItem.href = topicLink.href;
+                menuItem.textContent = topicLink.title;
+                menuItem.classList.add('block', 'px-4', 'py-3', 'text-sm', 'text-gray-700', 'hover:bg-pink-50', 'hover:text-pink-700'); 
+                
+                const currentPageFilename = window.location.pathname.split('/').pop();
+                
+                if (currentPageFilename === topicLink.href.split('/').pop()) { 
+                    menuItem.classList.add('active-topic', 'bg-pink-600', 'text-white'); 
+                    if (menuButtonSpan) {
+                        menuButtonSpan.textContent = topicLink.title; 
+                    } else if (menuButton.firstChild && menuButton.firstChild.nodeType === Node.TEXT_NODE) {
+                        menuButton.firstChild.textContent = topicLink.title; 
+                    }
+                } else {
+                     menuItem.classList.remove('active-topic', 'bg-pink-600', 'text-white');
+                }
+                menuContent.appendChild(menuItem);
+            });
+
+            if (menuButtonSpan && menuButtonSpan.textContent === 'Select a Topic' && interTopicNavigationLinks.length > 0) {
+                 // Default to first item or keep as "Select a Topic"
+            }
+        }
+
+        topicMenuButton.addEventListener('click', () => {
+            topicMenuContent.classList.toggle('show-dropdown');
+            menuArrow.classList.toggle('up');
+            menuArrow.classList.toggle('down');
+        });
+
+        window.addEventListener('click', function(event) {
+            if (!topicMenuButton.contains(event.target) && !topicMenuContent.contains(event.target)) {
+                if (topicMenuContent.classList.contains('show-dropdown')) {
+                    topicMenuContent.classList.remove('show-dropdown');
+                    menuArrow.classList.remove('up');
+                    menuArrow.classList.add('down');
+                }
+            }
+        });
+
+        prevButton.addEventListener('click', () => {
+            if (currentTopicIndex > 0) {
+                displayTopic(currentTopicIndex - 1);
+                 window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        });
+
+        nextButton.addEventListener('click', () => {
+            if (currentTopicIndex < topics.length - 1) {
+                displayTopic(currentTopicIndex + 1);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        });
+
+        // populateTopicMenu(); // Remove this old call
+        populateInterTopicMenu(); // Add this new call
+        displayTopic(currentTopicIndex); // Keep this call
+    </script>
+
+</body>
+</html>
