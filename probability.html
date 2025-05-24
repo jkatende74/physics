@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KCSE Probability Revision</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .content-section h2 {
+            font-size: 1.5rem; /* 24px */
+            font-weight: 600;
+            margin-bottom: 1rem; /* 16px */
+            color: #1F2937; /* gray-800 */
+        }
+        .content-section h3 {
+            font-size: 1.25rem; /* 20px */
+            font-weight: 600;
+            margin-top: 1.5rem; /* 24px */
+            margin-bottom: 0.75rem; /* 12px */
+            color: #374151; /* gray-700 */
+        }
+        .content-section p, .content-section ul, .content-section .example, .content-section .formula {
+            margin-bottom: 1rem; /* 16px */
+            line-height: 1.6;
+            color: #4B5563; /* gray-600 */
+        }
+        .content-section ul {
+            list-style-type: disc;
+            margin-left: 1.5rem; /* 24px */
+        }
+        .content-section .formula {
+            background-color: #F3F4F6; /* gray-100 */
+            padding: 0.75rem; /* 12px */
+            border-radius: 0.375rem; /* 6px */
+            font-family: monospace;
+            overflow-x: auto;
+        }
+        .content-section .example {
+            background-color: #E0E7FF; /* indigo-100 */
+            padding: 1rem; /* 16px */
+            border-left: 4px solid #6366F1; /* indigo-500 */
+            border-radius: 0.25rem; /* 4px */
+        }
+        .content-section .practice-question {
+            background-color: #FEF3C7; /* amber-100 */
+            padding: 1rem;
+            border-left: 4px solid #F59E0B; /* amber-500 */
+            border-radius: 0.25rem;
+            margin-top: 1rem;
+        }
+        .sidebar-link.active {
+            background-color: #4F46E5; /* indigo-600 */
+            color: white;
+        }
+        /* Mobile menu button */
+        .mobile-menu-button {
+            display: none; /* Hidden by default on larger screens */
+        }
+        @media (max-width: 768px) { /* md breakpoint */
+            .mobile-menu-button {
+                display: block;
+            }
+            #sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease-in-out;
+            }
+            #sidebar.open {
+                transform: translateX(0);
+            }
+            /* Overlay for when sidebar is open */
+            .sidebar-overlay {
+                display: none; /* Hidden by default */
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: rgba(0, 0, 0, 0.5);
+                z-index: 30; /* Below sidebar, above content */
+            }
+            #sidebar.open + .sidebar-overlay {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="flex h-screen overflow-hidden">
+        <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-64 bg-gray-800 text-white p-6 space-y-2 overflow-y-auto md:relative md:translate-x-0 transition-transform duration-300 ease-in-out">
+            <h1 class="text-2xl font-semibold mb-6 text-center">Probability</h1>
+            <nav id="topic-navigation">
+                </nav>
+        </aside>
+
+        <div id="sidebar-overlay" class="sidebar-overlay"></div>
+
+        <main class="flex-1 flex flex-col overflow-hidden">
+            <header class="bg-white shadow-md p-4 flex items-center justify-between">
+                <button id="mobile-menu-button" class="md:hidden text-gray-600 hover:text-gray-800 focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                    </svg>
+                </button>
+                <h2 id="topic-title" class="text-xl font-semibold text-gray-700">Welcome</h2>
+                <div></div> </header>
+
+            <div id="content-area" class="flex-1 p-6 lg:p-8 overflow-y-auto bg-white content-section">
+                <p>Welcome to the KCSE Probability Revision App! Select a topic from the sidebar to get started.</p>
+                <p>This app is designed to help you understand the fundamental concepts of probability as required by the Kenyan Certificate of Secondary Education (KCSE) syllabus.</p>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const contentArea = document.getElementById('content-area');
+        const topicNavigation = document.getElementById('topic-navigation');
+        const topicTitle = document.getElementById('topic-title');
+        const sidebar = document.getElementById('sidebar');
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const sidebarOverlay = document.getElementById('sidebar-overlay');
+
+        // --- Content Data ---
+        const probabilityTopics = [
+            {
+                id: 'introduction',
+                title: 'Introduction to Probability',
+                content: `
+                    <h2>Introduction to Probability</h2>
+                    <p>Probability is a measure of the likelihood or chance that a specific event will occur. It is expressed as a number between 0 and 1 (inclusive), where 0 indicates an impossible event and 1 indicates a certain event.</p>
+                    <h3>Key Terms:</h3>
+                    <ul>
+                        <li><strong>Experiment:</strong> An activity or process whose outcome is uncertain (e.g., tossing a coin, rolling a die).</li>
+                        <li><strong>Outcome:</strong> A possible result of an experiment (e.g., getting a 'Head' when tossing a coin).</li>
+                        <li><strong>Sample Space (S):</strong> The set of all possible outcomes of an experiment. For example, when rolling a standard six-sided die, the sample space is S = {1, 2, 3, 4, 5, 6}.</li>
+                        <li><strong>Event (E):</strong> A specific outcome or a set of outcomes from the sample space that we are interested in. For example, getting an even number when rolling a die is an event E = {2, 4, 6}.</li>
+                    </ul>
+                    <div class="example">
+                        <p><strong>Example:</strong> Tossing a fair coin.</p>
+                        <p>Experiment: Tossing the coin.</p>
+                        <p>Possible Outcomes: Head (H), Tail (T).</p>
+                        <p>Sample Space (S): {H, T}.</p>
+                        <p>An Event: Getting a Head. E = {H}.</p>
+                    </div>
+                `
+            },
+            {
+                id: 'experimental_probability',
+                title: 'Experimental Probability',
+                content: `
+                    <h2>Experimental Probability (Empirical Probability)</h2>
+                    <p>Experimental probability is determined by conducting an experiment multiple times and observing the frequency of an event.</p>
+                    <p>It is calculated as the ratio of the number of times an event occurs to the total number of trials in an experiment.</p>
+                    <div class="formula">
+                        P(Event) = (Number of times event occurs) / (Total number of trials)
+                    </div>
+                    <h3>Characteristics:</h3>
+                    <ul>
+                        <li>Based on actual observations and data collected from experiments.</li>
+                        <li>The value can change if the experiment is repeated or if more trials are conducted.</li>
+                        <li>As the number of trials increases, experimental probability often gets closer to theoretical probability.</li>
+                    </ul>
+                    <div class="example">
+                        <p><strong>Example:</strong> A thumbtack is tossed 100 times. It lands point up 65 times and point down 35 times.</p>
+                        <p>The experimental probability of the thumbtack landing point up is:</p>
+                        <p>P(Point Up) = 65 / 100 = 0.65 or 13/20</p>
+                        <p>The experimental probability of the thumbtack landing point down is:</p>
+                        <p>P(Point Down) = 35 / 100 = 0.35 or 7/20</p>
+                    </div>
+                    <div class="practice-question">
+                        <strong>Practice Question 1:</strong> A student spins a spinner 50 times. The spinner lands on red 15 times, blue 25 times, and green 10 times. What is the experimental probability of landing on blue?
+                    </div>
+                `
+            },
+            {
+                id: 'theoretical_probability',
+                title: 'Theoretical Probability',
+                content: `
+                    <h2>Theoretical Probability</h2>
+                    <p>Theoretical probability is based on reasoning and calculation, assuming all outcomes are equally likely. It is calculated without actually performing the experiment.</p>
+                    <div class="formula">
+                        P(Event) = (Number of favorable outcomes) / (Total number of possible outcomes)
+                    </div>
+                    <h3>Assumptions:</h3>
+                    <ul>
+                        <li>Each outcome in the sample space has an equal chance of occurring (e.g., a fair coin, an unbiased die).</li>
+                    </ul>
+                    <div class="example">
+                        <p><strong>Example 1:</strong> Rolling a fair six-sided die.</p>
+                        <p>What is the probability of rolling a 4?</p>
+                        <p>Sample Space (S) = {1, 2, 3, 4, 5, 6}. Total possible outcomes = 6.</p>
+                        <p>Favorable outcome (rolling a 4) = {4}. Number of favorable outcomes = 1.</p>
+                        <p>P(Rolling a 4) = 1 / 6.</p>
+                    </div>
+                    <div class="example">
+                        <p><strong>Example 2:</strong> Drawing a card from a standard deck of 52 playing cards.</p>
+                        <p>What is the probability of drawing a King?</p>
+                        <p>Total possible outcomes = 52 (since there are 52 cards).</p>
+                        <p>Number of Kings in a deck = 4.</p>
+                        <p>P(Drawing a King) = 4 / 52 = 1 / 13.</p>
+                    </div>
+                    <div class="practice-question">
+                        <strong>Practice Question 2:</strong> A bag contains 3 red marbles, 5 blue marbles, and 2 green marbles. If one marble is picked at random, what is the theoretical probability of picking a blue marble?
+                    </div>
+                `
+            },
+            {
+                id: 'range_of_probability',
+                title: 'Range of Probability',
+                content: `
+                    <h2>Range of Probability Measure</h2>
+                    <p>The probability of any event E, denoted as P(E), always lies between 0 and 1, inclusive.</p>
+                    <div class="formula">
+                        0 ≤ P(E) ≤ 1
+                    </div>
+                    <ul>
+                        <li>If P(E) = 0, the event E is an <strong>impossible event</strong>. It will never occur.</li>
+                        <li>If P(E) = 1, the event E is a <strong>certain event</strong>. It will always occur.</li>
+                        <li>If P(E) is close to 0, the event is unlikely to occur.</li>
+                        <li>If P(E) is close to 1, the event is likely to occur.</li>
+                        <li>If P(E) = 0.5 (or 1/2), the event has an equal chance of occurring or not occurring.</li>
+                    </ul>
+                    <h3>Complementary Events:</h3>
+                    <p>If E is an event, then E' (or E<sup>c</sup>) is the complement of E, meaning the event that E does not occur.</p>
+                    <p>The probability of an event E occurring plus the probability of event E not occurring is always 1.</p>
+                    <div class="formula">
+                        P(E) + P(E') = 1
+                    </div>
+                    <p>Therefore, the probability of the complement of E is:</p>
+                    <div class="formula">
+                        P(E') = 1 - P(E)
+                    </div>
+                    <div class="example">
+                        <p><strong>Example:</strong> If the probability of rain tomorrow is P(Rain) = 0.3.</p>
+                        <p>Then the probability of no rain tomorrow is P(No Rain) = 1 - P(Rain) = 1 - 0.3 = 0.7.</p>
+                    </div>
+                     <div class="practice-question">
+                        <strong>Practice Question 3:</strong> The probability of a student passing an exam is 0.8. What is the probability that the student will not pass the exam?
+                    </div>
+                `
+            },
+            {
+                id: 'sample_space_events',
+                title: 'Sample Space and Events',
+                content: `
+                    <h2>Sample Space and Events Revisited</h2>
+                    <p>As introduced earlier:</p>
+                    <ul>
+                        <li><strong>Sample Space (S):</strong> The set of all possible outcomes of a random experiment. The number of outcomes in the sample space is denoted by n(S).</li>
+                        <li><strong>Event (E):</strong> A subset of the sample space. It is a collection of one or more outcomes. The number of outcomes in an event E is denoted by n(E).</li>
+                    </ul>
+                    <p>The theoretical probability of an event E is then formally defined as:</p>
+                    <div class="formula">
+                        P(E) = n(E) / n(S)
+                    </div>
+                    <h3>Examples of Sample Spaces:</h3>
+                    <ul>
+                        <li><strong>Tossing one coin:</strong> S = {H, T}, n(S) = 2.</li>
+                        <li><strong>Tossing two coins:</strong> S = {HH, HT, TH, TT}, n(S) = 4.
+                            (Note: HH means Head on first coin and Head on second coin, HT means Head on first and Tail on second, etc.)</li>
+                        <li><strong>Rolling one die:</strong> S = {1, 2, 3, 4, 5, 6}, n(S) = 6.</li>
+                        <li><strong>Drawing a card from a standard deck:</strong> n(S) = 52.</li>
+                    </ul>
+                    <div class="example">
+                        <p><strong>Example:</strong> Two fair coins are tossed simultaneously.</p>
+                        <p>Sample Space S = {HH, HT, TH, TT}, so n(S) = 4.</p>
+                        <p>Let E be the event of getting at least one Head.</p>
+                        <p>Favorable outcomes for E are {HH, HT, TH}. So, n(E) = 3.</p>
+                        <p>P(E) = n(E) / n(S) = 3 / 4.</p>
+                    </div>
+                    <div class="practice-question">
+                        <strong>Practice Question 4:</strong> A fair six-sided die is rolled once.
+                        <br>a) List the sample space.
+                        <br>b) Let A be the event of rolling an odd number. List the outcomes in A.
+                        <br>c) Find P(A).
+                    </div>
+                `
+            },
+            {
+                id: 'mutually_exclusive_events',
+                title: 'Mutually Exclusive Events',
+                content: `
+                    <h2>Mutually Exclusive Events</h2>
+                    <p>Two or more events are said to be <strong>mutually exclusive</strong> if the occurrence of one event prevents the occurrence of the other(s). In other words, they cannot happen at the same time.</p>
+                    <p>If events A and B are mutually exclusive, then the probability of A or B occurring is the sum of their individual probabilities.</p>
+                    <div class="formula">
+                        P(A or B) = P(A) + P(B)
+                    </div>
+                    <p>This is also known as the Addition Rule for Mutually Exclusive Events.</p>
+                    <p>For mutually exclusive events, the probability of both A and B occurring is zero: P(A and B) = 0.</p>
+                    <h3>Characteristics:</h3>
+                    <ul>
+                        <li>If one happens, the other cannot.</li>
+                        <li>They have no outcomes in common. If represented by a Venn diagram, their circles do not overlap.</li>
+                    </ul>
+                    <div class="example">
+                        <p><strong>Example 1:</strong> When rolling a fair six-sided die once.</p>
+                        <p>Let A be the event of rolling a 2 (A = {2}). P(A) = 1/6.</p>
+                        <p>Let B be the event of rolling a 5 (B = {5}). P(B) = 1/6.</p>
+                        <p>Events A and B are mutually exclusive because you cannot roll a 2 and a 5 at the same time on a single roll.</p>
+                        <p>The probability of rolling a 2 or a 5 is:</p>
+                        <p>P(A or B) = P(A) + P(B) = 1/6 + 1/6 = 2/6 = 1/3.</p>
+                    </div>
+                    <div class="example">
+                        <p><strong>Example 2:</strong> A bag contains 3 red balls, 4 blue balls, and 2 green balls. One ball is picked at random.</p>
+                        <p>Let R be the event of picking a red ball. P(R) = 3/9.</p>
+                        <p>Let G be the event of picking a green ball. P(G) = 2/9.</p>
+                        <p>Picking a red ball and picking a green ball are mutually exclusive events.</p>
+                        <p>P(R or G) = P(R) + P(G) = 3/9 + 2/9 = 5/9.</p>
+                    </div>
+                    <h3>Non-Mutually Exclusive Events (General Addition Rule):</h3>
+                    <p>If events A and B are NOT mutually exclusive (they can happen at the same time), then the probability of A or B occurring is:</p>
+                    <div class="formula">
+                        P(A or B) = P(A) + P(B) - P(A and B)
+                    </div>
+                    <p>Where P(A and B) is the probability that both A and B occur.</p>
+                    <div class="example">
+                        <p><strong>Example:</strong> Drawing a card from a standard deck of 52 cards.</p>
+                        <p>Let H be the event of drawing a Heart. P(H) = 13/52.</p>
+                        <p>Let K be the event of drawing a King. P(K) = 4/52.</p>
+                        <p>These events are NOT mutually exclusive because you can draw a King of Hearts. P(H and K) = 1/52 (for the King of Hearts).</p>
+                        <p>P(H or K) = P(H) + P(K) - P(H and K) = 13/52 + 4/52 - 1/52 = 16/52 = 4/13.</p>
+                    </div>
+                    <div class="practice-question">
+                        <strong>Practice Question 5:</strong> From a standard deck of 52 cards, one card is drawn. What is the probability that the card is either a Queen or a Spade?
+                    </div>
+                `
+            },
+            {
+                id: 'independent_events',
+                title: 'Independent Events',
+                content: `
+                    <h2>Independent Events</h2>
+                    <p>Two events A and B are said to be <strong>independent</strong> if the occurrence of one event does not affect the probability of the occurrence of the other event.</p>
+                    <p>If events A and B are independent, then the probability of both A and B occurring is the product of their individual probabilities.</p>
+                    <div class="formula">
+                        P(A and B) = P(A) × P(B)
+                    </div>
+                    <p>This is also known as the Multiplication Rule for Independent Events.</p>
+                    <h3>Characteristics:</h3>
+                    <ul>
+                        <li>The outcome of the first event has no influence on the outcome of the second event.</li>
+                        <li>Examples often involve "with replacement" scenarios or events that are inherently separate (e.g., tossing a coin and rolling a die).</li>
+                    </ul>
+                    <div class="example">
+                        <p><strong>Example 1:</strong> A fair coin is tossed, and a fair six-sided die is rolled.</p>
+                        <p>Let H be the event of getting a Head from the coin toss. P(H) = 1/2.</p>
+                        <p>Let R4 be the event of rolling a 4 on the die. P(R4) = 1/6.</p>
+                        <p>These events are independent. The coin toss does not affect the die roll.</p>
+                        <p>The probability of getting a Head AND rolling a 4 is:</p>
+                        <p>P(H and R4) = P(H) × P(R4) = (1/2) × (1/6) = 1/12.</p>
+                    </div>
+                    <div class="example">
+                        <p><strong>Example 2:</strong> A bag contains 3 red marbles and 2 blue marbles. A marble is drawn, its color noted, and then it is replaced. A second marble is then drawn.</p>
+                        <p>Let R1 be the event of drawing a red marble on the first draw. P(R1) = 3/5.</p>
+                        <p>Let B2 be the event of drawing a blue marble on the second draw. Since the first marble was replaced, the probabilities for the second draw are the same as the first. P(B2) = 2/5.</p>
+                        <p>The events are independent because of the replacement.</p>
+                        <p>P(R1 and B2) = P(R1) × P(B2) = (3/5) × (2/5) = 6/25.</p>
+                    </div>
+                    <h3>Dependent Events:</h3>
+                    <p>If the occurrence of one event *does* affect the probability of another event, the events are <strong>dependent</strong>. This often occurs in "without replacement" scenarios. For dependent events, we use conditional probability (often explored with tree diagrams).</p>
+                    <div class="practice-question">
+                        <strong>Practice Question 6:</strong> A coin is tossed twice. What is the probability of getting a Tail on the first toss and a Tail on the second toss?
+                    </div>
+                `
+            },
+            {
+                id: 'tree_diagrams',
+                title: 'Tree Diagrams',
+                content: `
+                    <h2>Tree Diagrams</h2>
+                    <p>A tree diagram is a visual tool used to list all possible outcomes of a sequence of events and to calculate their probabilities.</p>
+                    <p>Each branch of the tree represents a possible outcome, and the probability of that outcome is written on the branch.</p>
+                    <h3>How to Use a Tree Diagram:</h3>
+                    <ol>
+                        <li><strong>First set of branches:</strong> Represents the outcomes of the first event, with probabilities on each branch. The sum of probabilities from any single point must be 1.</li>
+                        <li><strong>Second set of branches (and subsequent):</strong> Represents the outcomes of the second (or subsequent) event, starting from the end of each previous branch. Probabilities here can be conditional if events are dependent.</li>
+                        <li><strong>Multiply along branches:</strong> To find the probability of a sequence of outcomes (an entire path through the tree), multiply the probabilities along the branches that make up that path.</li>
+                        <li><strong>Add probabilities of relevant paths:</strong> If an event can occur in multiple ways (i.e., through multiple paths), add the probabilities of those individual paths.</li>
+                    </ol>
+                    <div class="example">
+                        <p><strong>Example 1:</strong> Tossing a fair coin twice.</p>
+                        <p>The tree diagram would look like this:</p>
+                        <pre class="formula">
+  Start
+  |
+  +-- (H, 0.5) --+-- (H, 0.5)  => HH, P(HH) = 0.5 * 0.5 = 0.25
+  |              |
+  |              +-- (T, 0.5)  => HT, P(HT) = 0.5 * 0.5 = 0.25
+  |
+  +-- (T, 0.5) --+-- (H, 0.5)  => TH, P(TH) = 0.5 * 0.5 = 0.25
+                 |
+                 +-- (T, 0.5)  => TT, P(TT) = 0.5 * 0.5 = 0.25
+                        </pre>
+                        <p>Probability of getting at least one Head = P(HH) + P(HT) + P(TH) = 0.25 + 0.25 + 0.25 = 0.75.</p>
+                        <p>Alternatively, P(at least one Head) = 1 - P(No Heads) = 1 - P(TT) = 1 - 0.25 = 0.75.</p>
+                    </div>
+                    <div class="example">
+                        <p><strong>Example 2:</strong> A bag contains 3 red balls (R) and 2 blue balls (B). Two balls are drawn one after the other <strong>without replacement</strong>.</p>
+                        <p>Tree Diagram:</p>
+                        <p><strong>First Draw:</strong></p>
+                        <ul>
+                            <li>P(R1) = 3/5</li>
+                            <li>P(B1) = 2/5</li>
+                        </ul>
+                        <p><strong>Second Draw (dependent on the first):</strong></p>
+                        <ul>
+                            <li>If R1 occurred: P(R2|R1) = 2/4, P(B2|R1) = 2/4</li>
+                            <li>If B1 occurred: P(R2|B1) = 3/4, P(B2|B1) = 1/4</li>
+                        </ul>
+                        <pre class="formula">
+  Start
+  |
+  +-- (R1, 3/5) --+-- (R2, 2/4)  => R1R2, P(R1R2) = (3/5)*(2/4) = 6/20
+  |               |
+  |               +-- (B2, 2/4)  => R1B2, P(R1B2) = (3/5)*(2/4) = 6/20
+  |
+  +-- (B1, 2/5) --+-- (R2, 3/4)  => B1R2, P(B1R2) = (2/5)*(3/4) = 6/20
+                  |
+                  +-- (B2, 1/4)  => B1B2, P(B1B2) = (2/5)*(1/4) = 2/20
+                        </pre>
+                        <p>Total probability should be 1: (6+6+6+2)/20 = 20/20 = 1.</p>
+                        <p>Probability of drawing two red balls: P(R1R2) = 6/20 = 3/10.</p>
+                        <p>Probability of drawing one red and one blue (any order): P(R1B2) + P(B1R2) = 6/20 + 6/20 = 12/20 = 3/5.</p>
+                    </div>
+                    <div class="practice-question">
+                        <strong>Practice Question 7:</strong> A box contains 5 apples and 3 oranges. Two fruits are picked at random, one after the other, without replacement. Draw a tree diagram and find the probability that:
+                        <br>a) Both fruits are apples.
+                        <br>b) The fruits are of different kinds.
+                    </div>
+                `
+            },
+            {
+                id: 'combined_events',
+                title: 'Combined Events',
+                content: `
+                    <h2>Combined Events</h2>
+                    <p>Combined events involve considering the probability of two or more events occurring together or in sequence. We've already touched upon this with mutually exclusive and independent events, and tree diagrams are a key tool.</p>
+                    <h3>Recap of Key Rules:</h3>
+                    <ul>
+                        <li><strong>For Mutually Exclusive Events (A and B cannot happen together):</strong>
+                            <div class="formula">P(A or B) = P(A) + P(B)</div>
+                        </li>
+                        <li><strong>For Non-Mutually Exclusive Events (A and B can happen together):</strong>
+                            <div class="formula">P(A or B) = P(A) + P(B) - P(A and B)</div>
+                            (This is the General Addition Rule)
+                        </li>
+                        <li><strong>For Independent Events (occurrence of A does not affect B):</strong>
+                            <div class="formula">P(A and B) = P(A) × P(B)</div>
+                        </li>
+                        <li><strong>For Dependent Events (occurrence of A affects B):</strong>
+                            <div class="formula">P(A and B) = P(A) × P(B|A)</div>
+                            Where P(B|A) is the conditional probability of B occurring given that A has already occurred. Tree diagrams are very helpful here.
+                        </li>
+                    </ul>
+                    <h3>"At least one" type problems:</h3>
+                    <p>Often, it's easier to calculate the probability of "at least one" event occurring by finding the probability of the complementary event (i.e., "none" of the events occurring) and subtracting it from 1.</p>
+                    <div class="formula">
+                        P(at least one) = 1 - P(none)
+                    </div>
+                    <div class="example">
+                        <p><strong>Example:</strong> Three students, A, B, and C, attempt to solve a problem. The probabilities of them solving it are P(A) = 1/2, P(B) = 1/3, and P(C) = 1/4 respectively. Assume their attempts are independent. What is the probability that the problem is solved (i.e., at least one of them solves it)?</p>
+                        <p>First, find the probabilities of them NOT solving the problem:</p>
+                        <ul>
+                            <li>P(A') = 1 - P(A) = 1 - 1/2 = 1/2</li>
+                            <li>P(B') = 1 - P(B) = 1 - 1/3 = 2/3</li>
+                            <li>P(C') = 1 - P(C) = 1 - 1/4 = 3/4</li>
+                        </ul>
+                        <p>Probability that NONE of them solve the problem (since attempts are independent):</p>
+                        <p>P(A' and B' and C') = P(A') × P(B') × P(C') = (1/2) × (2/3) × (3/4) = 6/24 = 1/4.</p>
+                        <p>Therefore, the probability that the problem is solved (at least one solves it) is:</p>
+                        <p>P(problem solved) = 1 - P(none solve it) = 1 - 1/4 = 3/4.</p>
+                    </div>
+                    <div class="practice-question">
+                        <strong>Practice Question 8:</strong> The probability that a student passes Mathematics is 0.7, and the probability that they pass Physics is 0.6. If the probability of passing both is 0.5, what is the probability that the student passes at least one of the subjects?
+                    </div>
+                `
+            }
+        ];
+
+        // --- Functions ---
+        function displayContent(topicId) {
+            const topic = probabilityTopics.find(t => t.id === topicId);
+            if (topic) {
+                contentArea.innerHTML = topic.content;
+                topicTitle.textContent = topic.title;
+
+                // Update active link in sidebar
+                document.querySelectorAll('.sidebar-link').forEach(link => {
+                    link.classList.remove('active');
+                    if (link.dataset.topic === topicId) {
+                        link.classList.add('active');
+                    }
+                });
+
+                // Close sidebar on mobile after selection
+                if (sidebar.classList.contains('open')) {
+                    sidebar.classList.remove('open');
+                    sidebarOverlay.style.display = 'none';
+                }
+            } else {
+                contentArea.innerHTML = '<p>Topic not found. Please select a valid topic from the sidebar.</p>';
+                topicTitle.textContent = 'Error';
+            }
+        }
+
+        function populateNavigation() {
+            probabilityTopics.forEach(topic => {
+                const link = document.createElement('a');
+                link.href = '#';
+                link.textContent = topic.title;
+                link.classList.add('block', 'py-2.5', 'px-4', 'rounded', 'transition', 'duration-200', 'hover:bg-gray-700', 'sidebar-link');
+                link.dataset.topic = topic.id; // Store topic id for easy access
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    displayContent(topic.id);
+                });
+                topicNavigation.appendChild(link);
+            });
+        }
+
+        // --- Event Listeners ---
+        mobileMenuButton.addEventListener('click', () => {
+            sidebar.classList.toggle('open');
+            if (sidebar.classList.contains('open')) {
+                sidebarOverlay.style.display = 'block';
+            } else {
+                sidebarOverlay.style.display = 'none';
+            }
+        });
+
+        sidebarOverlay.addEventListener('click', () => {
+            sidebar.classList.remove('open');
+            sidebarOverlay.style.display = 'none';
+        });
+
+        // --- Initialization ---
+        populateNavigation();
+        // Display the introduction by default, or the first topic if intro doesn't exist
+        if (probabilityTopics.length > 0) {
+            const initialTopicId = probabilityTopics.find(t => t.id === 'introduction') ? 'introduction' : probabilityTopics[0].id;
+            displayContent(initialTopicId);
+        }
+
+    </script>
+</body>
+</html>

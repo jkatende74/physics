@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guided Learning: Hooke's Law</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f5f3ff; /* Tailwind violet-50 */
+        }
+        .content-card {
+            background-color: white;
+            border-radius: 0.75rem; 
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .nav-button {
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        .nav-button:hover {
+            transform: translateY(-2px);
+        }
+        .nav-button:disabled {
+            background-color: #dcdcdc; 
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+        .diagram-placeholder {
+            border: 2px dashed #a78bfa; /* Tailwind violet-400 */
+            padding: 2rem;
+            margin: 1.5rem 0;
+            text-align: center;
+            background-color: #fbfaff; 
+            border-radius: 0.5rem;
+            color: #7c3aed; /* Tailwind violet-600 */
+            font-style: italic;
+        }
+        .explanation-box {
+            background-color: #ede9fe; /* Tailwind violet-100 */
+            border-left: 4px solid #8b5cf6; /* Tailwind violet-500 */
+            padding: 1rem;
+            margin-top: 1.5rem;
+            border-radius: 0.375rem;
+        }
+        .explanation-box h3 {
+            color: #6d28d9; /* Tailwind violet-700 */
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        .progress-bar-container {
+            width: 100%;
+            background-color: #e0e0e0; 
+            border-radius: 0.25rem;
+            overflow: hidden;
+            height: 10px;
+            margin-bottom: 0.5rem; 
+        }
+        .progress-bar {
+            height: 100%;
+            background-color: #7c3aed; /* Tailwind violet-600 */
+            transition: width 0.3s ease-in-out;
+        }
+        h1.main-header { 
+             color: #4c1d95; /* Tailwind violet-800 */
+        }
+        h2 { /* Main topic titles in content card */
+            font-size: 1.75rem; 
+            font-weight: 700; 
+            color: #5b21b6; /* Tailwind violet-700 */
+            margin-bottom: 0.75rem;
+        }
+        h3 { /* Sub-headings within content */
+            font-size: 1.25rem; 
+            font-weight: 600; 
+            color: #7c3aed; /* Tailwind violet-600 */
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        p, li {
+            line-height: 1.6;
+            color: #3730a3; /* Tailwind indigo-700 */
+        }
+        ul {
+            list-style-type: disc;
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Dropdown Menu Styles */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+            width: 100%; 
+            margin-bottom: 1.5rem;
+        }
+        .dropdown-button {
+            background-color: #6d28d9; /* Tailwind violet-700 */
+            color: white;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            border-radius: 0.5rem;
+            width: 100%;
+            text-align: left;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .dropdown-button:hover {
+            background-color: #5b21b6; /* Tailwind violet-800 */
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 100%; 
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 10;
+            border-radius: 0.5rem;
+            max-height: 300px; 
+            overflow-y: auto;
+        }
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            font-size: 0.9rem;
+            border-bottom: 1px solid #eee;
+        }
+        .dropdown-content a:last-child {
+            border-bottom: none;
+        }
+        .dropdown-content a:hover {
+            background-color: #f1f1f1;
+            color: black; /* Ensure text color is black on hover */
+        }
+        .dropdown-content a.active-topic {
+            /* Tailwind classes bg-blue-500 and text-white are added by JS */
+            font-weight: 600; /* Keep font weight for active */
+        }
+        .show-dropdown {
+            display: block;
+        }
+        .arrow {
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            display: inline-block;
+            padding: 3px;
+            margin-left: 8px;
+        }
+        .down {
+            transform: rotate(45deg);
+            -webkit-transform: rotate(45deg);
+        }
+        .up {
+            transform: rotate(-135deg);
+            -webkit-transform: rotate(-135deg);
+        }
+
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center p-4 md:p-8">
+
+    <div class="w-full max-w-3xl">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-bold main-header">Guided Learning: Hooke's Law</h1>
+            <p class="text-sm text-gray-500 mt-1">Understanding elasticity, springs, and forces.</p>
+            <p class="text-gray-500 mt-1">KCSE Form 2 Physics - Kenyan Curriculum</p>
+        </header>
+
+        <!-- NEW LINK INSERTED HERE -->
+        <div class="mb-4 text-center">
+            <a href="physics_dashboard.html" class="text-blue-600 hover:text-blue-800 hover:underline font-semibold">&larr; Back to Physics Dashboard</a>
+        </div>
+
+        <div class="dropdown mb-6">
+            <button id="topic-menu-button" class="dropdown-button">
+                <span>Select Physics Topic</span> <!-- Default text, JS will update -->
+                <i id="menu-arrow" class="arrow down"></i>
+            </button>
+            <div id="topic-menu-content" class="dropdown-content">
+                </div>
+        </div>
+
+        <div id="progress-bar-container" class="progress-bar-container">
+            <div id="progress-bar" class="progress-bar"></div>
+        </div>
+        <p id="progress-text" class="text-center text-sm text-gray-600 mb-6">Topic 1 of N</p>
+
+
+        <div id="content-area" class="content-card p-6 md:p-8">
+            <h2 id="topic-title" class="text-2xl font-bold text-violet-700 mb-4">Topic Title</h2>
+            <div id="topic-content" class="prose max-w-none">
+                </div>
+            <div id="diagram-area">
+                </div>
+            <div id="explanation-area" class="explanation-box" style="display: none;">
+                <h3>Key Idea / Simplified</h3>
+                <p id="explanation-text"></p>
+            </div>
+        </div>
+
+        <div id="navigation" class="mt-8 flex justify-between items-center">
+            <button id="prev-button" class="nav-button bg-violet-500 hover:bg-violet-600 text-white font-semibold py-2 px-6 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-violet-400 focus:ring-opacity-75">
+                Previous
+            </button>
+            <button id="next-button" class="nav-button bg-purple-500 hover:bg-purple-600 text-white font-semibold py-2 px-6 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-opacity-75">
+                Next
+            </button>
+        </div>
+         <p class="text-center text-xs text-gray-500 mt-8">Relate these principles to everyday objects like rubber bands and shock absorbers!</p>
+    </div>
+
+    <script>
+        const interTopicNavigationLinks = [
+            { title: "Magnetism", href: "magnetism.html" },
+            { title: "Measurement (II)", href: "measurment_2.html" },
+            { title: "Turning Effect of a Force", href: "kcse/turning_effect_of_a_force.html" },
+            { title: "Equilibrium and Centre of Gravity", href: "equillibrium_and_center_of_gravity.html" },
+            { title: "Reflection of Curved Surfaces", href: "reflection_at_curved_surfaces.html" },
+            { title: "Magnetic Effect of an Electric Current", href: "kcse/magnetic_effect_of_an_electric_current.html" },
+            { title: "Hooke’s Law", href: "hookes_law.html" },
+            { title: "Waves", href: "waves.html" },
+            { title: "Sound I", href: "sound_1.html" },
+            { title: "Fluid Flow", href: "fluid_flow.html" }
+        ];
+
+        const topics = [ // This is for the intra-page navigation (Hooke's Law sub-topics)
+            {
+                title: "Introduction to Hooke's Law",
+                content: `
+                    <p>Hooke's Law is a fundamental principle in physics that describes the relationship between the force applied to stretch (or compress) an elastic material and the resulting change in its length.</p>
+                    <p>The Core Statement: Hooke's Law states that for a <strong>helical spring or other elastic material</strong>, the <strong>extension</strong> (the increase in length) is <strong>directly proportional</strong> to the <strong>stretching force</strong> (the force applied).</p>
+                    <p>The Crucial Condition: This direct proportionality <strong>only holds true provided the elastic limit is not exceeded</strong>.</p>
+                `,
+                explanation: "Hooke's Law is all about how stretchy things behave. Basically, for things like springs, the more you pull them (force), the more they stretch (extension) – and it's a consistent relationship, as long as you don't pull too hard and break or permanently stretch them!",
+                diagramPlaceholder: "[Diagram: A simple helical spring shown in three states: 1. Unstretched. 2. Stretched by a small force F, showing extension e. 3. Stretched by a larger force 2F, showing extension 2e.]"
+            },
+            {
+                title: "Understanding Direct Proportionality & The Spring Constant (k)",
+                content: `
+                    <h3>Understanding Direct Proportionality</h3>
+                    <p>Direct proportionality means that if you double the stretching force, the extension will also double. If you triple the force, the extension triples, and so on, as long as you stay within the material's elastic limit.</p>
+                    <h3>Mathematical Expression:</h3>
+                    <p>This relationship can be written mathematically as: <strong>F ∝ e</strong> where:</p>
+                    <ul>
+                        <li><strong>F</strong> represents the stretching force (or load).</li>
+                        <li><strong>e</strong> represents the extension (the increase in length).</li>
+                    </ul>
+                    <h3>Introducing the Spring Constant:</h3>
+                    <p>To turn this proportionality into an equation, we introduce a constant of proportionality, traditionally denoted by <strong>k</strong>. The equation becomes: <strong>F = ke</strong></p>
+                    <p>Here, <strong>k</strong> is known as the <strong>spring constant</strong>.</p>
+                `,
+                explanation: "Directly proportional means if one thing doubles, the other doubles too. So, more force = more stretch in a predictable way. We write this as F ∝ e. To make it an equation, we use 'k', the spring constant: F = ke. 'k' tells us how stiff the spring is.",
+                diagramPlaceholder: null
+            },
+            {
+                title: "The Spring Constant (k): Meaning and Units",
+                content: `
+                    <p>The value of 'k' <strong>depends on the material</strong> of the spring. A stiffer material will have a higher spring constant, meaning you need a larger force to produce the same amount of extension compared to a less stiff material.</p>
+                    <p>The units for the spring constant are typically given as <strong>N/m</strong> (Newtons per metre) or <strong>Nm⁻¹</strong>.</p>
+                    <h3>Graphical Representation:</h3>
+                    <p>If you perform an experiment and plot the stretching force (F) on the y-axis against the extension (e) on the x-axis, the graph for a material obeying Hooke's Law within its elastic limit will be a <strong>straight line passing through the origin</strong>. The <strong>gradient (slope) of this straight line is equal to the spring constant, k</strong>.</p>
+                `,
+                explanation: "A big 'k' value means a stiff spring (hard to stretch). A small 'k' means a loose spring (easy to stretch). We measure 'k' in Newtons per meter (N/m). If you plot Force vs. Extension on a graph, the steepness (gradient) of the straight line gives you 'k'.",
+                diagramPlaceholder: "[Diagram: A graph of Force (F, y-axis) vs. Extension (e, x-axis) showing a straight line passing through the origin. Indicate that the gradient of this line = k (spring constant).]"
+            },
+            {
+                title: "Key Concepts: Stretching, Force, Elastic Material",
+                content: `
+                    <h3>Stretching/Extension:</h3>
+                    <p>This is simply the increase in the length of the spring or elastic material from its original, unstretched length when a force is applied to pull it.</p>
+                    <h3>Stretching Force (Load):</h3>
+                    <p>This is the external force that is applied to the material, causing it to stretch.</p>
+                    <h3>Elastic Material:</h3>
+                    <p>An elastic material has the ability to <strong>return to its original length (or shape and size)</strong> once the stretching force is removed. This recovery happens as long as the applied force was not too large (i.e., within the elastic limit). Examples include helical springs and straight steel wires. Some materials like rubber also show elasticity even if their stretching might not perfectly follow Hooke's Law. Materials that do not recover but remain permanently deformed after force removal are called <strong>plastic</strong>.</p>
+                `,
+                explanation: "'Extension' is how much longer the spring gets. 'Stretching force' is the pull you apply. An 'elastic material' (like a spring or rubber band) bounces back to its original shape after you stop pulling, unless you pull too hard. If it stays stretched, it's become 'plastic'.",
+                diagramPlaceholder: "[Diagram: Show a spring at its original length, then stretched with an extension 'e' indicated. Also, show a rubber band returning to original shape vs. a piece of clay (plastic) remaining deformed.]"
+            },
+            {
+                title: "Key Concepts: Elastic Limit & Permanent Stretching",
+                content: `
+                    <h3>The Elastic Limit:</h3>
+                    <p>This is a crucial point for an elastic material. If you increase the stretching force beyond a certain value, called the elastic limit, the material will no longer return to its original length when the force is removed. On a force-extension graph, this point might be labelled as 'E'.</p>
+                    <h3>Permanent Stretching/Extension:</h3>
+                    <p>When the elastic limit is exceeded (for example, at a point like 'B' on a graph beyond 'E'), the material undergoes permanent stretching. This means that even after the stretching force is completely removed, the material will be left with some residual extension and will not fully regain its initial length.</p>
+                `,
+                explanation: "The 'elastic limit' is like the spring's breaking point for bounciness. If you stretch it beyond this limit, it won't go back to its original size – it gets permanently stretched out.",
+                diagramPlaceholder: "[Diagram: A Force-Extension graph. Show the straight line (Hooke's Law region), then mark the Elastic Limit (E). Show the curve continuing beyond E into the plastic deformation region, and indicate permanent extension if the force is removed from this region.]"
+            },
+            {
+                title: "Work Done in Stretching a Spring",
+                content: `
+                    <p>When you stretch a spring or elastic material, you are applying a force over a distance (the extension), which means you are doing <strong>work</strong>.</p>
+                    <p>The total work done in stretching the spring can be found by calculating the <strong>area under the force versus extension graph</strong>.</p>
+                    <p>If the force increases linearly with extension (as per Hooke's Law), the graph is a triangle. The work done is given by the formula: <strong>Work Done = ½ × Force × Extension = ½ Fe</strong></p>
+                    <p>Using the relationship F = ke, this formula can also be written as: <strong>Work Done = ½ k e²</strong></p>
+                `,
+                explanation: "Stretching a spring takes energy (work). On a Force-Extension graph, the work done is the area under the line. For a spring obeying Hooke's Law, this area is a triangle, so Work Done = ½ × Force × Extension, or ½ × k × (extension)².",
+                diagramPlaceholder: "[Diagram: The same Force-Extension graph as before (straight line through origin). Shade the triangular area under the line up to a certain force F and extension e. Label this area as 'Work Done'.]"
+            },
+            {
+                title: "Compression and Hooke's Law",
+                content: `
+                    <p><strong>Compression:</strong> Hooke's Law also applies when you squeeze the ends of a spring together, causing it to shorten or undergo compression. The spring resists this compression with a counter force.</p>
+                    <p>The relationship between this compression force and the amount of shortening also follows Hooke's Law up to a point. However, if the compression force becomes too large, the coils of the spring will press against each other, and further increases in force will result in very little additional shortening.</p>
+                `,
+                explanation: "Hooke's Law isn't just for stretching; it also works for squashing (compressing) a spring! The more you squash it, the harder it pushes back, up to a point. If you squash it too much, the coils touch, and it can't really get shorter.",
+                diagramPlaceholder: "[Diagram: Show a spring: 1. Uncompressed. 2. Compressed by a force F, showing shortening 'c'. 3. Over-compressed where coils touch.]"
+            },
+            {
+                title: "Experiment 7.1: Stretching a Spiral Spring",
+                content: `
+                    <h3>Apparatus:</h3> <p>Spiral spring with a pointer, metre rule, retort stand with clamps/bosses, set of masses (e.g., 20g).</p>
+                    <h3>Procedure:</h3>
+                    <ol>
+                        <li>Set up the spring vertically with the metre rule alongside. Record initial pointer position (no load).</li>
+                        <li>Add masses in steps (e.g., 20g), record new pointer position. Calculate extension (new reading - initial reading). Convert mass to force (F=mg).</li>
+                        <li><strong>Important:</strong> Don't use weights too heavy to exceed the elastic limit.</li>
+                        <li>After loading, unload in same steps, record pointer readings.</li>
+                        <li>Plot a graph: Force (F) on y-axis, Extension (e) on x-axis.</li>
+                    </ol>
+                    <h3>Observation & Conclusion:</h3>
+                    <p>If not overloaded, spring returns to original length. Ratio F/e is constant. Graph of F vs. e is a straight line through the origin. This shows extension (e) is directly proportional to stretching force (F).</p>
+                `,
+                explanation: "To test Hooke's Law, hang a spring, measure its length, then add weights one by one, measuring how much it stretches each time. Record the force (weight) and the extension. If you plot these, you should get a straight line graph if Hooke's Law is obeyed!",
+                diagramPlaceholder: "[Diagram: Setup for Experiment 7.1. Show a retort stand, clamped spring with a pointer, a metre rule alongside, and a mass hanger with some masses attached to the spring.]"
+            },
+            {
+                title: "Experiment 7.2: Sagging of a Loaded Beam",
+                content: `
+                    <h3>Apparatus:</h3> <p>Wooden beam with a pointer, 100g masses, G-clamp, metre rule, retort stand, string, weight holder.</p>
+                    <h3>Procedure:</h3>
+                    <ol>
+                        <li>Arrange apparatus to support the beam (e.g., clamped at one end). Record initial pointer reading.</li>
+                        <li>Suspend masses in steps (e.g., 100g), record pointer position. Don't overload.</li>
+                        <li>Determine sagging (x) = deflection from original position.</li>
+                        <li>Plot graph: Force (F from masses) against sagging (x).</li>
+                    </ol>
+                    <h3>Observation & Conclusion:</h3>
+                    <p>Graph of load against sagging (x) is a straight line through the origin. This demonstrates that the sagging of the beam is in accordance with Hooke's Law.</p>
+                `,
+                explanation: "Hooke's Law can also apply to things bending, like a wooden beam. If you support a beam and hang weights from it, the amount it sags (bends down) is proportional to the weight added (as long as you don't break it!).",
+                diagramPlaceholder: "[Diagram: Setup for Experiment 7.2. Show a wooden beam clamped at one end (cantilever) or supported at two points. A pointer attached to the beam indicates sagging on a vertical scale as masses are suspended from the beam.]"
+            },
+            {
+                title: "Material Properties Related to Hooke's Law",
+                content: `
+                    <ul>
+                        <li><strong>Strength:</strong> Ability to resist breaking.</li>
+                        <li><strong>Stiffness:</strong> Resistance to changes in shape/size (resists bending).</li>
+                        <li><strong>Ductility:</strong> Can be stretched significantly and permanently changed (plastic deformation) before breaking.</li>
+                        <li><strong>Brittleness:</strong> Breaks suddenly after elastic limit without much stretching.</li>
+                        <li><strong>Elasticity:</strong> Ability to return to original shape/size after deforming force is removed. Linked to forces between molecules.</li>
+                    </ul>
+                    <p>Different materials exhibit these properties differently. Polythene and metal wires show elasticity, then plasticity, then snap. Rubber stretches a lot but might not perfectly follow Hooke's Law, though it's elastic.</p>
+                `,
+                explanation: "Materials behave differently! 'Strong' ones don't break easily. 'Stiff' ones don't bend easily. 'Ductile' ones can be stretched a lot before breaking (like copper wire). 'Brittle' ones snap suddenly (like glass). 'Elasticity' is the ability to bounce back.",
+                diagramPlaceholder: "[Diagram: Simple icons or sketches representing: Strength (e.g., a thick rope under tension), Stiffness (e.g., a rigid beam vs. a floppy one), Ductility (e.g., a wire being drawn out), Brittleness (e.g., a glass rod snapping).]"
+            },
+            {
+                title: "Combining Springs (Series and Parallel)",
+                content: `
+                    <p>When identical springs are connected, their combined behavior under a load is different depending on whether they are in <strong>series</strong> or <strong>parallel</strong>.</p>
+                    <ul>
+                        <li>In <strong>series</strong> (end-to-end), the load is the same on each spring. The total extension is the sum of individual extensions. (This implies a larger total extension for a given total load, meaning a lower effective spring constant for the system).</li>
+                        <li>In <strong>parallel</strong> (side-by-side), the load is shared between the springs. This results in less total extension compared to a single spring under the same total load. (This implies a higher effective spring constant for the system).</li>
+                    </ul>
+                `,
+                explanation: "If you connect springs together: 'Series' (like a chain) makes them stretch more easily overall for the same load. 'Parallel' (side by side) makes them stiffer and harder to stretch for the same load because they share the effort.",
+                diagramPlaceholder: "[Diagram 1: Two springs connected in series, supporting a load, showing total extension. Diagram 2: Two springs connected in parallel, supporting the same load, showing a smaller total extension.]"
+            },
+            {
+                title: "Applications of Hooke's Law",
+                content: `
+                    <p>Hooke's Law and the behavior of springs are applied in various devices:</p>
+                    <ul>
+                        <li><strong>Spring Balance:</strong> Common device for measuring force/weight. Extension is proportional to force. Calibration involves marking positions for known masses/weights.</li>
+                        <li><strong>Top-pan balance:</strong> Uses a spring mechanism.</li>
+                        <li><strong>Spring shock absorbers:</strong> Found in vehicles to absorb impacts.</li>
+                    </ul>
+                `,
+                explanation: "Hooke's Law is super useful! Spring balances (for weighing things) work because of it. Car shock absorbers use springs to give you a smoother ride. Even some kitchen scales use spring mechanisms.",
+                diagramPlaceholder: "[Diagrams: Sketch of a simple spring balance with a scale. Sketch of a car's shock absorber (simplified).]"
+            }
+        ];
+
+        let currentTopicIndex = 0;
+
+        const topicTitleElement = document.getElementById('topic-title');
+        const topicContentElement = document.getElementById('topic-content');
+        const diagramAreaElement = document.getElementById('diagram-area');
+        const explanationAreaElement = document.getElementById('explanation-area');
+        const explanationTextElement = document.getElementById('explanation-text');
+        const prevButton = document.getElementById('prev-button');
+        const nextButton = document.getElementById('next-button');
+        const progressBar = document.getElementById('progress-bar');
+        const progressText = document.getElementById('progress-text');
+        const topicMenuButton = document.getElementById('topic-menu-button');
+        const topicMenuContent = document.getElementById('topic-menu-content');
+        const menuArrow = document.getElementById('menu-arrow');
+
+
+        function displayTopic(index) {
+            currentTopicIndex = index; 
+            const topic = topics[index]; // 'topics' is for Hooke's Law sub-topics
+            topicTitleElement.textContent = topic.title;
+            topicContentElement.innerHTML = topic.content; 
+
+            if (topic.diagramPlaceholder) {
+                diagramAreaElement.innerHTML = `<div class="diagram-placeholder">${topic.diagramPlaceholder}</div>`;
+                diagramAreaElement.style.display = 'block';
+            } else {
+                diagramAreaElement.innerHTML = '';
+                diagramAreaElement.style.display = 'none';
+            }
+
+            if (topic.explanation) {
+                explanationTextElement.textContent = topic.explanation;
+                explanationAreaElement.style.display = 'block';
+            } else {
+                explanationTextElement.textContent = '';
+                explanationAreaElement.style.display = 'none';
+            }
+
+            updateNavigationButtons();
+            updateProgressBar();
+            // updateActiveMenuItem(); // This was for a sub-topic dropdown, inter-topic menu handles its own active state.
+            // topicMenuButton.firstChild.textContent = topic.title; // Removed: Main button text now handled by populateInterTopicMenu
+        }
+
+        function updateNavigationButtons() {
+            prevButton.disabled = currentTopicIndex === 0;
+            nextButton.disabled = currentTopicIndex === topics.length - 1;
+        }
+
+        function updateProgressBar() {
+            const progressPercentage = ((currentTopicIndex + 1) / topics.length) * 100;
+            progressBar.style.width = `${progressPercentage}%`;
+            progressText.textContent = `Topic ${currentTopicIndex + 1} of ${topics.length}`;
+        }
+        
+        function populateInterTopicMenu() {
+            const menuContent = document.getElementById('topic-menu-content');
+            const menuButton = document.getElementById('topic-menu-button');
+            menuContent.innerHTML = ''; 
+
+            interTopicNavigationLinks.forEach(topicLink => {
+                const menuItem = document.createElement('a');
+                menuItem.href = topicLink.href;
+                menuItem.textContent = topicLink.title;
+                menuItem.classList.add('block', 'px-4', 'py-3', 'text-sm', 'text-gray-700', 'hover:bg-gray-100', 'hover:text-gray-900');
+                
+                const currentPageFilename = window.location.pathname.split('/').pop();
+                if (currentPageFilename === topicLink.href || 
+                    ( (currentPageFilename === '' || currentPageFilename === 'index.html') && topicLink.href === 'hookes_law.html') ) { 
+                    menuItem.classList.add('active-topic', 'bg-blue-500', 'text-white');
+                    const spanElement = Array.from(menuButton.childNodes).find(node => node.nodeName === 'SPAN');
+                    if (spanElement) {
+                        spanElement.textContent = topicLink.title;
+                    } else if (menuButton.firstChild && menuButton.firstChild.nodeType === Node.TEXT_NODE) { // Fallback for direct text node
+                         menuButton.firstChild.textContent = topicLink.title;
+                    }
+                } else {
+                     menuItem.classList.remove('active-topic', 'bg-blue-500', 'text-white');
+                }
+                menuContent.appendChild(menuItem);
+            });
+        }
+
+        // The original populateTopicMenu and updateActiveMenuItem for sub-topics are removed 
+        // as the main dropdown is now handled by populateInterTopicMenu.
+        // If a separate dropdown for sub-topics was desired, these would be re-added and modified.
+
+        topicMenuButton.addEventListener('click', () => {
+            topicMenuContent.classList.toggle('show-dropdown');
+            menuArrow.classList.toggle('up');
+            menuArrow.classList.toggle('down');
+        });
+
+        window.addEventListener('click', function(event) {
+            if (!topicMenuButton.contains(event.target) && !topicMenuContent.contains(event.target)) {
+                if (topicMenuContent.classList.contains('show-dropdown')) {
+                    topicMenuContent.classList.remove('show-dropdown');
+                    menuArrow.classList.remove('up');
+                    menuArrow.classList.add('down');
+                }
+            }
+        });
+
+        prevButton.addEventListener('click', () => {
+            if (currentTopicIndex > 0) {
+                displayTopic(currentTopicIndex - 1);
+                 window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        });
+
+        nextButton.addEventListener('click', () => {
+            if (currentTopicIndex < topics.length - 1) {
+                displayTopic(currentTopicIndex + 1);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        });
+
+        // Initial setup
+        populateInterTopicMenu(); 
+        displayTopic(currentTopicIndex); 
+    </script>
+
+</body>
+</html>

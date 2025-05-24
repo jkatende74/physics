@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guided Learning: Sound I</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f5f3ff; /* Tailwind violet-50 */
+        }
+        .content-card {
+            background-color: white;
+            border-radius: 0.75rem; 
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .nav-button {
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        .nav-button:hover {
+            transform: translateY(-2px);
+        }
+        .nav-button:disabled {
+            background-color: #d1d5db; /* Tailwind gray-300 */
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+        .diagram-placeholder {
+            border: 2px dashed #a78bfa; /* Tailwind violet-400 */
+            padding: 2rem;
+            margin: 1.5rem 0;
+            text-align: center;
+            background-color: #f5f3ff; /* Tailwind violet-50 */
+            border-radius: 0.5rem;
+            color: #7c3aed; /* Tailwind violet-600 */
+            font-style: italic;
+        }
+        .explanation-box {
+            background-color: #ede9fe; /* Tailwind violet-100 */
+            border-left: 4px solid #7c3aed; /* Tailwind violet-600 */
+            padding: 1rem;
+            margin-top: 1.5rem;
+            border-radius: 0.375rem;
+        }
+        .explanation-box h3 {
+            color: #5b21b6; /* Tailwind violet-700 */
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        .progress-bar-container {
+            width: 100%;
+            background-color: #e5e7eb; 
+            border-radius: 0.25rem;
+            overflow: hidden;
+            height: 10px;
+            margin-bottom: 0.5rem; 
+        }
+        .progress-bar {
+            height: 100%;
+            background-color: #7c3aed; /* Tailwind violet-600 */
+            transition: width 0.3s ease-in-out;
+        }
+        h1.main-header { 
+             color: #4c1d95; /* Tailwind violet-800 */
+        }
+        h2 { /* Main topic titles in content card */
+            font-size: 1.75rem; 
+            font-weight: 700; 
+            color: #5b21b6; /* Tailwind violet-700 */
+            margin-bottom: 0.75rem;
+        }
+        h3 { /* Sub-headings within content */
+            font-size: 1.25rem; 
+            font-weight: 600; 
+            color: #6d28d9; /* Tailwind violet-600 */
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        p, li {
+            line-height: 1.6;
+            color: #374151; 
+        }
+        ul {
+            list-style-type: disc;
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Dropdown Menu Styles */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+            width: 100%; 
+            margin-bottom: 1.5rem;
+        }
+        .dropdown-button {
+            background-color: #6d28d9; /* Tailwind violet-600 */
+            color: white;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            border-radius: 0.5rem;
+            width: 100%;
+            text-align: left;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .dropdown-button:hover {
+            background-color: #5b21b6; /* Tailwind violet-700 */
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 100%; 
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 10;
+            border-radius: 0.5rem;
+            max-height: 300px; 
+            overflow-y: auto;
+        }
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            font-size: 0.9rem;
+            border-bottom: 1px solid #eee;
+        }
+        .dropdown-content a:last-child {
+            border-bottom: none;
+        }
+        .dropdown-content a:hover {
+            background-color: #f1f1f1;
+            color: black; /* Ensure text color is black on hover */
+        }
+        .dropdown-content a.active-topic {
+            /* Tailwind classes bg-blue-500 and text-white are added by JS */
+            font-weight: 600; /* Keep font weight for active */
+        }
+        .show-dropdown {
+            display: block;
+        }
+        .arrow {
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            display: inline-block;
+            padding: 3px;
+            margin-left: 8px;
+        }
+        .down {
+            transform: rotate(45deg);
+            -webkit-transform: rotate(45deg);
+        }
+        .up {
+            transform: rotate(-135deg);
+            -webkit-transform: rotate(-135deg);
+        }
+
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center p-4 md:p-8">
+
+    <div class="w-full max-w-3xl">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-bold main-header">Guided Learning: Sound I</h1>
+            <p class="text-sm text-gray-500 mt-1">Exploring the world of vibrations and waves.</p>
+            <p class="text-gray-500 mt-1">KCSE Form 2 Physics - Kenyan Curriculum</p>
+        </header>
+
+        <!-- NEW LINK INSERTED HERE -->
+        <div class="mb-4 text-center">
+            <a href="physics_dashboard.html" class="text-blue-600 hover:text-blue-800 hover:underline font-semibold">&larr; Back to Physics Dashboard</a>
+        </div>
+
+        <div class="dropdown mb-6">
+            <button id="topic-menu-button" class="dropdown-button">
+                <span>Select Physics Topic</span> <!-- Default text, JS will update -->
+                <i id="menu-arrow" class="arrow down"></i>
+            </button>
+            <div id="topic-menu-content" class="dropdown-content">
+                </div>
+        </div>
+
+        <div id="progress-bar-container" class="progress-bar-container">
+            <div id="progress-bar" class="progress-bar"></div>
+        </div>
+        <p id="progress-text" class="text-center text-sm text-gray-600 mb-6">Topic 1 of N</p>
+
+
+        <div id="content-area" class="content-card p-6 md:p-8">
+            <h2 id="topic-title" class="text-2xl font-bold text-blue-700 mb-4">Topic Title</h2>
+            <div id="topic-content" class="prose max-w-none">
+                </div>
+            <div id="diagram-area">
+                </div>
+            <div id="explanation-area" class="explanation-box" style="display: none;">
+                <h3>Key Idea / Simplified</h3>
+                <p id="explanation-text"></p>
+            </div>
+        </div>
+
+        <div id="navigation" class="mt-8 flex justify-between items-center">
+            <button id="prev-button" class="nav-button bg-violet-500 hover:bg-violet-600 text-white font-semibold py-2 px-6 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-violet-400 focus:ring-opacity-75">
+                Previous
+            </button>
+            <button id="next-button" class="nav-button bg-purple-500 hover:bg-purple-600 text-white font-semibold py-2 px-6 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-opacity-75">
+                Next
+            </button>
+        </div>
+         <p class="text-center text-xs text-gray-500 mt-8">Listen carefully to the sounds around you and think about how they are made!</p>
+    </div>
+
+    <script>
+        const interTopicNavigationLinks = [
+            { title: "Magnetism", href: "magnetism.html" },
+            { title: "Measurement (II)", href: "measurment_2.html" },
+            { title: "Turning Effect of a Force", href: "kcse/turning_effect_of_a_force.html" },
+            { title: "Equilibrium and Centre of Gravity", href: "equillibrium_and_center_of_gravity.html" },
+            { title: "Reflection of Curved Surfaces", href: "reflection_at_curved_surfaces.html" },
+            { title: "Magnetic Effect of an Electric Current", href: "kcse/magnetic_effect_of_an_electric_current.html" },
+            { title: "Hooke’s Law", href: "hookes_law.html" },
+            { title: "Waves", href: "waves.html" },
+            { title: "Sound I", href: "sound_1.html" },
+            { title: "Fluid Flow", href: "fluid_flow.html" }
+        ];
+
+        const topics = [ // This is for the intra-page navigation (Sound I sub-topics)
+            {
+                title: "Introduction: Sources of Sound",
+                content: `
+                    <p>Sound originates from <strong>vibrating bodies</strong>.</p>
+                `,
+                explanation: "The most important thing to remember about sound is that it all starts with something VIBRATING. If it's not vibrating, it's not making sound!",
+                diagramPlaceholder: "[Diagram: A collection of simple icons representing various sound sources - a drum, a guitar string, a speaker, a person singing - with vibration lines around them.]"
+            },
+            {
+                title: "Sound Source: Tuning Fork",
+                content: `
+                    <p>A <strong>tuning fork</strong> produces sound when its prongs vibrate after being struck. The sound is heard more clearly when the stem is fixed tightly on a hollow box or pressed on a bench. Making the prongs touch water causes splashing, confirming their vibration. A tuning fork with a higher frequency vibrates faster and produces a higher note.</p>
+                `,
+                explanation: "A tuning fork is a U-shaped metal tool. When you hit it, its arms (prongs) shake back and forth very fast (vibrate), making a pure musical note. If you touch the vibrating prongs to water, you'll see ripples – proof of vibration!",
+                diagramPlaceholder: "[Diagram: A tuning fork being struck, with vibration lines. Another small diagram showing the prongs touching water and creating splashes. A third showing the stem on a resonance box.]"
+            },
+            {
+                title: "Sound Source: Air Siren & Cog Wheel",
+                content: `
+                    <p>An <strong>Air Siren</strong> can use a disc with equally spaced holes rotated at a constant rate with air blown through them to produce a sound note. Different sets of holes can be used to vary the frequency.</p>
+                    <p>If a <strong>cog wheel</strong> with equally spaced teeth is rotated with a stiff card pressing against the teeth, the striking of the teeth produces sound. Wheels with fewer teeth produce sound of a lower frequency.</p>
+                `,
+                explanation: "An air siren makes sound by spinning a disc with holes and blowing air through them – the puffs of air create vibrations. A cog wheel (like a gear) can make sound if you hold a card against its spinning teeth – the card vibrates as it hits each tooth.",
+                diagramPlaceholder: "[Diagram 1: A simplified air siren with a rotating disc with holes and an air jet. Diagram 2: A rotating cog wheel with a card held against its teeth, showing vibration.]"
+            },
+            {
+                title: "Sound Source: Voice Box (Larynx) & Loudspeakers",
+                content: `
+                    <p>The <strong>Voice Box (Larynx)</strong> contains vocal cords that vibrate to produce human voice sounds.</p>
+                    <p><strong>Loudspeakers</strong> are also vibrating bodies that produce sound. A moving-coil loudspeaker uses a varying electric current passed through a speech coil placed in a magnetic field. A maximum force acts on the coil, moving it. Since the current varies, the coil experiences a force that varies in magnitude and direction at the frequency of the speech. The diaphragm (cone) attached to the coil vibrates at the same frequency, setting a large mass of air into vibration and reproducing the sound. The radial field from the magnet cuts the coil turns at right angles, maximizing the force.</p>
+                `,
+                explanation: "Your voice comes from your 'voice box' (larynx), where tiny bands called vocal cords vibrate. Loudspeakers work similarly: an electric current makes a coil vibrate, which then makes a cone (diaphragm) vibrate, pushing air to create sound.",
+                diagramPlaceholder: "[Diagram 1: Simplified cutaway of a human larynx showing vocal cords. Diagram 2: Cross-section of a moving-coil loudspeaker, labelling magnet, speech coil, and diaphragm (cone).]"
+            },
+            {
+                title: "Sound Source: Electric Bell",
+                content: `
+                    <p>An <strong>Electric Bell</strong> produces a continuous ringing sound through a make-and-break mechanism. When the switch is closed, current magnetizes a core, which attracts a soft iron armature. A hammer attached to the armature strikes the gong. This attraction separates contacts, breaking the circuit and causing the magnetism to die off. A spring returns the armature to its original position, remaking the contact and repeating the process. The frequency of the ringing is controlled by a screw.</p>
+                `,
+                explanation: "An electric bell rings continuously because of a clever on-off switch. Electricity makes an electromagnet pull a hammer to hit the bell. But when it pulls, it breaks the circuit, the magnet switches off, and a spring pulls the hammer back. This closes the circuit again, and it repeats very fast!",
+                diagramPlaceholder: "[Diagram: A clear, labelled diagram of an electric bell showing the electromagnet, armature, hammer, gong, spring, contacts, and circuit with a switch.]"
+            },
+            {
+                title: "Nature of Sound Waves: Compressions & Rarefactions",
+                content: `
+                    <p>Sound waves are produced by vibrating sources and travel through a medium as <strong>compressions</strong> (areas of high pressure) and <strong>rarefactions</strong> (areas of low pressure).</p>
+                    <p>These compressions and rarefactions transfer energy from particle to particle in the medium.</p>
+                `,
+                explanation: "When something vibrates, it pushes the air particles. This creates squashed-up areas (compressions) and spread-out areas (rarefactions) in the air. Sound travels as these squashes and stretches move through the air, carrying energy.",
+                diagramPlaceholder: "[Diagram: A vibrating source (e.g., tuning fork prong) pushing air particles to show regions of compression (particles close together) and rarefaction (particles spread apart) moving away from the source.]"
+            },
+            {
+                title: "Nature of Sound Waves: Longitudinal Waves",
+                content: `
+                    <p>The direction of the particles' vibrations is <strong>parallel</strong> to the direction the sound energy moves. This is why sound waves are classified as <strong>longitudinal waves</strong>. They can also be described as <strong>travelling pressure waves</strong>.</p>
+                    <p>Crucially, sound energy moves forward in the medium <strong>without net forward movement of the medium itself</strong>.</p>
+                `,
+                explanation: "In a sound wave, the air particles jiggle back and forth in the SAME direction the sound is travelling. This makes sound a 'longitudinal wave'. Think of a Slinky spring being pushed and pulled at one end. The particles themselves don't travel far, they just pass the energy along.",
+                diagramPlaceholder: "[Diagram: Illustrating a longitudinal wave using a Slinky spring. Show a section being compressed and then stretched, with an arrow indicating the direction of wave travel and arrows indicating the back-and-forth vibration of individual coils parallel to the wave direction.]"
+            },
+            {
+                title: "Propagation of Sound: Need for a Medium",
+                content: `
+                    <p>Sound requires a <strong>material medium</strong> for propagation. The experiment with an electric bell in a bell-jar shows the intensity diminishes as air is removed because a <strong>vacuum does not transmit sound</strong>. Any faint sound heard in this experiment travels through the connecting wires, rubber, and walls of the jar.</p>
+                `,
+                explanation: "Sound needs 'stuff' (a medium like air, water, or solids) to travel through. It can't travel in a vacuum (empty space, like outer space). If you put a ringing bell in a jar and pump out all the air, the sound fades away because there's nothing for the sound waves to travel through.",
+                diagramPlaceholder: "[Diagram: The bell-jar experiment. Show an electric bell ringing inside a sealed bell-jar connected to a vacuum pump. Illustrate sound waves inside with air, and then fewer/no sound waves as air is pumped out.]"
+            },
+            {
+                title: "Wave Characteristics: v = fλ",
+                content: `
+                    <p>The relationship between the speed (v), frequency (f), and wavelength (λ) of a sound wave is given by <strong>v = fλ</strong>.</p>
+                    <p>The <strong>frequency</strong> is determined by the rate of vibration of the source.</p>
+                    <p>The <strong>range of audible frequencies</strong> for humans varies from <strong>20 Hz to 20 kHz</strong>.</p>
+                `,
+                explanation: "There's a simple equation for waves: speed = frequency × wavelength (v = fλ). Frequency is how fast the source vibrates (how many waves per second, measured in Hertz/Hz). Humans can usually hear sounds between 20 Hz (low rumble) and 20,000 Hz (very high pitch).",
+                diagramPlaceholder: "[Diagram: A simple wave showing one complete wavelength (λ) labelled. Arrows indicating frequency (number of waves passing a point per second) and speed (v).]"
+            },
+            {
+                title: "Speed of Sound",
+                content: `
+                    <p>The <strong>speed of sound</strong> in air is about <strong>340 m/s</strong> (or 330 m/s under normal conditions). It is about <strong>1400 m/s</strong> in fresh water (or 1500 m/s in salty water). Sound travels fastest in solids, then liquids, then gases.</p>
+                `,
+                explanation: "Sound travels at different speeds in different materials. It's about 340 meters per second in air (that's fast, but light is much faster!). It's much faster in water (around 1400 m/s) and even faster in solids. Generally: Solids > Liquids > Gases.",
+                diagramPlaceholder: "[Diagram: A simple bar chart or visual comparison showing the relative speeds of sound in a solid (e.g., steel), a liquid (e.g., water), and a gas (e.g., air).]"
+            },
+            {
+                title: "Reflection of Sound: Echoes",
+                content: `
+                    <p>When sound waves encounter an obstacle, they are <strong>reflected</strong>. A reflected sound is called an <strong>echo</strong>.</p>
+                    <p>Sound reflection obeys the <strong>laws of reflection</strong>: the angle of incidence is equal to the angle of reflection, and the incident wave, reflected wave, and the normal to the surface all lie in the same plane. Maximum loudness of reflected sound is heard when these conditions are met.</p>
+                `,
+                explanation: "When sound hits a surface, it can bounce back – that's reflection. A bounced sound is called an echo! Sound reflects just like light: the angle it hits at (angle of incidence) is the same as the angle it bounces off at (angle of reflection).",
+                diagramPlaceholder: "[Diagram: Sound waves from a source hitting a flat wall (obstacle). Show an incident ray, a reflected ray (echo), the normal at the point of incidence, and label the angle of incidence (i) and angle of reflection (r) as equal.]"
+            },
+            {
+                title: "Reflection of Sound: Reverberation & Absorption",
+                content: `
+                    <p>In enclosed spaces, reflections from surfaces can lead to <strong>reverberation</strong>, where the sound appears prolonged.</p>
+                    <p>Soft materials like cotton wool and foam rubber <strong>absorb</strong> sound energy and are used to minimize echoes and reverberation.</p>
+                `,
+                explanation: "In a room, sound bounces off all the walls, the ceiling, the floor... This mixing of many echoes is called 'reverberation' – it makes sound last longer. To reduce echoes and make rooms quieter (like in cinemas or recording studios), we use soft materials that 'soak up' sound.",
+                diagramPlaceholder: "[Diagram: A room with sound waves bouncing off multiple surfaces, creating reverberation. Another part of the diagram shows a wall covered with soft, absorbent material, with fewer sound waves reflecting.]"
+            },
+            {
+                title: "Applications of Reflection: Speed of Sound & Pulse-Echo",
+                content: `
+                    <p>Reflection is used to determine the <strong>speed of sound</strong> by measuring the time for an echo to return. Taps made at a rate coinciding with echoes allow calculating speed from distance and time between taps.</p>
+                    <p>The <strong>pulse-echo technique</strong> uses the reflection of sound pulses to measure distances. A pulse of known speed is sent out, and the time for the echo to return is measured to calculate the distance. The distance is calculated as <strong>Distance = speed of sound × ½ (time taken)</strong>.</p>
+                `,
+                explanation: "We can use echoes to measure things! If you know how far away a wall is, you can clap, time the echo, and calculate the speed of sound. The 'pulse-echo' technique sends out a short sound burst (pulse) and times its echo to find the distance to an object. The formula is Distance = speed × (time for echo / 2) because the sound travels there AND back.",
+                diagramPlaceholder: "[Diagram 1: Person clapping near a wall, showing sound travelling to the wall and echoing back. Diagram 2: A device emitting a sound pulse towards an object, and the echo returning, illustrating the pulse-echo technique.]"
+            },
+            {
+                title: "Applications of Reflection: Ultrasound",
+                content: `
+                    <p><strong>Ultrasound</strong> (sound with frequency <strong>over 20 kHz</strong>) is often preferred for echo sounders and depth determination because it penetrates deeply and is easily reflected. For example, measuring the depth of the sea using echo sounders relies on sending an ultrasonic pulse and timing the return of the echo. The velocity of sound in water is around 1400 m/s. This technique is also used for under-water exploration and locating fish shoals.</p>
+                `,
+                explanation: "Ultrasound is super high-pitched sound that humans can't hear (above 20,000 Hz). It's great for 'seeing' underwater with echo sounders (like finding the sea depth or schools of fish) because it travels well in water and bounces back clearly.",
+                diagramPlaceholder: "[Diagram: A ship on water using an echo sounder. Show an ultrasonic pulse being sent down, reflecting off the seabed, and the echo returning to the ship. Indicate depth measurement.]"
+            }
+        ];
+
+        let currentTopicIndex = 0;
+
+        const topicTitleElement = document.getElementById('topic-title');
+        const topicContentElement = document.getElementById('topic-content');
+        const diagramAreaElement = document.getElementById('diagram-area');
+        const explanationAreaElement = document.getElementById('explanation-area');
+        const explanationTextElement = document.getElementById('explanation-text');
+        const prevButton = document.getElementById('prev-button');
+        const nextButton = document.getElementById('next-button');
+        const progressBar = document.getElementById('progress-bar');
+        const progressText = document.getElementById('progress-text');
+        const topicMenuButton = document.getElementById('topic-menu-button');
+        const topicMenuContent = document.getElementById('topic-menu-content');
+        const menuArrow = document.getElementById('menu-arrow');
+
+
+        function displayTopic(index) {
+            currentTopicIndex = index; 
+            const topic = topics[index]; // 'topics' is for Sound I sub-topics
+            topicTitleElement.textContent = topic.title;
+            topicContentElement.innerHTML = topic.content; 
+
+            if (topic.diagramPlaceholder) {
+                diagramAreaElement.innerHTML = `<div class="diagram-placeholder">${topic.diagramPlaceholder}</div>`;
+                diagramAreaElement.style.display = 'block';
+            } else {
+                diagramAreaElement.innerHTML = '';
+                diagramAreaElement.style.display = 'none';
+            }
+
+            if (topic.explanation) {
+                explanationTextElement.textContent = topic.explanation;
+                explanationAreaElement.style.display = 'block';
+            } else {
+                explanationTextElement.textContent = '';
+                explanationAreaElement.style.display = 'none';
+            }
+
+            updateNavigationButtons();
+            updateProgressBar();
+            // updateActiveMenuItem(); // This was for a sub-topic dropdown, inter-topic menu handles its own active state.
+            // topicMenuButton.firstChild.textContent = topic.title; // Removed: Main button text now handled by populateInterTopicMenu
+        }
+
+        function updateNavigationButtons() {
+            prevButton.disabled = currentTopicIndex === 0;
+            nextButton.disabled = currentTopicIndex === topics.length - 1;
+        }
+
+        function updateProgressBar() {
+            const progressPercentage = ((currentTopicIndex + 1) / topics.length) * 100;
+            progressBar.style.width = `${progressPercentage}%`;
+            progressText.textContent = `Topic ${currentTopicIndex + 1} of ${topics.length}`;
+        }
+        
+        function populateInterTopicMenu() {
+            const menuContent = document.getElementById('topic-menu-content');
+            const menuButton = document.getElementById('topic-menu-button');
+            menuContent.innerHTML = ''; 
+
+            interTopicNavigationLinks.forEach(topicLink => {
+                const menuItem = document.createElement('a');
+                menuItem.href = topicLink.href;
+                menuItem.textContent = topicLink.title;
+                menuItem.classList.add('block', 'px-4', 'py-3', 'text-sm', 'text-gray-700', 'hover:bg-gray-100', 'hover:text-gray-900');
+                
+                const currentPageFilename = window.location.pathname.split('/').pop();
+                if (currentPageFilename === topicLink.href || 
+                    ( (currentPageFilename === '' || currentPageFilename === 'index.html') && topicLink.href === 'sound_1.html') ) { 
+                    menuItem.classList.add('active-topic', 'bg-blue-500', 'text-white');
+                    const spanElement = Array.from(menuButton.childNodes).find(node => node.nodeName === 'SPAN');
+                    if (spanElement) {
+                        spanElement.textContent = topicLink.title;
+                    } else if (menuButton.firstChild && menuButton.firstChild.nodeType === Node.TEXT_NODE) { // Fallback for direct text node
+                         menuButton.firstChild.textContent = topicLink.title;
+                    }
+                } else {
+                     menuItem.classList.remove('active-topic', 'bg-blue-500', 'text-white');
+                }
+                menuContent.appendChild(menuItem);
+            });
+        }
+
+        // The original populateTopicMenu and updateActiveMenuItem for sub-topics are removed 
+        // as the main dropdown is now handled by populateInterTopicMenu.
+        // If a separate dropdown for sub-topics was desired, these would be re-added and modified.
+
+        topicMenuButton.addEventListener('click', () => {
+            topicMenuContent.classList.toggle('show-dropdown');
+            menuArrow.classList.toggle('up');
+            menuArrow.classList.toggle('down');
+        });
+
+        window.addEventListener('click', function(event) {
+            if (!topicMenuButton.contains(event.target) && !topicMenuContent.contains(event.target)) {
+                if (topicMenuContent.classList.contains('show-dropdown')) {
+                    topicMenuContent.classList.remove('show-dropdown');
+                    menuArrow.classList.remove('up');
+                    menuArrow.classList.add('down');
+                }
+            }
+        });
+
+        prevButton.addEventListener('click', () => {
+            if (currentTopicIndex > 0) {
+                displayTopic(currentTopicIndex - 1);
+                 window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        });
+
+        nextButton.addEventListener('click', () => {
+            if (currentTopicIndex < topics.length - 1) {
+                displayTopic(currentTopicIndex + 1);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        });
+
+        // Initial setup
+        populateInterTopicMenu(); 
+        displayTopic(currentTopicIndex); 
+    </script>
+
+</body>
+</html>

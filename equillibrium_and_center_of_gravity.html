@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guided Learning: Equilibrium & Centre of Gravity</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6; /* Tailwind gray-100 */
+        }
+        .content-card {
+            background-color: white;
+            border-radius: 0.75rem; 
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .nav-button {
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        .nav-button:hover {
+            transform: translateY(-2px);
+        }
+        .nav-button:disabled {
+            background-color: #d1d5db; /* Tailwind gray-300 */
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+        .diagram-placeholder {
+            border: 2px dashed #6b7280; /* Tailwind gray-500 */
+            padding: 2rem;
+            margin: 1.5rem 0;
+            text-align: center;
+            background-color: #f9fafb; /* Tailwind gray-50 */
+            border-radius: 0.5rem;
+            color: #4b5563; /* Tailwind gray-600 */
+            font-style: italic;
+        }
+        .explanation-box {
+            background-color: #eff6ff; /* Tailwind blue-50 */
+            border-left: 4px solid #3b82f6; /* Tailwind blue-500 */
+            padding: 1rem;
+            margin-top: 1.5rem;
+            border-radius: 0.375rem;
+        }
+        .explanation-box h3 {
+            color: #1e40af; /* Tailwind blue-700 */
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        .progress-bar-container {
+            width: 100%;
+            background-color: #e5e7eb; 
+            border-radius: 0.25rem;
+            overflow: hidden;
+            height: 10px;
+            margin-bottom: 0.5rem; 
+        }
+        .progress-bar {
+            height: 100%;
+            background-color: #2563eb; /* Tailwind blue-600 */
+            transition: width 0.3s ease-in-out;
+        }
+        h1.main-header { 
+             color: #111827; /* Tailwind gray-900 */
+        }
+        h2 { /* Main topic titles in content card */
+            font-size: 1.75rem; 
+            font-weight: 700; 
+            color: #1e3a8a; 
+            margin-bottom: 0.75rem;
+        }
+        h3 { /* Sub-headings within content */
+            font-size: 1.25rem; 
+            font-weight: 600; 
+            color: #1d4ed8; 
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        p, li {
+            line-height: 1.6;
+            color: #374151; /* Tailwind gray-700 */
+        }
+        ul {
+            list-style-type: disc;
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Dropdown Menu Styles */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+            width: 100%; 
+            margin-bottom: 1.5rem;
+        }
+        .dropdown-button {
+            background-color: #4b5563; /* Tailwind gray-600 */
+            color: white;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            border-radius: 0.5rem;
+            width: 100%;
+            text-align: left;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .dropdown-button:hover {
+            background-color: #374151; /* Tailwind gray-700 */
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 100%; 
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 10;
+            border-radius: 0.5rem;
+            max-height: 300px; 
+            overflow-y: auto;
+        }
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            font-size: 0.9rem;
+            border-bottom: 1px solid #eee;
+        }
+        .dropdown-content a:last-child {
+            border-bottom: none;
+        }
+        .dropdown-content a:hover {
+            background-color: #f1f1f1;
+            color: black; /* Ensure text color is black on hover */
+        }
+        .dropdown-content a.active-topic {
+            /* Tailwind classes bg-blue-500 and text-white are added by JS */
+            font-weight: 600; /* Keep font weight for active */
+        }
+        .show-dropdown {
+            display: block;
+        }
+        .arrow {
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            display: inline-block;
+            padding: 3px;
+            margin-left: 8px;
+        }
+        .down {
+            transform: rotate(45deg);
+            -webkit-transform: rotate(45deg);
+        }
+        .up {
+            transform: rotate(-135deg);
+            -webkit-transform: rotate(-135deg);
+        }
+
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center p-4 md:p-8">
+
+    <div class="w-full max-w-3xl">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-bold main-header">Guided Learning: Equilibrium & Centre of Gravity</h1>
+            <p class="text-sm text-gray-500 mt-1">Understanding balance and stability.</p>
+            <p class="text-gray-500 mt-1">KCSE Form 2 Physics - Kenyan Curriculum</p>
+        </header>
+
+        <!-- NEW LINK INSERTED HERE -->
+        <div class="mb-4 text-center">
+            <a href="physics_dashboard.html" class="text-blue-600 hover:text-blue-800 hover:underline font-semibold">&larr; Back to Physics Dashboard</a>
+        </div>
+
+        <div class="dropdown mb-6">
+            <button id="topic-menu-button" class="dropdown-button">
+                <span>Select Physics Topic</span> <!-- Default text, JS will update -->
+                <i id="menu-arrow" class="arrow down"></i>
+            </button>
+            <div id="topic-menu-content" class="dropdown-content">
+                </div>
+        </div>
+
+        <div id="progress-bar-container" class="progress-bar-container">
+            <div id="progress-bar" class="progress-bar"></div>
+        </div>
+        <p id="progress-text" class="text-center text-sm text-gray-600 mb-6">Topic 1 of N</p>
+
+
+        <div id="content-area" class="content-card p-6 md:p-8">
+            <h2 id="topic-title" class="text-2xl font-bold text-blue-700 mb-4">Topic Title</h2>
+            <div id="topic-content" class="prose max-w-none">
+                </div>
+            <div id="diagram-area">
+                </div>
+            <div id="explanation-area" class="explanation-box" style="display: none;">
+                <h3>Key Idea / Simplified</h3>
+                <p id="explanation-text"></p>
+            </div>
+        </div>
+
+        <div id="navigation" class="mt-8 flex justify-between items-center">
+            <button id="prev-button" class="nav-button bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-6 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75">
+                Previous
+            </button>
+            <button id="next-button" class="nav-button bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-6 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-75">
+                Next
+            </button>
+        </div>
+         <p class="text-center text-xs text-gray-500 mt-8">Think about how these principles apply to everyday objects and structures around you!</p>
+    </div>
+
+    <script>
+        const interTopicNavigationLinks = [
+            { title: "Magnetism", href: "magnetism.html" },
+            { title: "Measurement (II)", href: "measurment_2.html" },
+            { title: "Turning Effect of a Force", href: "kcse/turning_effect_of_a_force.html" },
+            { title: "Equilibrium and Centre of Gravity", href: "equillibrium_and_center_of_gravity.html" },
+            { title: "Reflection of Curved Surfaces", href: "reflection_at_curved_surfaces.html" },
+            { title: "Magnetic Effect of an Electric Current", href: "kcse/magnetic_effect_of_an_electric_current.html" },
+            { title: "Hooke’s Law", href: "hookes_law.html" },
+            { title: "Waves", href: "waves.html" },
+            { title: "Sound I", href: "sound_1.html" },
+            { title: "Fluid Flow", href: "fluid_flow.html" }
+        ];
+
+        const topics = [ // This is for the intra-page navigation (Equilibrium sub-topics)
+            {
+                title: "Introduction to Equilibrium",
+                content: `
+                    <p><strong>Equilibrium</strong> is the state of balance where the sum of clockwise moments is equal to the sum of anti-clockwise moments. When this state is achieved, the body is said to be stable.</p>
+                    <p>When a body is at rest, all the forces acting upon it balance one another, and the body is said to be in equilibrium.</p>
+                    <p>There are three states of equilibrium: stable, unstable, and neutral.</p>
+                `,
+                explanation: "Equilibrium simply means 'balance'. Imagine a seesaw perfectly still – that's equilibrium! It happens when all turning forces (moments) cancel out, and all pushing/pulling forces balance.",
+                diagramPlaceholder: "[Diagram: A simple seesaw perfectly balanced with equal weights at equal distances from the pivot, illustrating balanced moments.]"
+            },
+            {
+                title: "Centre of Gravity: Definition",
+                content: `
+                    <p>The <strong>centre of gravity (COG)</strong> of a body is the point where the whole weight of the body appears to act from.</p>
+                    <p>It is also defined as the point of application of the resultant force due to the earth’s attraction on the body.</p>
+                    <p>The centre of gravity of a body depends on its shape.</p>
+                    <p>For a uniform body, the centre of gravity lies at the geometrical centre.</p>
+                `,
+                explanation: "The Centre of Gravity (COG) is like the 'balance point' of an object. It's the single spot where you could imagine all the object's weight is concentrated. For simple, evenly shaped objects, it's usually right in the middle.",
+                diagramPlaceholder: "[Diagram: A simple shape (e.g., a ruler or a square) with a dot at its geometric centre labelled 'Centre of Gravity (COG)'. An arrow pointing downwards from this dot can represent weight.]"
+            },
+            {
+                title: "Determining COG: Regular Shapes",
+                content: `
+                    <p>The centre of gravity can be determined by construction for uniform regular shapes. Examples include:</p>
+                    <ul>
+                        <li><strong>Square/Rectangular plate:</strong> Construct the diagonals; the point of intersection is the COG.</li>
+                        <li><strong>Triangular plate:</strong> Construct the perpendicular bisectors of the sides (medians); their point of intersection is the COG.</li>
+                        <li><strong>Circular plate/Sphere/Ring:</strong> Construct diameters; their point of intersection (the centre) is the COG.</li>
+                        <li><strong>Cylinder:</strong> The midpoint of its axis is the COG.</li>
+                        <li><strong>Cone:</strong> (Simplified for KCSE level) Usually taken as 1/4 of the height from the base along the axis. (Note: Text says perpendicular bisectors from base, which is more complex and might refer to finding the centroid of the base if not uniform density. For a uniform cone, it's on the axis).</li>
+                        <li><strong>L-Shape:</strong> Divide into two rectangles, find COG of each, join these COGs. The COG of the L-shape lies on this line (specific bisection method mentioned can be complex to illustrate simply).</li>
+                    </ul>
+                `,
+                explanation: "For regular shapes, finding the COG is like finding its geometric center. For squares/rectangles, it's where diagonals cross. For triangles, it's where lines from corners to midpoints of opposite sides (medians) meet. For circles, it's the very center.",
+                diagramPlaceholder: "[Diagrams: Separate small sketches for a square (diagonals intersecting), a triangle (medians intersecting), and a circle (diameters intersecting), each with the COG marked.]"
+            },
+            {
+                title: "Determining COG: Irregular Shapes (Plumbline Method)",
+                content: `
+                    <p>For irregularly shaped objects (lamina/flat objects), the COG can be determined experimentally using a plumbline, thread, stand, and cardboard.</p>
+                    <ol>
+                        <li>Make three holes on the edges of the cardboard.</li>
+                        <li>Suspend the cardboard through one hole (e.g., A) using a rod/pin.</li>
+                        <li>Tie a plumbline (a weight on a string) to the rod/pin beside the cardboard.</li>
+                        <li>After the cardboard and plumbline stop swinging, draw a vertical line on the cardboard along the plumbline.</li>
+                        <li>Repeat the procedure using the other holes (B and C).</li>
+                        <li>The lines drawn will intersect at a single point. This point is the centre of gravity.</li>
+                    </ol>
+                    <p>An object placed on the tip of a pencil at its centre of gravity will balance. The suspended object will always rest with its COG vertically below the point of support.</p>
+                `,
+                explanation: "For weird shapes, we use a plumbline (a string with a weight). Hang the shape from a point, let the plumbline hang too, and draw a line along the string. Do this from a couple more points. Where the lines cross, that's the COG! The shape will balance there.",
+                diagramPlaceholder: "[Diagram: Step-by-step illustration of the plumbline experiment. 1. Irregular lamina with holes. 2. Lamina suspended from hole A with plumbline, line drawn. 3. Lamina suspended from hole B, second line drawn. 4. Point of intersection marked as COG.]"
+            },
+            {
+                title: "COG Outside the Body",
+                content: `
+                    <p><strong>Note:</strong> If a body is hollow or has legs like a tripod stand, the centre of gravity may be in space outside the material of the body.</p>
+                `,
+                explanation: "Sometimes, the COG isn't even inside the object itself! Think of a doughnut or a tripod – their balance point can be in the empty space.",
+                diagramPlaceholder: "[Diagram: A ring or a tripod stand with an 'X' marking the COG in the empty space at the centre/below the apex.]"
+            },
+            {
+                title: "States of Equilibrium: Stable",
+                content: `
+                    <p><strong>Stable equilibrium:</strong> When a body is slightly tilted by a force, the line of action of its weight (acting from COG) is displaced but still passes within the base area. When the force is withdrawn, the moment of the weight makes the body return to its original position.</p>
+                    <p>A cone resting on its base is in stable equilibrium. In this state, the body has a broad base and a low centre of gravity. When given a slight push, the centre of gravity is raised, and the body falls back to lower it as much as possible.</p>
+                `,
+                explanation: "Stable equilibrium is like a pyramid resting on its base. If you nudge it a bit, its COG rises, and it wants to fall back to its original, stable spot. It's hard to topple because its base is wide and COG is low.",
+                diagramPlaceholder: "[Diagram: A cone resting on its base. Show it slightly tilted, with the vertical line from COG still within the base, and an arrow indicating it will return to original position. Indicate COG position.]"
+            },
+            {
+                title: "States of Equilibrium: Unstable",
+                content: `
+                    <p><strong>Unstable equilibrium:</strong> When a body is balanced on a very small area of surface and has a high centre of gravity. A slight push causes the line of action of the weight to pass outside the surface on which it rests, causing the body to topple over.</p>
+                    <p>A cone balanced on its tip is in unstable equilibrium. A slight push lowers its centre of gravity, causing it to fall to make the centre of gravity as low as possible.</p>
+                `,
+                explanation: "Unstable equilibrium is like trying to balance a pencil on its tip. The tiniest push makes its COG lower, and it topples over easily. It has a small base and a high COG.",
+                diagramPlaceholder: "[Diagram: A cone balanced on its tip. Show it slightly tilted, with the vertical line from COG falling outside the small base, and an arrow indicating it will topple. Indicate COG position.]"
+            },
+            {
+                title: "States of Equilibrium: Neutral",
+                content: `
+                    <p><strong>Neutral equilibrium:</strong> If a force is applied to a body, the position of its centre of gravity is neither lowered nor raised. A cone laid on its side is in neutral equilibrium. A sphere on a level table top is also in neutral equilibrium.</p>
+                `,
+                explanation: "Neutral equilibrium is like a ball on a flat table. If you push it, it rolls to a new spot, but its COG height doesn't change, and it's just as stable (or unstable) as before.",
+                diagramPlaceholder: "[Diagram: A sphere on a flat horizontal surface. Show it being pushed slightly, moving to a new position, with the COG height remaining the same.]"
+            },
+            {
+                title: "Factors Affecting Stability",
+                content: `
+                    <p>The stability of an object depends on the position of its centre of gravity and the turning effect of its weight about an axis or point.</p>
+                    <h3>The Area of the Base:</h3>
+                    <p>If the base area is large, the line through the centre of gravity remains within the base even if the body is tilted through a large angle. A body with a broad base is more stable than one with a narrow base.</p>
+                    <h3>The Position of the Centre of Gravity:</h3>
+                    <p>A body is more stable when its centre of gravity is as low as possible. This can be achieved by making the base heavier. Bodies with high centres of gravity are less stable.</p>
+                `,
+                explanation: "Two main things make an object stable: 1. A wide base (harder for the COG line to fall outside). 2. A low Centre of Gravity (less likely to topple). Think of a racing car (wide and low) vs. a tall, thin vase.",
+                diagramPlaceholder: "[Diagram 1: Two blocks of same height, one with a wide base, one with a narrow base, both tilted. Show COG line falling inside for wide base, outside for narrow base. Diagram 2: Two blocks of same base, one with low COG, one with high COG, both tilted to show difference in stability.]"
+            },
+            {
+                title: "Applications of Stability: Vehicles",
+                content: `
+                    <h3>Buses:</h3>
+                    <p>Made more stable by using light materials for upper parts and heavy chassis/engine as low as possible. Luggage compartments are placed low to lower the centre of gravity. It is not safe for a double-decker bus to carry passengers standing on the upper deck.</p>
+                    <h3>Racing cars:</h3>
+                    <p>Have a low centre of gravity and a wide wheel base (track) which allows a large angle of tilt. This enables them to negotiate sharp corners at high speeds without toppling.</p>
+                `,
+                explanation: "Buses and racing cars are designed for stability. Buses put heavy parts (engine, luggage) low down. Racing cars are super low and wide. This stops them from tipping over easily, especially around corners.",
+                diagramPlaceholder: "[Diagram: Simplified side view of a bus showing low COG due to engine/luggage placement. Simplified front/top view of a racing car showing wide wheelbase and indicating low COG.]"
+            },
+            {
+                title: "Applications of Stability: Everyday Objects & People",
+                content: `
+                    <h3>Bunsen burner/Retort stands:</h3>
+                    <p>Has a wide heavy base. The heavy base lowers the COG, and the large base area provides a large angle of tilt before toppling.</p>
+                    <h3>Chairs, stools, tripods:</h3>
+                    <p>Provided with three or more legs. Legs are often slightly inclined outwards to improve stability.</p>
+                    <h3>Acrobats:</h3>
+                    <p>Must ensure their COG remains within the defined base area for stability during maneuvers.</p>
+                    <h3>People Alighting from a Moving Bus:</h3>
+                    <p>Spread their legs to increase the area of support, lowering the COG and increasing stability.</p>
+                    <h3>Person Carrying a Bucket:</h3>
+                    <p>Leans to the other side to adjust their COG.</p>
+                `,
+                explanation: "Stability matters everywhere! Bunsen burners have heavy, wide bases. Chairs have splayed legs. Acrobats keep their COG over their feet/hands. When you get off a bus, you spread your legs for a wider, more stable base. If you carry a heavy bucket, you lean away to keep your combined COG over your feet.",
+                diagramPlaceholder: "[Diagrams: 1. Bunsen burner with wide base. 2. Stick figure acrobat balancing, COG over support. 3. Stick figure spreading legs. 4. Stick figure carrying a bucket and leaning.]"
+            },
+            {
+                title: "Conditions for Equilibrium (Forces & Moments)",
+                content: `
+                    <p>For a body acted upon by a number of forces to be in equilibrium:</p>
+                    <ol>
+                        <li>The sum of clockwise moments about a point must be equal to the sum of anticlockwise moments about the same point. (No net turning effect)</li>
+                        <li>The sum of forces in one direction (e.g., upward) is equal to the sum of forces in the opposite direction (e.g., downward). (No net force / The algebraic sum of parallel forces is zero / Resultant force is zero).</li>
+                    </ol>
+                `,
+                explanation: "For something to be perfectly balanced (in equilibrium), two things must be true: 1. All turning forces (clockwise moments) must exactly cancel out all other turning forces (anticlockwise moments). 2. All upward forces must balance all downward forces, AND all leftward forces must balance all rightward forces (i.e., no overall net force).",
+                diagramPlaceholder: "[Diagram: A beam supported on a pivot with multiple forces acting on it, some causing clockwise moments, others anticlockwise. Show arrows for upward and downward forces as well, illustrating the conditions.]"
+            }
+        ];
+
+        let currentTopicIndex = 0;
+
+        const topicTitleElement = document.getElementById('topic-title');
+        const topicContentElement = document.getElementById('topic-content');
+        const diagramAreaElement = document.getElementById('diagram-area');
+        const explanationAreaElement = document.getElementById('explanation-area');
+        const explanationTextElement = document.getElementById('explanation-text');
+        const prevButton = document.getElementById('prev-button');
+        const nextButton = document.getElementById('next-button');
+        const progressBar = document.getElementById('progress-bar');
+        const progressText = document.getElementById('progress-text');
+        const topicMenuButton = document.getElementById('topic-menu-button');
+        const topicMenuContent = document.getElementById('topic-menu-content');
+        const menuArrow = document.getElementById('menu-arrow');
+
+
+        function displayTopic(index) {
+            currentTopicIndex = index; 
+            const topic = topics[index]; // 'topics' is for Equilibrium sub-topics
+            topicTitleElement.textContent = topic.title;
+            topicContentElement.innerHTML = topic.content; 
+
+            if (topic.diagramPlaceholder) {
+                diagramAreaElement.innerHTML = `<div class="diagram-placeholder">${topic.diagramPlaceholder}</div>`;
+                diagramAreaElement.style.display = 'block';
+            } else {
+                diagramAreaElement.innerHTML = '';
+                diagramAreaElement.style.display = 'none';
+            }
+
+            if (topic.explanation) {
+                explanationTextElement.textContent = topic.explanation;
+                explanationAreaElement.style.display = 'block';
+            } else {
+                explanationTextElement.textContent = '';
+                explanationAreaElement.style.display = 'none';
+            }
+
+            updateNavigationButtons();
+            updateProgressBar();
+            // updateActiveMenuItem(); // This was for a sub-topic dropdown, inter-topic menu handles its own active state.
+            // topicMenuButton.firstChild.textContent = topic.title; // Removed: Main button text now handled by populateInterTopicMenu
+        }
+
+        function updateNavigationButtons() {
+            prevButton.disabled = currentTopicIndex === 0;
+            nextButton.disabled = currentTopicIndex === topics.length - 1;
+        }
+
+        function updateProgressBar() {
+            const progressPercentage = ((currentTopicIndex + 1) / topics.length) * 100;
+            progressBar.style.width = `${progressPercentage}%`;
+            progressText.textContent = `Topic ${currentTopicIndex + 1} of ${topics.length}`;
+        }
+        
+        function populateInterTopicMenu() {
+            const menuContent = document.getElementById('topic-menu-content');
+            const menuButton = document.getElementById('topic-menu-button');
+            menuContent.innerHTML = ''; 
+
+            interTopicNavigationLinks.forEach(topicLink => {
+                const menuItem = document.createElement('a');
+                menuItem.href = topicLink.href;
+                menuItem.textContent = topicLink.title;
+                menuItem.classList.add('block', 'px-4', 'py-3', 'text-sm', 'text-gray-700', 'hover:bg-gray-100', 'hover:text-gray-900');
+                
+                const currentPageFilename = window.location.pathname.split('/').pop();
+                // Handle index.html or root path for magnetism.html (or other potential default pages)
+                if (currentPageFilename === topicLink.href || 
+                    ( (currentPageFilename === '' || currentPageFilename === 'index.html') && topicLink.href === 'equillibrium_and_center_of_gravity.html') ) { 
+                    menuItem.classList.add('active-topic', 'bg-blue-500', 'text-white');
+                    const spanElement = Array.from(menuButton.childNodes).find(node => node.nodeName === 'SPAN');
+                    if (spanElement) {
+                        spanElement.textContent = topicLink.title;
+                    } else if (menuButton.firstChild && menuButton.firstChild.nodeType === Node.TEXT_NODE) { // Fallback for direct text node
+                         menuButton.firstChild.textContent = topicLink.title;
+                    }
+                } else {
+                     menuItem.classList.remove('active-topic', 'bg-blue-500', 'text-white');
+                }
+                menuContent.appendChild(menuItem);
+            });
+        }
+
+        // The original populateTopicMenu and updateActiveMenuItem for sub-topics are removed 
+        // as the main dropdown is now handled by populateInterTopicMenu.
+        // If a separate dropdown for sub-topics was desired, these would be re-added and modified.
+
+        topicMenuButton.addEventListener('click', () => {
+            topicMenuContent.classList.toggle('show-dropdown');
+            menuArrow.classList.toggle('up');
+            menuArrow.classList.toggle('down');
+        });
+
+        window.addEventListener('click', function(event) {
+            if (!topicMenuButton.contains(event.target) && !topicMenuContent.contains(event.target)) {
+                if (topicMenuContent.classList.contains('show-dropdown')) {
+                    topicMenuContent.classList.remove('show-dropdown');
+                    menuArrow.classList.remove('up');
+                    menuArrow.classList.add('down');
+                }
+            }
+        });
+
+        prevButton.addEventListener('click', () => {
+            if (currentTopicIndex > 0) {
+                displayTopic(currentTopicIndex - 1);
+                 window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        });
+
+        nextButton.addEventListener('click', () => {
+            if (currentTopicIndex < topics.length - 1) {
+                displayTopic(currentTopicIndex + 1);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        });
+
+        // Initial setup
+        populateInterTopicMenu(); 
+        displayTopic(currentTopicIndex); 
+    </script>
+
+</body>
+</html>

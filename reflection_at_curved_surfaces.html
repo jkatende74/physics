@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guided Learning: Reflection at Curved Surfaces</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f4f4f5; /* Tailwind zinc-100 */
+        }
+        .content-card {
+            background-color: white;
+            border-radius: 0.75rem; 
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .nav-button {
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        .nav-button:hover {
+            transform: translateY(-2px);
+        }
+        .nav-button:disabled {
+            background-color: #d4d4d8; /* Tailwind zinc-300 */
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+        .diagram-placeholder {
+            border: 2px dashed #71717a; /* Tailwind zinc-500 */
+            padding: 2rem;
+            margin: 1.5rem 0;
+            text-align: center;
+            background-color: #fafafa; /* Tailwind zinc-50 */
+            border-radius: 0.5rem;
+            color: #52525b; /* Tailwind zinc-600 */
+            font-style: italic;
+        }
+        .explanation-box {
+            background-color: #f0f9ff; /* Tailwind sky-50 */
+            border-left: 4px solid #0ea5e9; /* Tailwind sky-500 */
+            padding: 1rem;
+            margin-top: 1.5rem;
+            border-radius: 0.375rem;
+        }
+        .explanation-box h3 {
+            color: #0c4a6e; /* Tailwind sky-800 */
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        .progress-bar-container {
+            width: 100%;
+            background-color: #e4e4e7; /* Tailwind zinc-200 */
+            border-radius: 0.25rem;
+            overflow: hidden;
+            height: 10px;
+            margin-bottom: 0.5rem; 
+        }
+        .progress-bar {
+            height: 100%;
+            background-color: #0ea5e9; /* Tailwind sky-500 */
+            transition: width 0.3s ease-in-out;
+        }
+        h1.main-header { 
+             color: #18181b; /* Tailwind zinc-900 */
+        }
+        h2 { /* Main topic titles in content card */
+            font-size: 1.75rem; 
+            font-weight: 700; 
+            color: #0369a1; /* Tailwind sky-700 */
+            margin-bottom: 0.75rem;
+        }
+        h3 { /* Sub-headings within content */
+            font-size: 1.25rem; 
+            font-weight: 600; 
+            color: #0ea5e9; /* Tailwind sky-500 */
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        p, li {
+            line-height: 1.6;
+            color: #3f3f46; /* Tailwind zinc-700 */
+        }
+        ul {
+            list-style-type: disc;
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Dropdown Menu Styles */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+            width: 100%; 
+            margin-bottom: 1.5rem;
+        }
+        .dropdown-button {
+            background-color: #52525b; /* Tailwind zinc-600 */
+            color: white;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            border-radius: 0.5rem;
+            width: 100%;
+            text-align: left;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .dropdown-button:hover {
+            background-color: #3f3f46; /* Tailwind zinc-700 */
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 100%; 
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 10;
+            border-radius: 0.5rem;
+            max-height: 300px; 
+            overflow-y: auto;
+        }
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            font-size: 0.9rem;
+            border-bottom: 1px solid #eee;
+        }
+        .dropdown-content a:last-child {
+            border-bottom: none;
+        }
+        .dropdown-content a:hover {
+            background-color: #f1f1f1;
+            color: black; /* Ensure text color is black on hover */
+        }
+        .dropdown-content a.active-topic {
+            /* Tailwind classes bg-blue-500 and text-white are added by JS */
+            font-weight: 600; /* Keep font weight for active */
+        }
+        .show-dropdown {
+            display: block;
+        }
+        .arrow {
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            display: inline-block;
+            padding: 3px;
+            margin-left: 8px;
+        }
+        .down {
+            transform: rotate(45deg);
+            -webkit-transform: rotate(45deg);
+        }
+        .up {
+            transform: rotate(-135deg);
+            -webkit-transform: rotate(-135deg);
+        }
+
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center p-4 md:p-8">
+
+    <div class="w-full max-w-3xl">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-bold main-header">Guided Learning: Reflection at Curved Surfaces</h1>
+            <p class="text-sm text-gray-500 mt-1">Understanding how light behaves with curved mirrors.</p>
+            <p class="text-gray-500 mt-1">KCSE Form 2 Physics - Kenyan Curriculum</p>
+        </header>
+
+        <!-- NEW LINK INSERTED HERE -->
+        <div class="mb-4 text-center">
+            <a href="physics_dashboard.html" class="text-blue-600 hover:text-blue-800 hover:underline font-semibold">&larr; Back to Physics Dashboard</a>
+        </div>
+
+        <div class="dropdown mb-6">
+            <button id="topic-menu-button" class="dropdown-button">
+                <span>Select Physics Topic</span> <!-- Default text, JS will update -->
+                <i id="menu-arrow" class="arrow down"></i>
+            </button>
+            <div id="topic-menu-content" class="dropdown-content">
+                </div>
+        </div>
+
+        <div id="progress-bar-container" class="progress-bar-container">
+            <div id="progress-bar" class="progress-bar"></div>
+        </div>
+        <p id="progress-text" class="text-center text-sm text-gray-600 mb-6">Topic 1 of N</p>
+
+
+        <div id="content-area" class="content-card p-6 md:p-8">
+            <h2 id="topic-title" class="text-2xl font-bold text-blue-700 mb-4">Topic Title</h2>
+            <div id="topic-content" class="prose max-w-none">
+                </div>
+            <div id="diagram-area">
+                </div>
+            <div id="explanation-area" class="explanation-box" style="display: none;">
+                <h3>Key Idea / Simplified</h3>
+                <p id="explanation-text"></p>
+            </div>
+        </div>
+
+        <div id="navigation" class="mt-8 flex justify-between items-center">
+            <button id="prev-button" class="nav-button bg-sky-500 hover:bg-sky-600 text-white font-semibold py-2 px-6 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-sky-400 focus:ring-opacity-75">
+                Previous
+            </button>
+            <button id="next-button" class="nav-button bg-teal-500 hover:bg-teal-600 text-white font-semibold py-2 px-6 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-teal-400 focus:ring-opacity-75">
+                Next
+            </button>
+        </div>
+         <p class="text-center text-xs text-gray-500 mt-8">Try drawing your own ray diagrams to understand image formation!</p>
+    </div>
+
+    <script>
+        const interTopicNavigationLinks = [
+            { title: "Magnetism", href: "magnetism.html" },
+            { title: "Measurement (II)", href: "measurment_2.html" },
+            { title: "Turning Effect of a Force", href: "kcse/turning_effect_of_a_force.html" },
+            { title: "Equilibrium and Centre of Gravity", href: "equillibrium_and_center_of_gravity.html" },
+            { title: "Reflection of Curved Surfaces", href: "reflection_at_curved_surfaces.html" },
+            { title: "Magnetic Effect of an Electric Current", href: "kcse/magnetic_effect_of_an_electric_current.html" },
+            { title: "Hooke’s Law", href: "hookes_law.html" },
+            { title: "Waves", href: "waves.html" },
+            { title: "Sound I", href: "sound_1.html" },
+            { title: "Fluid Flow", href: "fluid_flow.html" }
+        ];
+
+        const topics = [ // This is for the intra-page navigation (Reflection sub-topics)
+            {
+                title: "Introduction to Reflection at Curved Surfaces",
+                content: `
+                    <p>This chapter considers the reflection of light by curved surfaces, following up on reflection by plane mirrors from Book One.</p>
+                    <p>Curved surfaces have a wide range of scientific and practical applications, such as in shaving mirrors, driving mirrors, searchlights, and telescopes.</p>
+                `,
+                explanation: "We've learned how light bounces off flat mirrors. Now, let's see what happens when mirrors are curved! These are used in many cool things, from your car's side mirror to giant telescopes.",
+                diagramPlaceholder: null
+            },
+            {
+                title: "Types of Curved Surfaces and Mirrors",
+                content: `
+                    <p>Curved surfaces can be obtained from hollow shapes like spheres, cones, or cylinders. When these surfaces are highly polished, they act as reflectors.</p>
+                    <p>From a hollow metal sphere, if the inner surface is highly polished, the portion is a <strong>concave reflector</strong>. If the outer surface is highly polished, it is a <strong>convex reflector</strong>.</p>
+                    <p>Curved mirrors can be made by applying silvery paint on part of a hollow glass sphere, cylinder, or cone.</p>
+                    <p>A reflecting surface curving inwards is called a <strong>concave mirror</strong>. A reflecting surface bulging outwards is called a <strong>convex mirror</strong>.</p>
+                    <p>Mirrors made from spheres are called <strong>spherical mirrors</strong>.</p>
+                    <p>A <strong>parabolic mirror</strong> is a special curved mirror cut from a section of a cone. A concave parabolic reflector is obtained by applying silvery paint on the outside of the cone.</p>
+                `,
+                explanation: "Imagine a shiny ball. If the inside part is like a mirror, it's 'concave' (like a cave). If the outside part is the mirror, it's 'convex' (bulging out). Most curved mirrors we study are parts of spheres, but there are also special 'parabolic' ones.",
+                diagramPlaceholder: "[Diagram: Show a sphere. Then show a section cut from it to form a concave mirror (inner surface reflecting) and another section to form a convex mirror (outer surface reflecting). Label each clearly.]"
+            },
+            {
+                title: "Definition of Terms (Part 1)",
+                content: `
+                    <p>The <strong>aperture</strong> of the mirror is the effective diameter of the light reflecting area.</p>
+                    <p>The <strong>pole (P)</strong> is the center of the mirror.</p>
+                    <p>The <strong>centre of curvature (C)</strong> is the center of the sphere of which the mirror is a part. For a concave mirror, C is in front of the mirror, while for a convex mirror, C is behind the mirror.</p>
+                    <p>The <strong>principal axis</strong> is the line drawn through the pole of the mirror and the center of curvature. It is also called the main axis.</p>
+                `,
+                explanation: "Let's learn some mirror words! 'Aperture' is how wide the mirror is. 'Pole (P)' is the very middle point of the mirror's surface. 'Centre of Curvature (C)' is the center of the big sphere the mirror was cut from. 'Principal Axis' is a straight line going through P and C.",
+                diagramPlaceholder: "[Diagram: Show both a concave and a convex mirror. For each, label: Aperture, Pole (P), Centre of Curvature (C), and the Principal Axis. Clearly show C in front for concave and behind for convex.]"
+            },
+            {
+                title: "Definition of Terms (Part 2: Focus & Focal Length)",
+                content: `
+                    <p>The <strong>principal focus (F)</strong> is a point on the principal axis. For a concave mirror, it is the point where all rays parallel and close to the principal axis converge after reflection. For a convex mirror, it is the point from which these rays appear to diverge after reflection.</p>
+                    <p>The principal focus of a concave mirror is a <strong>real focus</strong> because reflected rays actually pass through it. The principal focus of a convex mirror is a <strong>virtual focus</strong> because reflected rays only appear to pass through it.</p>
+                    <p>The <strong>focal plane</strong> is a plane perpendicular to the principal axis that passes through the principal focus. Parallel rays not parallel to the principal axis converge at a point on the focal plane.</p>
+                    <p>The <strong>radius of curvature (r)</strong> is the radius of the sphere of which the mirror is part (distance PC).</p>
+                    <p>The <strong>focal length (f)</strong> is the distance from the pole of the mirror to its principal focus (distance PF).</p>
+                `,
+                explanation: "The 'Principal Focus (F)' is a super important spot! For concave mirrors, parallel light rays meet (converge) at F after bouncing off – it's a 'real' focus. For convex mirrors, parallel rays spread out (diverge) as if they came from F behind the mirror – it's a 'virtual' focus. 'Focal length (f)' is the distance from P to F.",
+                diagramPlaceholder: "[Diagram 1: Concave mirror showing parallel rays converging at F (real focus). Label f and r. Diagram 2: Convex mirror showing parallel rays appearing to diverge from F behind the mirror (virtual focus). Label f and r.]"
+            },
+            {
+                title: "Reflection of Light & Laws",
+                content: `
+                    <p>Concave mirrors cause parallel rays to converge at the principal focus F after reflection. Convex mirrors cause parallel rays to be reflected so that they appear to diverge from the principal focus F behind the mirror.</p>
+                    <p>If a ray converges at the principal focus (for concave) or appears to be directed towards it (for convex), it is reflected as a parallel beam.</p>
+                    <p>This behavior demonstrates the <strong>principle of reversibility of light</strong>, which states that light will follow the same path if its direction is reversed.</p>
+                    <p>Reflection by curved mirrors <strong>obeys the laws of reflection</strong>:</p>
+                    <ul>
+                        <li>The incident ray, reflected ray, and the normal lie on the same plane at the point of incidence.</li>
+                        <li>The angle of incidence (i) equals the angle of reflection (r).</li>
+                    </ul>
+                    <p>The normal drawn at the point of incidence on a curved mirror passes through the center of curvature C.</p>
+                    <p>For rays close and parallel to the principal axis, the focal length (f) is half the radius of curvature (r), i.e., <strong>f = r/2</strong>.</p>
+                `,
+                explanation: "Light behaves predictably! Concave mirrors bring parallel rays together at F. Convex mirrors spread them out as if from F. Light can also go the other way (reversibility). The basic rules of reflection (angle in = angle out) still apply, and the 'normal' line at any point on a curved mirror always points through C. A key fact: focal length (f) is half the radius of curvature (r), so f = r/2.",
+                diagramPlaceholder: "[Diagram: Show a curved mirror surface. At a point of incidence, draw an incident ray, a reflected ray, and the normal line passing through C. Label angle i and angle r.]"
+            },
+            {
+                title: "Ray Diagrams: Useful Rays",
+                content: `
+                    <p>Ray diagrams are used to explain how images are formed by curved mirrors and their characteristics. The reflecting surface is represented by a straight line with a small curve indicating the mirror type. The object is shown as a straight line perpendicular to the principal axis.</p>
+                    <p>Four special rays are useful for constructing ray diagrams:</p>
+                    <ol>
+                        <li>A ray through C (or appearing to pass through C) is <strong>reflected along the same path</strong>.</li>
+                        <li>A ray close and parallel to the principal axis is <strong>reflected through F</strong> (concave) or appears to <strong>emerge from F</strong> (convex).</li>
+                        <li>A ray through F (concave) or appearing to be directed to F (convex) is <strong>reflected parallel to the principal axis</strong>.</li>
+                        <li>A ray at an angle to the principal axis incident at the Pole (P) is reflected such that the <strong>angle of incidence equals the angle of reflection</strong> (principal axis acts as normal).</li>
+                    </ol>
+                `,
+                explanation: "To figure out where an image will form, we draw 'ray diagrams'. We use a few easy-to-draw rays: 1. A ray going through C bounces straight back. 2. A ray parallel to the main axis goes through F (or looks like it came from F). 3. A ray going through F (or aiming at F) bounces off parallel to the main axis. 4. A ray hitting the pole (P) bounces off at the same angle.",
+                diagramPlaceholder: "[Diagrams: For BOTH a concave and a convex mirror, illustrate each of the four special rays separately. Show the object as an arrow.]"
+            },
+            {
+                title: "Image Formation: Concave Mirror (Object Beyond C)",
+                content: `
+                    <p>For concave mirrors, the nature, size, and position of the image depend on the object's position from the mirror.</p>
+                    <p><strong>Object beyond C:</strong> Image is between C and F, real, inverted, and smaller than the object.</p>
+                `,
+                explanation: "With a concave mirror, if you place an object far away (beyond C), the image formed will be: between C and F, real (can be projected on a screen), upside down (inverted), and smaller.",
+                diagramPlaceholder: "[Diagram: Concave mirror with an object placed beyond C. Use at least two special rays to locate the image between C and F. Label object, image, C, F, P. Indicate image characteristics: real, inverted, diminished.]"
+            },
+            {
+                title: "Image Formation: Concave Mirror (Object at C)",
+                content: `
+                    <p><strong>Object at C:</strong> Image is at C, real, inverted, and the same size as the object.</p>
+                `,
+                explanation: "If the object is exactly at C for a concave mirror, the image also forms at C. It will be real, inverted, and the same size as the object.",
+                diagramPlaceholder: "[Diagram: Concave mirror with an object placed at C. Use rays to locate the image at C. Indicate image characteristics: real, inverted, same size.]"
+            },
+            {
+                title: "Image Formation: Concave Mirror (Object Between C & F)",
+                content: `
+                    <p><strong>Object between C and F:</strong> Image is beyond C, real, inverted, and magnified (larger than the object).</p>
+                `,
+                explanation: "Place an object between C and F in a concave mirror, and the image will be: beyond C, real, inverted, and bigger (magnified).",
+                diagramPlaceholder: "[Diagram: Concave mirror with an object placed between C and F. Use rays to locate the image beyond C. Indicate image characteristics: real, inverted, magnified.]"
+            },
+            {
+                title: "Image Formation: Concave Mirror (Object at F)",
+                content: `
+                    <p><strong>Object at F:</strong> Image is formed at infinity because reflected rays emerge parallel.</p>
+                `,
+                explanation: "If you put the object right at the focus (F) of a concave mirror, the reflected rays become parallel, so they never meet to form an image. We say the image is 'at infinity'.",
+                diagramPlaceholder: "[Diagram: Concave mirror with an object placed at F. Show reflected rays emerging parallel to each other.]"
+            },
+            {
+                title: "Image Formation: Concave Mirror (Object Between F & P)",
+                content: `
+                    <p><strong>Object between F and P:</strong> Image is behind the mirror, virtual, erect (upright), and larger than the object.</p>
+                    <p>A <strong>real image</strong> can be focused on a screen and is formed by a convergent reflected beam. Real images are represented by full lines.</p>
+                    <p>A <strong>virtual image</strong> is formed by the apparent intersection of rays and cannot be formed on a screen. Virtual images are formed by a divergent reflected beam. Virtual rays and images are represented by dotted lines.</p>
+                `,
+                explanation: "This is how a shaving or makeup mirror works! Object very close (between F and P) to a concave mirror gives an image that's: behind the mirror, virtual (can't project it, you see it *in* the mirror), upright, and magnified. Real images use solid lines in diagrams; virtual images use dotted lines.",
+                diagramPlaceholder: "[Diagram: Concave mirror with an object placed between F and P. Use rays (extending virtual rays behind the mirror with dotted lines) to locate the virtual, erect, magnified image behind the mirror.]"
+            },
+            {
+                title: "Image Formation: Convex Mirror",
+                content: `
+                    <p>For convex mirrors, images are <strong>always upright, smaller than the object, and located between P and F</strong> (behind the mirror).</p>
+                `,
+                explanation: "Convex mirrors (like security mirrors in shops or some car side mirrors) are simpler! No matter where you put the object, the image is ALWAYS: behind the mirror, virtual, upright, and smaller than the object. It gives a wide view.",
+                diagramPlaceholder: "[Diagram: Convex mirror with an object placed in front. Use rays (extending virtual rays behind the mirror) to locate the virtual, erect, diminished image between P and F behind the mirror.]"
+            },
+            {
+                title: "Linear Magnification",
+                content: `
+                    <p><strong>Linear (or transverse) magnification (m)</strong> is the numerical comparison of the image size to the object size.</p>
+                    <p>It is given by the formula: <strong>m = (image height) / (object height)</strong>.</p>
+                    <p>It can also be given by: <strong>m = v / u</strong>, where v is the image distance and u is the object distance.</p>
+                    <p>Linear magnification has <strong>no units</strong> as it is a ratio of two lengths.</p>
+                `,
+                explanation: "Magnification (m) just tells you how much bigger or smaller the image is compared to the object. If m=2, the image is twice as tall. If m=0.5, it's half as tall. You can calculate it by (image height / object height) OR (image distance / object distance). No units!",
+                diagramPlaceholder: null
+            },
+            {
+                title: "The Mirror Formula",
+                content: `
+                    <p>The relationship between object distance (u), image distance (v), and focal length (f) for spherical mirrors is given by the <strong>mirror formula</strong>:</p>
+                    <p style="text-align:center; font-weight:bold; font-size:1.2em;">1/u + 1/v = 1/f</p>
+                    <p>This can also be written as <strong>f = uv / (u + v)</strong>.</p>
+                    <p>This relationship can be investigated experimentally.</p>
+                `,
+                explanation: "There's a magic math formula for mirrors! It connects the object distance (u), image distance (v), and focal length (f). It's: 1/u + 1/v = 1/f. This helps you calculate where an image will be if you know the other two things.",
+                diagramPlaceholder: null
+            },
+            {
+                title: "Sign Convention (Real-is-Positive)",
+                content: `
+                    <p>To determine the position and nature of images using formulas, a sign convention is used. This book uses the <strong>real-is-positive sign convention</strong>.</p>
+                    <h3>Rules:</h3>
+                    <ol>
+                        <li>All distances are measured from the mirror as the origin (from P).</li>
+                        <li>Distances of <strong>real</strong> objects and images are considered <strong>positive (+)</strong>.</li>
+                        <li>Distances of <strong>virtual</strong> objects and images are considered <strong>negative (-)</strong>.</li>
+                        <li>A concave mirror has a real principal focus and therefore a <strong>positive focal length (+)</strong>.</li>
+                        <li>A convex mirror has a virtual principal focus and therefore a <strong>negative focal length (-)</strong>.</li>
+                    </ol>
+                `,
+                explanation: "When using the mirror formula, we need rules for positive (+) and negative (-) signs. We use 'real-is-positive': Real things (objects, images, focal points) get a '+' sign for their distances/focal lengths. Virtual things get a '-' sign. So, concave mirrors have +f, convex mirrors have -f.",
+                diagramPlaceholder: "[Table: Summarizing the Real-is-Positive sign convention for u, v, and f for concave and convex mirrors, and for real/virtual objects/images.]"
+            },
+            {
+                title: "Applications of Concave Mirrors",
+                content: `
+                    <p>Concave mirrors are used as:</p>
+                    <ul>
+                        <li><strong>Shaving mirrors and by dentists:</strong> The object (face/tooth) is placed within the focal length (between F & P) to obtain a magnified, erect, virtual image.</li>
+                        <li><strong>Reflectors behind a projector lamp:</strong> The lamp is placed at the center of curvature (C) to reflect light traveling away from the projector, increasing illumination.</li>
+                        <li><strong>In Telescopes:</strong> For distant objects (at infinity), rays are parallel and form an image at the focal point.</li>
+                        <li><strong>Solar Concentrators:</strong> The sun's energy is focused at the focal point of a large concave mirror (like in solar cookers).</li>
+                    </ul>
+                `,
+                explanation: "Concave mirrors are useful! Dentists use them to see a magnified view of your teeth (object between F & P). They're in telescopes to collect light from stars, and in solar cookers to focus sunlight.",
+                diagramPlaceholder: "[Diagrams: Small sketches illustrating 1. Shaving mirror use (object close, magnified virtual image). 2. Telescope principle (parallel rays from distant object focusing). 3. Solar concentrator focusing sun's rays.]"
+            },
+            {
+                title: "Applications of Convex Mirrors",
+                content: `
+                    <p>Convex mirrors are often used as <strong>driving mirrors</strong> (e.g., side-view mirrors on cars, security mirrors in shops) due to the wide field of view they provide, even though they produce a diminished (smaller) image.</p>
+                `,
+                explanation: "Convex mirrors give you a wide view of what's around, even if things look smaller. That's why they're great for car side mirrors or security mirrors in shops – you can see a lot at once!",
+                diagramPlaceholder: "[Diagram: Sketch of a car's side-view convex mirror showing a wide field of view with diminished images of objects behind the car.]"
+            },
+            {
+                title: "Defects of Spherical Mirrors: Spherical Aberration",
+                content: `
+                    <p>A main defect of spherical mirrors, especially those with a wide aperture, is <strong>spherical aberration</strong>.</p>
+                    <p>Spherical aberration occurs because parallel rays far from the principal axis are brought to a focus at a different point than rays close to the axis. This results in a <strong>blurred focus</strong> instead of a single sharp point.</p>
+                    <p>The reflected rays intersect to form a surface called a <strong>caustic curve</strong>. A bright caustic curve can be seen on the surface of tea in a cup.</p>
+                `,
+                explanation: "Spherical mirrors aren't perfect. 'Spherical aberration' means that light rays hitting the edges of a wide spherical mirror don't focus at exactly the same spot as rays hitting the center. This makes the image a bit blurry. You can sometimes see a bright curved line (caustic curve) in a teacup – that's related!",
+                diagramPlaceholder: "[Diagram: A wide aperture spherical concave mirror showing parallel rays. Rays near the principal axis focus at F, while rays further from the axis focus at a point closer to the mirror. Clearly show the blurred focus region and indicate the caustic curve.]"
+            },
+            {
+                title: "Overcoming Spherical Aberration: Parabolic Mirrors",
+                content: `
+                    <p>Due to spherical aberration, spherical mirrors are not ideal for applications requiring a concentrated parallel beam from a source at F, as light from the outer parts diverges.</p>
+                    <p>A <strong>parabolic mirror overcomes spherical aberration</strong>. Its shape ensures that all parallel rays incident on it are brought to a single focus at the principal focus F.</p>
+                    <p>By the principle of reversibility, a light source placed at the principal focus of a parabolic mirror produces a <strong>parallel beam after reflection</strong>.</p>
+                    <p><strong>Parabolic concave mirrors</strong> are used in searchlights, car headlights, and hand torches to produce a high-intensity parallel beam.</p>
+                `,
+                explanation: "To fix blurry focus (spherical aberration), we use 'parabolic' mirrors. Their special curve makes ALL parallel light rays meet at one perfect focus point. If you put a light bulb at the focus of a parabolic mirror, you get a strong, straight beam of light – perfect for car headlights and searchlights!",
+                diagramPlaceholder: "[Diagram 1: A parabolic concave mirror showing all parallel incident rays converging perfectly at a single principal focus F. Diagram 2: A light source placed at F of a parabolic mirror, showing reflected rays forming a parallel beam.]"
+            }
+        ];
+
+        let currentTopicIndex = 0;
+
+        const topicTitleElement = document.getElementById('topic-title');
+        const topicContentElement = document.getElementById('topic-content');
+        const diagramAreaElement = document.getElementById('diagram-area');
+        const explanationAreaElement = document.getElementById('explanation-area');
+        const explanationTextElement = document.getElementById('explanation-text');
+        const prevButton = document.getElementById('prev-button');
+        const nextButton = document.getElementById('next-button');
+        const progressBar = document.getElementById('progress-bar');
+        const progressText = document.getElementById('progress-text');
+        const topicMenuButton = document.getElementById('topic-menu-button');
+        const topicMenuContent = document.getElementById('topic-menu-content');
+        const menuArrow = document.getElementById('menu-arrow');
+
+
+        function displayTopic(index) {
+            currentTopicIndex = index; 
+            const topic = topics[index]; // 'topics' is for Reflection sub-topics
+            topicTitleElement.textContent = topic.title;
+            topicContentElement.innerHTML = topic.content; 
+
+            if (topic.diagramPlaceholder) {
+                diagramAreaElement.innerHTML = `<div class="diagram-placeholder">${topic.diagramPlaceholder}</div>`;
+                diagramAreaElement.style.display = 'block';
+            } else {
+                diagramAreaElement.innerHTML = '';
+                diagramAreaElement.style.display = 'none';
+            }
+
+            if (topic.explanation) {
+                explanationTextElement.textContent = topic.explanation;
+                explanationAreaElement.style.display = 'block';
+            } else {
+                explanationTextElement.textContent = '';
+                explanationAreaElement.style.display = 'none';
+            }
+
+            updateNavigationButtons();
+            updateProgressBar();
+            // updateActiveMenuItem(); // This was for a sub-topic dropdown, inter-topic menu handles its own active state.
+            // topicMenuButton.firstChild.textContent = topic.title; // Removed: Main button text now handled by populateInterTopicMenu
+        }
+
+        function updateNavigationButtons() {
+            prevButton.disabled = currentTopicIndex === 0;
+            nextButton.disabled = currentTopicIndex === topics.length - 1;
+        }
+
+        function updateProgressBar() {
+            const progressPercentage = ((currentTopicIndex + 1) / topics.length) * 100;
+            progressBar.style.width = `${progressPercentage}%`;
+            progressText.textContent = `Topic ${currentTopicIndex + 1} of ${topics.length}`;
+        }
+        
+        function populateInterTopicMenu() {
+            const menuContent = document.getElementById('topic-menu-content');
+            const menuButton = document.getElementById('topic-menu-button');
+            menuContent.innerHTML = ''; 
+
+            interTopicNavigationLinks.forEach(topicLink => {
+                const menuItem = document.createElement('a');
+                menuItem.href = topicLink.href;
+                menuItem.textContent = topicLink.title;
+                menuItem.classList.add('block', 'px-4', 'py-3', 'text-sm', 'text-gray-700', 'hover:bg-gray-100', 'hover:text-gray-900');
+                
+                const currentPageFilename = window.location.pathname.split('/').pop();
+                if (currentPageFilename === topicLink.href || 
+                    ( (currentPageFilename === '' || currentPageFilename === 'index.html') && topicLink.href === 'reflection_at_curved_surfaces.html') ) { 
+                    menuItem.classList.add('active-topic', 'bg-blue-500', 'text-white');
+                    const spanElement = Array.from(menuButton.childNodes).find(node => node.nodeName === 'SPAN');
+                    if (spanElement) {
+                        spanElement.textContent = topicLink.title;
+                    } else if (menuButton.firstChild && menuButton.firstChild.nodeType === Node.TEXT_NODE) { // Fallback for direct text node
+                         menuButton.firstChild.textContent = topicLink.title;
+                    }
+                } else {
+                     menuItem.classList.remove('active-topic', 'bg-blue-500', 'text-white');
+                }
+                menuContent.appendChild(menuItem);
+            });
+        }
+
+        // The original populateTopicMenu and updateActiveMenuItem for sub-topics are removed 
+        // as the main dropdown is now handled by populateInterTopicMenu.
+        // If a separate dropdown for sub-topics was desired, these would be re-added and modified.
+
+        topicMenuButton.addEventListener('click', () => {
+            topicMenuContent.classList.toggle('show-dropdown');
+            menuArrow.classList.toggle('up');
+            menuArrow.classList.toggle('down');
+        });
+
+        window.addEventListener('click', function(event) {
+            if (!topicMenuButton.contains(event.target) && !topicMenuContent.contains(event.target)) {
+                if (topicMenuContent.classList.contains('show-dropdown')) {
+                    topicMenuContent.classList.remove('show-dropdown');
+                    menuArrow.classList.remove('up');
+                    menuArrow.classList.add('down');
+                }
+            }
+        });
+
+        prevButton.addEventListener('click', () => {
+            if (currentTopicIndex > 0) {
+                displayTopic(currentTopicIndex - 1);
+                 window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        });
+
+        nextButton.addEventListener('click', () => {
+            if (currentTopicIndex < topics.length - 1) {
+                displayTopic(currentTopicIndex + 1);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        });
+
+        // Initial setup
+        populateInterTopicMenu(); 
+        displayTopic(currentTopicIndex); 
+    </script>
+
+</body>
+</html>

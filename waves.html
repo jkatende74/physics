@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guided Learning: Waves</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f9ff; /* Tailwind sky-50, for a new feel */
+        }
+        .content-card {
+            background-color: white;
+            border-radius: 0.75rem; 
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .nav-button {
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        .nav-button:hover {
+            transform: translateY(-2px);
+        }
+        .nav-button:disabled {
+            background-color: #bae6fd; /* Tailwind sky-200 */
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+        .diagram-placeholder {
+            border: 2px dashed #38bdf8; /* Tailwind sky-400 */
+            padding: 2rem;
+            margin: 1.5rem 0;
+            text-align: center;
+            background-color: #f0f9ff; /* Tailwind sky-50 */
+            border-radius: 0.5rem;
+            color: #0ea5e9; /* Tailwind sky-500 */
+            font-style: italic;
+        }
+        .explanation-box {
+            background-color: #e0f2fe; /* Tailwind sky-100 */
+            border-left: 4px solid #0284c7; /* Tailwind sky-600 */
+            padding: 1rem;
+            margin-top: 1.5rem;
+            border-radius: 0.375rem;
+        }
+        .explanation-box h3 {
+            color: #0369a1; /* Tailwind sky-700 */
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        .progress-bar-container {
+            width: 100%;
+            background-color: #e0f2fe; /* Tailwind sky-100 */
+            border-radius: 0.25rem;
+            overflow: hidden;
+            height: 10px;
+            margin-bottom: 0.5rem; 
+        }
+        .progress-bar {
+            height: 100%;
+            background-color: #0ea5e9; /* Tailwind sky-500 */
+            transition: width 0.3s ease-in-out;
+        }
+        h1.main-header { 
+             color: #0c4a6e; /* Tailwind sky-800 */
+        }
+        h2 { /* Main topic titles in content card */
+            font-size: 1.75rem; 
+            font-weight: 700; 
+            color: #075985; /* Tailwind sky-700 */
+            margin-bottom: 0.75rem;
+        }
+        h3 { /* Sub-headings within content */
+            font-size: 1.25rem; 
+            font-weight: 600; 
+            color: #0ea5e9; /* Tailwind sky-500 */
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        p, li {
+            line-height: 1.6;
+            color: #082f49; /* Tailwind sky-900 */
+        }
+        ul {
+            list-style-type: disc;
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Dropdown Menu Styles */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+            width: 100%; 
+            margin-bottom: 1.5rem;
+        }
+        .dropdown-button {
+            background-color: #0369a1; /* Tailwind sky-700 */
+            color: white;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            border-radius: 0.5rem;
+            width: 100%;
+            text-align: left;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .dropdown-button:hover {
+            background-color: #075985; /* Tailwind sky-800 */
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 100%; 
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 10;
+            border-radius: 0.5rem;
+            max-height: 300px; 
+            overflow-y: auto;
+        }
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            font-size: 0.9rem;
+            border-bottom: 1px solid #eee;
+        }
+        .dropdown-content a:last-child {
+            border-bottom: none;
+        }
+        .dropdown-content a:hover {
+            background-color: #f1f1f1;
+            color: black; /* Ensure text color is black on hover */
+        }
+        .dropdown-content a.active-topic {
+            /* Tailwind classes bg-blue-500 and text-white are added by JS */
+            font-weight: 600; /* Keep font weight for active */
+        }
+        .show-dropdown {
+            display: block;
+        }
+        .arrow {
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            display: inline-block;
+            padding: 3px;
+            margin-left: 8px;
+        }
+        .down {
+            transform: rotate(45deg);
+            -webkit-transform: rotate(45deg);
+        }
+        .up {
+            transform: rotate(-135deg);
+            -webkit-transform: rotate(-135deg);
+        }
+
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center p-4 md:p-8">
+
+    <div class="w-full max-w-3xl">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-bold main-header">Guided Learning: Waves</h1>
+            <p class="text-sm text-gray-500 mt-1">Exploring the nature and properties of waves.</p>
+            <p class="text-gray-500 mt-1">KCSE Form 2 Physics - Kenyan Curriculum</p>
+        </header>
+
+        <!-- NEW LINK INSERTED HERE -->
+        <div class="mb-4 text-center">
+            <a href="physics_dashboard.html" class="text-blue-600 hover:text-blue-800 hover:underline font-semibold">&larr; Back to Physics Dashboard</a>
+        </div>
+
+        <div class="dropdown mb-6">
+            <button id="topic-menu-button" class="dropdown-button">
+                <span>Select Physics Topic</span> <!-- Default text, JS will update -->
+                <i id="menu-arrow" class="arrow down"></i>
+            </button>
+            <div id="topic-menu-content" class="dropdown-content">
+                </div>
+        </div>
+
+        <div id="progress-bar-container" class="progress-bar-container">
+            <div id="progress-bar" class="progress-bar"></div>
+        </div>
+        <p id="progress-text" class="text-center text-sm text-gray-600 mb-6">Topic 1 of N</p>
+
+
+        <div id="content-area" class="content-card p-6 md:p-8">
+            <h2 id="topic-title" class="text-2xl font-bold text-sky-700 mb-4">Topic Title</h2>
+            <div id="topic-content" class="prose max-w-none">
+                </div>
+            <div id="diagram-area">
+                </div>
+            <div id="explanation-area" class="explanation-box" style="display: none;">
+                <h3>Key Idea / Simplified</h3>
+                <p id="explanation-text"></p>
+            </div>
+        </div>
+
+        <div id="navigation" class="mt-8 flex justify-between items-center">
+            <button id="prev-button" class="nav-button bg-sky-500 hover:bg-sky-600 text-white font-semibold py-2 px-6 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-sky-400 focus:ring-opacity-75">
+                Previous
+            </button>
+            <button id="next-button" class="nav-button bg-cyan-500 hover:bg-cyan-600 text-white font-semibold py-2 px-6 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-opacity-75">
+                Next
+            </button>
+        </div>
+         <p class="text-center text-xs text-gray-500 mt-8">Consider real-world examples of wave phenomena!</p>
+    </div>
+
+    <script>
+        const interTopicNavigationLinks = [
+            { title: "Magnetism", href: "magnetism.html" },
+            { title: "Measurement (II)", href: "measurment_2.html" },
+            { title: "Turning Effect of a Force", href: "kcse/turning_effect_of_a_force.html" },
+            { title: "Equilibrium and Centre of Gravity", href: "equillibrium_and_center_of_gravity.html" },
+            { title: "Reflection of Curved Surfaces", href: "reflection_at_curved_surfaces.html" },
+            { title: "Magnetic Effect of an Electric Current", href: "kcse/magnetic_effect_of_an_electric_current.html" },
+            { title: "Hooke’s Law", href: "hookes_law.html" },
+            { title: "Waves", href: "waves.html" },
+            { title: "Sound I", href: "sound_1.html" },
+            { title: "Fluid Flow", href: "fluid_flow.html" }
+        ];
+
+        const topics = [ // Placeholder for Waves sub-topics
+            {
+                title: "Introduction to Waves",
+                content: "<p>This section will introduce the concept of waves, distinguishing between mechanical and electromagnetic waves, and discussing the basic properties of waves such as amplitude, wavelength, frequency, period, and wave speed.</p>",
+                explanation: "Waves are disturbances that transfer energy. Think of ripples in water or sound in the air. We'll learn about different types and how to describe them.",
+                diagramPlaceholder: "[Diagram: Simple transverse wave showing crest, trough, amplitude, and wavelength. And a simple longitudinal wave showing compressions and rarefactions.]"
+            },
+            {
+                title: "Types of Waves",
+                content: "<p>Detailed discussion on transverse waves (e.g., light, ripples on water) and longitudinal waves (e.g., sound). Examples and characteristics of each will be explored.</p>",
+                explanation: "Waves can wiggle side-to-side (transverse, like light) or push-and-pull (longitudinal, like sound).",
+                diagramPlaceholder: "[Diagram: Clear illustrations of a transverse wave and a longitudinal wave, highlighting particle motion relative to wave direction.]"
+            },
+            {
+                title: "Wave Properties",
+                content: `
+                    <p>Key properties and their relationships:</p>
+                    <ul>
+                        <li><strong>Amplitude (A):</strong> Maximum displacement from the rest position.</li>
+                        <li><strong>Wavelength (λ):</strong> Distance between two successive identical points on a wave (e.g., crest to crest).</li>
+                        <li><strong>Frequency (f):</strong> Number of complete waves passing a point per second (Hertz, Hz).</li>
+                        <li><strong>Period (T):</strong> Time taken for one complete wave to pass a point (T = 1/f).</li>
+                        <li><strong>Wave Speed (v):</strong> How fast the wave travels (v = fλ).</li>
+                    </ul>
+                `,
+                explanation: "We describe waves using terms like: Amplitude (how big), Wavelength (how long), Frequency (how often), Period (how much time for one), and Speed (how fast).",
+                diagramPlaceholder: "[Diagram: A transverse wave clearly labeled with Amplitude and Wavelength. Include formulas v=fλ and T=1/f.]"
+            }
+        ];
+
+        let currentTopicIndex = 0;
+
+        const topicTitleElement = document.getElementById('topic-title');
+        const topicContentElement = document.getElementById('topic-content');
+        const diagramAreaElement = document.getElementById('diagram-area');
+        const explanationAreaElement = document.getElementById('explanation-area');
+        const explanationTextElement = document.getElementById('explanation-text');
+        const prevButton = document.getElementById('prev-button');
+        const nextButton = document.getElementById('next-button');
+        const progressBar = document.getElementById('progress-bar');
+        const progressText = document.getElementById('progress-text');
+        const topicMenuButton = document.getElementById('topic-menu-button');
+        const topicMenuContent = document.getElementById('topic-menu-content');
+        const menuArrow = document.getElementById('menu-arrow');
+
+
+        function displayTopic(index) {
+            currentTopicIndex = index; 
+            const topic = topics[index]; 
+            topicTitleElement.textContent = topic.title;
+            topicContentElement.innerHTML = topic.content; 
+
+            if (topic.diagramPlaceholder) {
+                diagramAreaElement.innerHTML = `<div class="diagram-placeholder">${topic.diagramPlaceholder}</div>`;
+                diagramAreaElement.style.display = 'block';
+            } else {
+                diagramAreaElement.innerHTML = '';
+                diagramAreaElement.style.display = 'none';
+            }
+
+            if (topic.explanation) {
+                explanationTextElement.textContent = topic.explanation;
+                explanationAreaElement.style.display = 'block';
+            } else {
+                explanationTextElement.textContent = '';
+                explanationAreaElement.style.display = 'none';
+            }
+
+            updateNavigationButtons();
+            updateProgressBar();
+        }
+
+        function updateNavigationButtons() {
+            prevButton.disabled = currentTopicIndex === 0;
+            nextButton.disabled = currentTopicIndex >= topics.length - 1; // Corrected for last topic
+        }
+
+        function updateProgressBar() {
+            if (topics.length > 0) { // Ensure topics array is not empty
+                 const progressPercentage = ((currentTopicIndex + 1) / topics.length) * 100;
+                 progressBar.style.width = `${progressPercentage}%`;
+                 progressText.textContent = `Topic ${currentTopicIndex + 1} of ${topics.length}`;
+            } else { // Handle empty topics array if necessary
+                 progressBar.style.width = `0%`;
+                 progressText.textContent = `Topic 0 of 0`;
+            }
+        }
+        
+        function populateInterTopicMenu() {
+            const menuContent = document.getElementById('topic-menu-content');
+            const menuButton = document.getElementById('topic-menu-button');
+            menuContent.innerHTML = ''; 
+
+            interTopicNavigationLinks.forEach(topicLink => {
+                const menuItem = document.createElement('a');
+                menuItem.href = topicLink.href;
+                menuItem.textContent = topicLink.title;
+                menuItem.classList.add('block', 'px-4', 'py-3', 'text-sm', 'text-gray-700', 'hover:bg-gray-100', 'hover:text-gray-900');
+                
+                const currentPageFilename = window.location.pathname.split('/').pop();
+                if (currentPageFilename === topicLink.href || 
+                    ( (currentPageFilename === '' || currentPageFilename === 'index.html') && topicLink.href === 'waves.html') ) { 
+                    menuItem.classList.add('active-topic', 'bg-blue-500', 'text-white');
+                    const spanElement = Array.from(menuButton.childNodes).find(node => node.nodeName === 'SPAN');
+                    if (spanElement) {
+                        spanElement.textContent = topicLink.title;
+                    } else if (menuButton.firstChild && menuButton.firstChild.nodeType === Node.TEXT_NODE) { 
+                         menuButton.firstChild.textContent = topicLink.title;
+                    }
+                } else {
+                     menuItem.classList.remove('active-topic', 'bg-blue-500', 'text-white');
+                }
+                menuContent.appendChild(menuItem);
+            });
+        }
+
+        topicMenuButton.addEventListener('click', () => {
+            topicMenuContent.classList.toggle('show-dropdown');
+            menuArrow.classList.toggle('up');
+            menuArrow.classList.toggle('down');
+        });
+
+        window.addEventListener('click', function(event) {
+            if (!topicMenuButton.contains(event.target) && !topicMenuContent.contains(event.target)) {
+                if (topicMenuContent.classList.contains('show-dropdown')) {
+                    topicMenuContent.classList.remove('show-dropdown');
+                    menuArrow.classList.remove('up');
+                    menuArrow.classList.add('down');
+                }
+            }
+        });
+
+        prevButton.addEventListener('click', () => {
+            if (currentTopicIndex > 0) {
+                displayTopic(currentTopicIndex - 1);
+                 window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        });
+
+        nextButton.addEventListener('click', () => {
+            if (currentTopicIndex < topics.length - 1) {
+                displayTopic(currentTopicIndex + 1);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        });
+
+        // Initial setup
+        populateInterTopicMenu(); 
+        displayTopic(currentTopicIndex); 
+    </script>
+
+</body>
+</html>

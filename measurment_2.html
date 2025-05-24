@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guided Learning: Measurement II</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8; /* Light blue-gray background */
+        }
+        .content-card {
+            background-color: white;
+            border-radius: 0.75rem; /* More rounded corners */
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            transition: all 0.3s ease-in-out;
+        }
+        .nav-button {
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        .nav-button:hover {
+            transform: translateY(-2px);
+        }
+        .nav-button:disabled {
+            background-color: #cbd5e1; /* Tailwind gray-300 */
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+        .diagram-placeholder {
+            border: 2px dashed #94a3b8; /* Tailwind slate-400 */
+            padding: 2rem;
+            margin: 1.5rem 0;
+            text-align: center;
+            background-color: #f8fafc; /* Tailwind slate-50 */
+            border-radius: 0.5rem;
+            color: #475569; /* Tailwind slate-600 */
+            font-style: italic;
+        }
+        .explanation-box {
+            background-color: #e0f2fe; /* Tailwind sky-100 */
+            border-left: 4px solid #0ea5e9; /* Tailwind sky-500 */
+            padding: 1rem;
+            margin-top: 1.5rem;
+            border-radius: 0.375rem;
+        }
+        .explanation-box h3 {
+            color: #0369a1; /* Tailwind sky-700 */
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        .progress-bar-container {
+            width: 100%;
+            background-color: #e5e7eb; /* Tailwind gray-200 */
+            border-radius: 0.25rem;
+            overflow: hidden;
+            height: 10px;
+            margin-bottom: 0.5rem; /* Adjusted margin */
+        }
+        .progress-bar {
+            height: 100%;
+            background-color: #3b82f6; /* Tailwind blue-500 */
+            transition: width 0.3s ease-in-out;
+        }
+        h1.main-header { /* Specific styling for the main page title */
+             color: #1e293b; /* Tailwind slate-800 */
+        }
+        h2 { /* Main topic titles in content card */
+            font-size: 1.75rem; /* text-2xl */
+            font-weight: 700; /* bold */
+            color: #1e3a8a; /* Tailwind blue-800 */
+            margin-bottom: 0.75rem;
+        }
+        h3 { /* Sub-headings within content */
+            font-size: 1.25rem; /* text-xl */
+            font-weight: 600; /* semibold */
+            color: #1d4ed8; /* Tailwind blue-700 */
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        p, li {
+            line-height: 1.6;
+            color: #334155; /* Tailwind slate-700 */
+        }
+        ul {
+            list-style-type: disc;
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Dropdown Menu Styles */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+            width: 100%; /* Make dropdown full width of its container */
+            margin-bottom: 1.5rem;
+        }
+        .dropdown-button {
+            background-color: #374151; /* Tailwind gray-700, slightly darker */
+            color: white;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            border-radius: 0.5rem;
+            width: 100%;
+            text-align: left;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .dropdown-button:hover {
+            background-color: #1f2937; /* Tailwind gray-800, darker hover */
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 100%; /* Full width */
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 10;
+            border-radius: 0.5rem;
+            max-height: 300px; /* Limit height and make scrollable */
+            overflow-y: auto;
+        }
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            font-size: 0.9rem;
+            border-bottom: 1px solid #eee;
+        }
+        .dropdown-content a:last-child {
+            border-bottom: none;
+        }
+        .dropdown-content a:hover {
+            background-color: #f1f1f1;
+            color: black; /* Ensure text color is black on hover */
+        }
+        .dropdown-content a.active-topic {
+            /* Tailwind classes bg-blue-500 and text-white are added by JS */
+            font-weight: 600; /* Keep font weight for active */
+        }
+        .show-dropdown {
+            display: block;
+        }
+        /* Arrow for dropdown button */
+        .arrow {
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            display: inline-block;
+            padding: 3px;
+            margin-left: 8px;
+        }
+        .down {
+            transform: rotate(45deg);
+            -webkit-transform: rotate(45deg);
+        }
+        .up {
+            transform: rotate(-135deg);
+            -webkit-transform: rotate(-135deg);
+        }
+
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center p-4 md:p-8">
+
+    <div class="w-full max-w-3xl">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-bold main-header">Guided Learning: Measurement II</h1>
+            <p class="text-sm text-gray-500 mt-1">Mastering precision instruments and concepts.</p>
+            <p class="text-gray-500 mt-1">KCSE Form 2 Physics - Kenyan Curriculum</p>
+        </header>
+
+        <!-- NEW LINK INSERTED HERE -->
+        <div class="mb-4 text-center">
+            <a href="physics_dashboard.html" class="text-blue-600 hover:text-blue-800 hover:underline font-semibold">&larr; Back to Physics Dashboard</a>
+        </div>
+
+        <div class="dropdown mb-6">
+            <button id="topic-menu-button" class="dropdown-button">
+                <span>Select Physics Topic</span>
+                <i id="menu-arrow" class="arrow down"></i>
+            </button>
+            <div id="topic-menu-content" class="dropdown-content">
+                </div>
+        </div>
+
+        <div id="progress-bar-container" class="progress-bar-container">
+            <div id="progress-bar" class="progress-bar"></div>
+        </div>
+        <p id="progress-text" class="text-center text-sm text-gray-600 mb-6">Topic 1 of N</p>
+
+
+        <div id="content-area" class="content-card p-6 md:p-8">
+            <h2 id="topic-title" class="text-2xl font-bold text-blue-700 mb-4">Topic Title</h2>
+            <div id="topic-content" class="prose max-w-none">
+                </div>
+            <div id="diagram-area">
+                </div>
+            <div id="explanation-area" class="explanation-box" style="display: none;">
+                <h3>Key Idea / Simplified</h3>
+                <p id="explanation-text"></p>
+            </div>
+        </div>
+
+        <div id="navigation" class="mt-8 flex justify-between items-center">
+            <button id="prev-button" class="nav-button bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-6 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75">
+                Previous
+            </button>
+            <button id="next-button" class="nav-button bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-6 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-75">
+                Next
+            </button>
+        </div>
+         <p class="text-center text-xs text-gray-500 mt-8">Practice using these instruments and concepts with real examples and exercises!</p>
+    </div>
+
+    <script>
+        const interTopicNavigationLinks = [
+            { title: "Magnetism", href: "magnetism.html" },
+            { title: "Measurement (II)", href: "measurment_2.html" },
+            { title: "Turning Effect of a Force", href: "kcse/turning_effect_of_a_force.html" },
+            { title: "Equilibrium and Centre of Gravity", href: "equillibrium_and_center_of_gravity.html" },
+            { title: "Reflection of Curved Surfaces", href: "reflection_at_curved_surfaces.html" },
+            { title: "Magnetic Effect of an Electric Current", href: "kcse/magnetic_effect_of_an_electric_current.html" },
+            { title: "Hooke’s Law", href: "hookes_law.html" },
+            { title: "Waves", href: "waves.html" },
+            { title: "Sound I", href: "sound_1.html" },
+            { title: "Fluid Flow", href: "fluid_flow.html" }
+        ];
+
+        const topics = [ // This is for the intra-page navigation (Measurement II sub-topics)
+            {
+                title: "Introduction to Measurement II",
+                content: `
+                    <p>This chapter builds upon the basic measurement concepts from "Measurement I" where the meter rule was the primary instrument. It focuses on measuring lengths, particularly small diameters that cannot be obtained directly using an ordinary ruler. This involves using specialized instruments like callipers and the micrometer screw gauge.</p>
+                `,
+                explanation: "Welcome to Measurement II! We're moving beyond basic rulers to learn about special tools that help us measure very small things super accurately.",
+                diagramPlaceholder: null
+            },
+            {
+                title: "Engineer's Callipers",
+                content: `
+                    <h3>Purpose:</h3>
+                    <p>Used for measuring lengths on solid objects where a standard metre rule cannot be used directly.</p>
+                    <h3>Description:</h3>
+                    <p>Consist of a pair of hinged steel jaws.</p>
+                    <h3>Types:</h3>
+                    <ul>
+                        <li><strong>Outside callipers:</strong> Used to measure external diameters of round objects.</li>
+                        <li><strong>Inside callipers:</strong> Used to measure internal diameters of round objects. One type can be changed to the other by turning the jaws around.</li>
+                    </ul>
+                    <h3>Usage:</h3>
+                    <p>The jaws are opened just wide enough to slip past the object at the desired position (like the widest part of a sphere or diameter of a cylinder). The distance between the jaws is then transferred and read on an ordinary millimetre scale.</p>
+                `,
+                explanation: "Engineer's callipers are like adjustable 'grabbers'. You set them to the size of an object, then measure the gap between their tips with a normal ruler. 'Outside' ones measure the outside of things, 'inside' ones measure holes or gaps.",
+                diagramPlaceholder: "[Diagram: Showing outside callipers measuring the diameter of a sphere, and inside callipers measuring the internal diameter of a pipe. Illustrate transferring the measurement to a ruler.]"
+            },
+            {
+                title: "Vernier Callipers: Introduction & Components",
+                content: `
+                    <h3>Purpose:</h3>
+                    <p>Used to measure lengths, particularly small diameters like that of a test tube.</p>
+                    <h3>Components:</h3>
+                    <ul>
+                        <li>A steel frame with a fixed jaw.</li>
+                        <li>A sliding jaw.</li>
+                        <li><strong>Main scale:</strong> Carried by the steel frame, graduated in centimetres with millimetre divisions.</li>
+                        <li><strong>Vernier scale:</strong> Carried by the sliding jaw, has ten equal divisions. The vernier scale gives readings to tenths of a millimetre (0.1 mm or 0.01 cm).</li>
+                    </ul>
+                `,
+                explanation: "Vernier callipers are tools for very precise measurements (like 0.1 mm!). They have a main ruler (main scale) and a special sliding ruler (vernier scale) that helps get that extra bit of accuracy.",
+                diagramPlaceholder: "[Diagram: Clearly labelled Vernier Callipers showing: Fixed Jaw, Sliding Jaw, Main Scale (cm/mm), Vernier Scale, Outside Jaws, Inside Jaws, Depth Probe (if mentioned later, or a general one).]"
+            },
+            {
+                title: "Vernier Callipers: Least Count",
+                content: `
+                    <p><strong>Least Count:</strong> The difference in length between a main scale division and a vernier scale division. For a vernier scale with 10 divisions covering 0.9 cm:</p>
+                    <ul>
+                        <li>Main scale division = 0.1 cm.</li>
+                        <li>Vernier scale division = 0.9 cm / 10 = 0.09 cm.</li>
+                        <li>Least count = (0.1 - 0.09) cm = <strong>0.01 cm</strong>.</li>
+                    </ul>
+                `,
+                explanation: "The 'Least Count' is the smallest measurement a vernier calliper can accurately make. It's usually 0.01 cm (or 0.1 mm). It's found by seeing how much smaller one vernier division is compared to one main scale division.",
+                diagramPlaceholder: "[Diagram: Close-up view of a main scale and a vernier scale. Show 10 vernier divisions aligning with 9 main scale divisions (0.9 cm). Clearly indicate one main scale division (0.1 cm) and one vernier scale division (0.09 cm) to illustrate the 0.01 cm difference.]"
+            },
+            {
+                title: "Vernier Callipers: Jaws & Depth Probe",
+                content: `
+                    <p><strong>Jaws:</strong> Most have both inside and outside jaws; outside jaws for external diameters, inside jaws for internal diameters.</p>
+                    <p><strong>Depth Probe:</strong> Small steel metal protruding at the back for measuring depths.</p>
+                    <p><em>Digital Vernier Callipers are also available.</em></p>
+                `,
+                explanation: "Vernier callipers have different 'jaws' – outside ones for measuring the outside of objects, and inside ones for measuring holes. There's also a thin rod (depth probe) that sticks out from the back to measure how deep something is.",
+                diagramPlaceholder: "[Diagram: Illustrating the use of: 1. Outside jaws on a cylinder. 2. Inside jaws on a hollow pipe. 3. Depth probe measuring the depth of a small container.]"
+            },
+            {
+                title: "Vernier Callipers: How to Read",
+                content: `
+                    <h3>Usage:</h3>
+                    <ol>
+                        <li>Place the object between the outside jaws and close them until they just grip the object.</li>
+                        <li>Record the reading on the main scale to the left of the zero mark on the vernier scale.</li>
+                        <li>Identify the vernier scale mark that coincides exactly with a main scale mark. Multiply this vernier mark number by the least count (0.01 cm) to get the vernier scale reading.</li>
+                        <li>The total diameter is the sum of the main scale reading and the vernier scale reading. When readings are in centimetres, the vernier scale gives the second decimal place.</li>
+                    </ol>
+                `,
+                explanation: "To read a vernier calliper: 1. Find the main scale reading just before the '0' on the vernier scale. 2. Look for the vernier scale line that perfectly lines up with any line on the main scale. 3. Multiply that vernier line number by the least count (usually 0.01 cm). 4. Add this to your main scale reading.",
+                diagramPlaceholder: "[Diagram: A clear example of a vernier calliper measurement. E.g., Main scale showing 2.3 cm, and the 5th vernier line coincides. Calculation: 2.3 cm + (5 * 0.01 cm) = 2.35 cm. Highlight the main scale reading point and the coinciding vernier line.]"
+            },
+            {
+                title: "Vernier Callipers: Zero Error",
+                content: `
+                    <p><strong>Zero Error:</strong> Occurs when the zero mark of the main scale does not coincide with the zero mark of the vernier scale when the jaws are closed.</p>
+                    <ul>
+                        <li><strong>Negative zero error:</strong> Vernier zero is to the right of the main scale zero. The measured diameter is less than the actual diameter. Corrected by adding the zero error to the reading.</li>
+                        <li><strong>Positive zero error:</strong> Vernier zero is to the left of the main scale zero. The zero error is subtracted from the measured diameter to get the correct value.</li>
+                    </ul>
+                    <p><em>Exercises 2.1 and 2.2 cover usage and zero errors.</em></p>
+                `,
+                explanation: "A 'zero error' happens if the calliper doesn't read exactly zero when its jaws are fully closed. If the vernier '0' is to the RIGHT of the main scale '0', it's a NEGATIVE error (add it to your reading). If the vernier '0' is to the LEFT, it's a POSITIVE error (subtract it).",
+                diagramPlaceholder: "[Diagram 1: Vernier calliper jaws closed, vernier '0' to the right of main scale '0' (Negative Zero Error). Diagram 2: Jaws closed, vernier '0' to the left of main scale '0' (Positive Zero Error). Clearly show how to read the error value in each case.]"
+            },
+            {
+                title: "Micrometer Screw Gauge: Introduction & Components",
+                content: `
+                    <h3>Purpose:</h3>
+                    <p>Used to measure small diameters, such as the diameter of a thin wire.</p>
+                    <h3>Components:</h3>
+                    <ul>
+                        <li>A U-frame with an anvil at one end.</li>
+                        <li>A spindle that moves forward/backward when the thimble is rotated.</li>
+                        <li>A thimble carrying a circular rotating scale (thimble scale).</li>
+                        <li>A sleeve with a linear scale in millimetres.</li>
+                        <li>A ratchet at the end of the thimble to prevent excessive pressure on the object.</li>
+                    </ul>
+                `,
+                explanation: "For even TINIER measurements (like a single wire's thickness), we use a Micrometer Screw Gauge. It has a U-shape, a fixed 'anvil', a moving 'spindle', a 'sleeve' with a mm scale, and a rotating 'thimble' with a circular scale. The 'ratchet' stops you from squashing what you're measuring!",
+                diagramPlaceholder: "[Diagram: Clearly labelled Micrometer Screw Gauge showing: U-frame, Anvil, Spindle, Sleeve (linear scale), Thimble (circular scale), and Ratchet.]"
+            },
+            {
+                title: "Micrometer Screw Gauge: Pitch & Precision",
+                content: `
+                    <p><strong>Pitch:</strong> The distance moved by the spindle in one complete rotation of the thimble. A common pitch is 0.5 mm.</p>
+                    <p>With a 0.5 mm pitch and a thimble scale of 50 divisions, each division represents a spindle travel of 0.5 mm / 50 = <strong>0.01 mm</strong> (or 0.001 cm).</p>
+                    <p>Some micrometers have a pitch of 1.0 mm and 100 divisions on the thimble.</p>
+                    <p><em>Digital Micrometer Screw Gauges are also available.</em></p>
+                `,
+                explanation: "The 'pitch' of a micrometer is how far the spindle moves when you turn the thimble one full circle (often 0.5 mm). If the thimble has 50 marks, each mark means a tiny 0.01 mm movement! That's super precise.",
+                diagramPlaceholder: "[Diagram: Close-up of micrometer sleeve and thimble. Show the spindle moving by the 'pitch' distance (e.g., 0.5mm) as the thimble makes one full rotation. Also, indicate one thimble division representing 0.01mm.]"
+            },
+            {
+                title: "Micrometer Screw Gauge: How to Read",
+                content: `
+                    <h3>Usage:</h3>
+                    <ol>
+                        <li>Hold the object between the anvil and spindle (jaws).</li>
+                        <li>Close the micrometer using the ratchet until the object is held gently; the ratchet will slip when it is gripped firmly enough for an accurate reading.</li>
+                        <li>Read the linear scale on the sleeve (e.g., 10.5 mm).</li>
+                        <li>Read the circular scale on the thimble (where it aligns with the sleeve's datum line) and multiply the division number by the value per division (e.g., 24 divisions * 0.01 mm/division = 0.24 mm).</li>
+                        <li>The total diameter is the sum of the sleeve reading and the thimble reading (e.g., 10.5 mm + 0.24 mm = 10.74 mm).</li>
+                    </ol>
+                `,
+                explanation: "To read a micrometer: 1. Gently tighten it on the object using the ratchet. 2. Read the main scale on the sleeve (e.g., 7.5 mm). 3. See which line on the thimble lines up with the central line on the sleeve (e.g., 25th line). 4. Add the thimble reading (25 * 0.01 mm = 0.25 mm) to the sleeve reading. Total = 7.5 + 0.25 = 7.75 mm.",
+                diagramPlaceholder: "[Diagram: A clear example of a micrometer reading. E.g., Sleeve shows 7.5 mm, and the 25th thimble division aligns with the datum line. Calculation: 7.5 mm + (25 * 0.01 mm) = 7.75 mm. Highlight the sleeve reading and the coinciding thimble line.]"
+            },
+            {
+                title: "Micrometer Screw Gauge: Zero Error",
+                content: `
+                    <p><strong>Zero Error:</strong> Occurs when the zero mark of the thimble scale does not coincide with the centre line of the sleeve scale when the micrometer is closed. The anvil is usually used for zero adjustment. Zero error can be positive or negative.</p>
+                    <p><em>Exercise 2.3 covers reading micrometers and errors.</em></p>
+                `,
+                explanation: "Micrometers can also have 'zero error' if they don't show '0.00 mm' when fully closed. Just like with vernier callipers, you need to check for this and correct your final measurement.",
+                diagramPlaceholder: "[Diagram 1: Micrometer closed, thimble '0' aligned with datum line (No Zero Error). Diagram 2: Micrometer closed, thimble '0' PAST the datum line (Positive Zero Error). Diagram 3: Micrometer closed, thimble '0' NOT YET REACHED datum line (Negative Zero Error).]"
+            },
+            {
+                title: "Other Instruments: Travelling Microscope",
+                content: `
+                    <p>Another instrument for measuring smaller diameters is the <strong>travelling microscope</strong>.</p>
+                `,
+                explanation: "For extremely small things or precise measurements over a small distance, scientists might use a 'travelling microscope'. It's a microscope that can move along a very accurate scale.",
+                diagramPlaceholder: "[Diagram: A simplified sketch of a travelling microscope, highlighting the microscope part and the scaled track it moves on.]"
+            },
+            {
+                title: "Significant Figures",
+                content: `
+                    <p>In measurements and computations, answers may have many digits. It is advisable to express numbers in a simpler form using significant figures.</p>
+                    <p>The first digit from the left that is not zero is the first significant figure.</p>
+                    <p>The number of significant figures is determined by counting the digits from the first significant figure on the left.</p>
+                    <p><em>Examples involve rounding numbers to a specified number of significant figures.</em></p>
+                `,
+                explanation: "Significant figures tell us which digits in a measurement are actually meaningful and reliable. It's about not pretending your measurement is more precise than it really is. Start counting from the first non-zero digit from the left.",
+                diagramPlaceholder: null
+            },
+            {
+                title: "Standard Form (Scientific Notation)",
+                content: `
+                    <p>Also known as scientific notation, it is a convenient way to write very large or very small quantities.</p>
+                    <p>Numbers are expressed as a value between 1 and 10 multiplied by a power of 10 (e.g., 3.0 × 10⁸ m/s for the speed of light).</p>
+                    <p><em>Examples and exercises cover expressing numbers in standard form.</em></p>
+                `,
+                explanation: "Standard form (or scientific notation) is a super handy way to write huge numbers (like distances to stars) or tiny numbers (like the size of an atom) without all the zeros. It looks like: (a number between 1 and 10) x 10^(some power).",
+                diagramPlaceholder: null
+            },
+            {
+                title: "Prefixes Used with SI Units",
+                content: `
+                    <p>SI units use prefixes to denote multiples and sub-multiples.</p>
+                    <p>Common prefixes include: deci (10⁻¹), centi (10⁻²), milli (10⁻³), micro (10⁻⁶), nano (10⁻⁹), pico (10⁻¹²), femto (10⁻¹⁵), atto (10⁻¹⁸), deca (10¹), hecto (10²), kilo (10³), mega (10⁶), giga (10⁹), tera (10¹²), peta (10¹⁵), exa (10¹⁸).</p>
+                    <p><em>Examples show conversions using these prefixes (e.g., 1 µs = 10⁻⁶ s, 5 kg = 5 × 10³ g). Exercises include converting units.</em></p>
+                `,
+                explanation: "SI units (like meters, grams, seconds) use prefixes as shortcuts for big or small amounts. 'Kilo' means 1000 times (like kilogram). 'Milli' means 1/1000th (like millimeter). 'Micro' is even smaller – a millionth!",
+                diagramPlaceholder: "[Table: A selection of common SI prefixes, their symbols, and their power of 10 values. E.g., Kilo (k, 10³), Centi (c, 10⁻²), Milli (m, 10⁻³), Micro (µ, 10⁻⁶), Nano (n, 10⁻⁹).]"
+            },
+            {
+                title: "Decimal Places & Accuracy",
+                content: `
+                    <p>The number of digits to the right of the decimal point determines the accuracy of a number.</p>
+                    <p>More decimal places indicate a higher degree of accuracy.</p>
+                    <p>Readings from an ordinary ruler are typically accurate to the first decimal place, as the second decimal place is usually estimated.</p>
+                `,
+                explanation: "The number of decimal places in a measurement gives you a clue about its accuracy. More decimal places usually mean the measurement was made more carefully or with a more precise tool.",
+                diagramPlaceholder: null
+            },
+            {
+                title: "The Oil Drop Experiment: Purpose & Theory",
+                content: `
+                    <h3>Purpose:</h3> <p>To estimate the size of a molecule in a laboratory.</p>
+                    <h3>Theory:</h3> <p>Based on the principle that an oil drop placed on a clean water surface spreads out to form a very thin, almost circular layer. This happens because the oil breaks the water's surface tension, causing water particles to pull away. This thin layer is approximated to be <strong>one molecule thick</strong>.</p>
+                `,
+                explanation: "The Oil Drop Experiment is a classic physics experiment to guess the size of a single oil molecule! The idea is that if you put a tiny oil drop on water, it spreads out into a super-thin film that's just one molecule thick.",
+                diagramPlaceholder: "[Diagram: Illustrating an oil drop being placed on a water surface (side view) and then spreading out to form a very thin circular film (top view and side view of the film).]"
+            },
+            {
+                title: "The Oil Drop Experiment: Estimating Volume & Obtaining Monolayer",
+                content: `
+                    <h3>Estimating Oil Drop Volume:</h3>
+                    <ul>
+                        <li>Method 1 (Burette): Count drops from a known volume. Average volume = Total volume / Number of drops.</li>
+                        <li>Method 2 (Magnifying glass): Measure diameter of a drop, assume spherical (V = ⁴⁄₃πr³).</li>
+                    </ul>
+                    <h3>Obtaining a Mono Layer Patch:</h3>
+                    <ol>
+                        <li>Fill a tray with water until it overflows. Clean surface with a wax-coated rod.</li>
+                        <li>Place waxed beams to estimate spread's diameter.</li>
+                        <li>Lightly sprinkle lycopodium powder on the surface.</li>
+                        <li>Touch water with the oil drop; it spreads, pushing powder away to form a clear circular patch.</li>
+                        <li>Adjust rods, measure patch diameter. Repeat for average.</li>
+                    </ol>
+                `,
+                explanation: "First, you need to know the volume of one tiny oil drop (e.g., by counting how many drops are in 1 cm³). Then, you carefully place this drop on water that has a light powder (like lycopodium) on it. The oil pushes the powder away, making a clear circle.",
+                diagramPlaceholder: "[Diagram: Setup for the oil drop experiment. Show a tray of water, lycopodium powder sprinkled on top, and an oil drop spreading to form a clear circular patch. Indicate measurement of the patch diameter.]"
+            },
+            {
+                title: "The Oil Drop Experiment: Data Analysis & Assumptions",
+                content: `
+                    <h3>Data Analysis:</h3>
+                    <ul>
+                        <li>Volume of the oil drop (V) = Area of the patch (A) × thickness of the patch (h).</li>
+                        <li>The thickness (h) is an estimate of the size of an oil molecule.</li>
+                        <li>Area of the patch (A) is calculated using the average diameter (A = πr², where r = diameter/2).</li>
+                        <li>Therefore, thickness h = V/A.</li>
+                    </ul>
+                    <h3>Assumptions:</h3>
+                    <ul>
+                        <li>The oil drop is spherical (when measuring its initial volume).</li>
+                        <li>The patch formed is almost circular.</li>
+                        <li>The thin layer is approximated to be one molecule thick.</li>
+                    </ul>
+                `,
+                explanation: "Once you have the volume of the oil drop (V) and the area of the circular patch it makes (A), you can calculate the thickness (h) of the oil film using h = V/A. This thickness is your estimate for the size of one oil molecule! We assume the drop was a perfect sphere and the patch a perfect circle, and most importantly, that the film is just one molecule thick.",
+                diagramPlaceholder: "[Diagram: A simple visual representation of the formula h = V/A, perhaps with a cylinder representing the oil film where V is its volume, A its base area, and h its height/thickness.]"
+            },
+            {
+                title: "Oil Drop Experiment: Applications",
+                content: `
+                    <p><strong>Applications:</strong> Can be used to determine the extent of environmental damage from oil spillage.</p>
+                `,
+                explanation: "Understanding how oil spreads in thin layers, like in this experiment, can help scientists figure out how much area an oil spill might cover in the environment.",
+                diagramPlaceholder: null
+            }
+        ];
+
+        let currentTopicIndex = 0;
+
+        const topicTitleElement = document.getElementById('topic-title');
+        const topicContentElement = document.getElementById('topic-content');
+        const diagramAreaElement = document.getElementById('diagram-area');
+        const explanationAreaElement = document.getElementById('explanation-area');
+        const explanationTextElement = document.getElementById('explanation-text');
+        const prevButton = document.getElementById('prev-button');
+        const nextButton = document.getElementById('next-button');
+        const progressBar = document.getElementById('progress-bar');
+        const progressText = document.getElementById('progress-text');
+        const topicMenuButton = document.getElementById('topic-menu-button');
+        const topicMenuContent = document.getElementById('topic-menu-content');
+        const menuArrow = document.getElementById('menu-arrow');
+
+
+        function displayTopic(index) {
+            currentTopicIndex = index; 
+            const topic = topics[index]; // 'topics' is for Measurement II sub-topics
+            topicTitleElement.textContent = topic.title;
+            topicContentElement.innerHTML = topic.content; 
+
+            if (topic.diagramPlaceholder) {
+                diagramAreaElement.innerHTML = `<div class="diagram-placeholder">${topic.diagramPlaceholder}</div>`;
+                diagramAreaElement.style.display = 'block';
+            } else {
+                diagramAreaElement.innerHTML = '';
+                diagramAreaElement.style.display = 'none';
+            }
+
+            if (topic.explanation) {
+                explanationTextElement.textContent = topic.explanation;
+                explanationAreaElement.style.display = 'block';
+            } else {
+                explanationTextElement.textContent = '';
+                explanationAreaElement.style.display = 'none';
+            }
+
+            updateNavigationButtons();
+            updateProgressBar();
+            // updateActiveMenuItem(); // This was for a sub-topic dropdown, not the inter-topic one.
+                                  // The main inter-topic menu's active state is handled by populateInterTopicMenu.
+            // topicMenuButton.firstChild.textContent = topic.title; // Removed: Button text now handled by populateInterTopicMenu
+        }
+
+        function updateNavigationButtons() {
+            prevButton.disabled = currentTopicIndex === 0;
+            nextButton.disabled = currentTopicIndex === topics.length - 1;
+        }
+
+        function updateProgressBar() {
+            const progressPercentage = ((currentTopicIndex + 1) / topics.length) * 100;
+            progressBar.style.width = `${progressPercentage}%`;
+            progressText.textContent = `Topic ${currentTopicIndex + 1} of ${topics.length}`;
+        }
+        
+        function populateInterTopicMenu() {
+            const menuContent = document.getElementById('topic-menu-content');
+            const menuButton = document.getElementById('topic-menu-button');
+            menuContent.innerHTML = ''; 
+
+            interTopicNavigationLinks.forEach(topicLink => {
+                const menuItem = document.createElement('a');
+                menuItem.href = topicLink.href;
+                menuItem.textContent = topicLink.title;
+                menuItem.classList.add('block', 'px-4', 'py-3', 'text-sm', 'text-gray-700', 'hover:bg-gray-100', 'hover:text-gray-900');
+                
+                const currentPageFilename = window.location.pathname.split('/').pop();
+                // Handle index.html or root path for magnetism.html specifically
+                // For measurment_2.html, the check is direct.
+                if (currentPageFilename === topicLink.href || 
+                    ( (currentPageFilename === '' || currentPageFilename === 'index.html') && topicLink.href === 'measurment_2.html') ) { // Keep magnetism specific for now
+                    menuItem.classList.add('active-topic', 'bg-blue-500', 'text-white');
+                    const spanElement = Array.from(menuButton.childNodes).find(node => node.nodeName === 'SPAN');
+                    if (spanElement) {
+                        spanElement.textContent = topicLink.title;
+                    } else if (menuButton.firstChild && menuButton.firstChild.nodeType === Node.TEXT_NODE) {
+                         menuButton.firstChild.textContent = topicLink.title;
+                    }
+                } else {
+                     menuItem.classList.remove('active-topic', 'bg-blue-500', 'text-white');
+                }
+                menuContent.appendChild(menuItem);
+            });
+        }
+
+        // This function was originally for populating sub-topics into the main dropdown.
+        // It is no longer needed for that purpose as populateInterTopicMenu handles the main dropdown.
+        // function populateTopicMenu() { ... } // Removed to avoid conflict
+
+        // This function was for highlighting active sub-topic in a dropdown.
+        // Not strictly needed if sub-topics are only navigated by Next/Prev, but kept for potential future use.
+        function updateActiveMenuItem() {
+            const subTopicMenuItems = document.querySelectorAll('#topic-menu-content a[data-index]'); // Assuming sub-topics would have data-index if in a dropdown
+            subTopicMenuItems.forEach(item => { // This will currently do nothing as interTopicNavigationLinks don't have data-index
+                if (parseInt(item.dataset.index) === currentTopicIndex) {
+                    item.classList.add('active-topic', 'bg-blue-500', 'text-white');
+                } else {
+                    item.classList.remove('active-topic', 'bg-blue-500', 'text-white');
+                }
+            });
+        }
+
+        topicMenuButton.addEventListener('click', () => {
+            topicMenuContent.classList.toggle('show-dropdown');
+            menuArrow.classList.toggle('up');
+            menuArrow.classList.toggle('down');
+        });
+
+        window.addEventListener('click', function(event) {
+            if (!topicMenuButton.contains(event.target) && !topicMenuContent.contains(event.target)) {
+                if (topicMenuContent.classList.contains('show-dropdown')) {
+                    topicMenuContent.classList.remove('show-dropdown');
+                    menuArrow.classList.remove('up');
+                    menuArrow.classList.add('down');
+                }
+            }
+        });
+
+        prevButton.addEventListener('click', () => {
+            if (currentTopicIndex > 0) {
+                displayTopic(currentTopicIndex - 1);
+                 window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        });
+
+        nextButton.addEventListener('click', () => {
+            if (currentTopicIndex < topics.length - 1) {
+                displayTopic(currentTopicIndex + 1);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        });
+
+        // Initial setup
+        populateInterTopicMenu(); 
+        displayTopic(currentTopicIndex); // Loads the first sub-topic for Measurement II
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guided Learning: Fluid Flow</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0fdfa; /* Tailwind teal-50 */
+        }
+        .content-card {
+            background-color: white;
+            border-radius: 0.75rem; 
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .nav-button {
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        .nav-button:hover {
+            transform: translateY(-2px);
+        }
+        .nav-button:disabled {
+            background-color: #ccfbf1; /* Tailwind teal-100 */
+            color: #52525b; /* Tailwind zinc-600 */
+            cursor: not-allowed;
+            opacity: 0.8;
+        }
+        .diagram-placeholder {
+            border: 2px dashed #2dd4bf; /* Tailwind teal-400 */
+            padding: 2rem;
+            margin: 1.5rem 0;
+            text-align: center;
+            background-color: #f0fdfa; /* Tailwind teal-50 */
+            border-radius: 0.5rem;
+            color: #0f766e; /* Tailwind teal-700 */
+            font-style: italic;
+        }
+        .explanation-box {
+            background-color: #ccfbf1; /* Tailwind teal-100 */
+            border-left: 4px solid #14b8a6; /* Tailwind teal-500 */
+            padding: 1rem;
+            margin-top: 1.5rem;
+            border-radius: 0.375rem;
+        }
+        .explanation-box h3 {
+            color: #0f766e; /* Tailwind teal-700 */
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        .progress-bar-container {
+            width: 100%;
+            background-color: #ccfbf1; /* Tailwind teal-100 */
+            border-radius: 0.25rem;
+            overflow: hidden;
+            height: 10px;
+            margin-bottom: 0.5rem; 
+        }
+        .progress-bar {
+            height: 100%;
+            background-color: #14b8a6; /* Tailwind teal-500 */
+            transition: width 0.3s ease-in-out;
+        }
+        h1.main-header { 
+             color: #0f766e; /* Tailwind teal-700 */
+        }
+        h2 { /* Main topic titles in content card */
+            font-size: 1.75rem; 
+            font-weight: 700; 
+            color: #115e59; /* Tailwind teal-800 */
+            margin-bottom: 0.75rem;
+        }
+        h3 { /* Sub-headings within content */
+            font-size: 1.25rem; 
+            font-weight: 600; 
+            color: #0d9488; /* Tailwind teal-600 */
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        p, li {
+            line-height: 1.6;
+            color: #3f3f46; /* Tailwind zinc-700 */
+        }
+        ul {
+            list-style-type: disc;
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Dropdown Menu Styles */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+            width: 100%; 
+            margin-bottom: 1.5rem;
+        }
+        .dropdown-button {
+            background-color: #0d9488; /* Tailwind teal-600 */
+            color: white;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            border-radius: 0.5rem;
+            width: 100%;
+            text-align: left;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .dropdown-button:hover {
+            background-color: #0f766e; /* Tailwind teal-700 */
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 100%; 
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 10;
+            border-radius: 0.5rem;
+            max-height: 300px; 
+            overflow-y: auto;
+        }
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            font-size: 0.9rem;
+            border-bottom: 1px solid #eee;
+        }
+        .dropdown-content a:last-child {
+            border-bottom: none;
+        }
+        .dropdown-content a:hover {
+            background-color: #f1f1f1;
+            color: black; /* Ensure text color is black on hover */
+        }
+        .dropdown-content a.active-topic {
+            /* Tailwind classes bg-blue-500 and text-white are added by JS */
+            font-weight: 600; /* Keep font weight for active */
+        }
+        .show-dropdown {
+            display: block;
+        }
+        .arrow {
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            display: inline-block;
+            padding: 3px;
+            margin-left: 8px;
+        }
+        .down {
+            transform: rotate(45deg);
+            -webkit-transform: rotate(45deg);
+        }
+        .up {
+            transform: rotate(-135deg);
+            -webkit-transform: rotate(-135deg);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center p-4 md:p-8">
+
+    <div class="w-full max-w-3xl">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-bold main-header">Guided Learning: Fluid Flow</h1>
+            <p class="text-sm text-gray-500 mt-1">Understanding how liquids and gases move.</p>
+            <p class="text-gray-500 mt-1">KCSE Form 2 Physics - Kenyan Curriculum</p>
+        </header>
+
+        <!-- NEW LINK INSERTED HERE -->
+        <div class="mb-4 text-center">
+            <a href="physics_dashboard.html" class="text-blue-600 hover:text-blue-800 hover:underline font-semibold">&larr; Back to Physics Dashboard</a>
+        </div>
+
+        <div class="dropdown mb-6">
+            <button id="topic-menu-button" class="dropdown-button">
+                <span>Select Physics Topic</span> <!-- Default text, JS will update -->
+                <i id="menu-arrow" class="arrow down"></i>
+            </button>
+            <div id="topic-menu-content" class="dropdown-content">
+                </div>
+        </div>
+
+        <div id="progress-bar-container" class="progress-bar-container">
+            <div id="progress-bar" class="progress-bar"></div>
+        </div>
+        <p id="progress-text" class="text-center text-sm text-gray-600 mb-6">Topic 1 of N</p>
+
+        <div id="content-area" class="content-card p-6 md:p-8">
+            <h2 id="topic-title" class="text-2xl font-bold text-blue-700 mb-4">Topic Title</h2>
+            <div id="topic-content" class="prose max-w-none">
+                </div>
+            <div id="diagram-area">
+                </div>
+            <div id="explanation-area" class="explanation-box" style="display: none;">
+                <h3>Key Idea / Simplified</h3>
+                <p id="explanation-text"></p>
+            </div>
+        </div>
+
+        <div id="navigation" class="mt-8 flex justify-between items-center">
+            <button id="prev-button" class="nav-button bg-teal-500 hover:bg-teal-600 text-white font-semibold py-2 px-6 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-teal-400 focus:ring-opacity-75">
+                Previous
+            </button>
+            <button id="next-button" class="nav-button bg-cyan-500 hover:bg-cyan-600 text-white font-semibold py-2 px-6 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-opacity-75">
+                Next
+            </button>
+        </div>
+         <p class="text-center text-xs text-gray-500 mt-8">Observe fluid flow in everyday life, like water from a tap or smoke rising!</p>
+    </div>
+
+    <script>
+        const interTopicNavigationLinks = [
+            { title: "Magnetism", href: "magnetism.html" },
+            { title: "Measurement (II)", href: "measurment_2.html" },
+            { title: "Turning Effect of a Force", href: "kcse/turning_effect_of_a_force.html" },
+            { title: "Equilibrium and Centre of Gravity", href: "equillibrium_and_center_of_gravity.html" },
+            { title: "Reflection of Curved Surfaces", href: "reflection_at_curved_surfaces.html" },
+            { title: "Magnetic Effect of an Electric Current", href: "kcse/magnetic_effect_of_an_electric_current.html" },
+            { title: "Hooke’s Law", href: "hookes_law.html" },
+            { title: "Waves", href: "waves.html" },
+            { title: "Sound I", href: "sound_1.html" },
+            { title: "Fluid Flow", href: "fluid_flow.html" }
+        ];
+
+        const topics = [ // This is for the intra-page navigation (Fluid Flow sub-topics)
+            {
+                title: "What is a Fluid?",
+                content: `
+                    <p>The term 'fluid' includes <strong>gases and liquids</strong>[cite: 2].</p>
+                    <p>A fluid flows because of a <strong>pressure difference</strong>[cite: 2].</p>
+                    <p>Flowing fluids exhibit internal friction between layers, known as <strong>viscosity</strong>[cite: 3].</p>
+                    <p>In the discussions presented in the sources regarding the equation of continuity and Bernoulli's principle, it is <strong>assumed that the viscosity of any fluid is negligible</strong>[cite: 4].</p>
+                `,
+                explanation: "A 'fluid' isn't just liquid; it includes gases too! Think of air or water. Fluids move from high pressure areas to low pressure areas. They also have an internal 'stickiness' called viscosity, but for many basic physics problems, we pretend this stickiness is almost zero to make things simpler.",
+                diagramPlaceholder: "[Diagram: Simple icons representing a liquid (e.g., water pouring) and a gas (e.g., wind or steam) with the label 'Fluids'.]"
+            },
+            {
+                title: "Types of Flow: Streamline (Steady) Flow",
+                content: `
+                    <p>Fluid flow can be categorized as streamline (steady), laminar, or turbulent[cite: 5].</p>
+                    <p><strong>Streamline (Steady) Flow:</strong> This occurs if all fluid particles passing through a specific point have the <strong>same velocity</strong>[cite: 6]. The path of these particles is called a <strong>line of flow</strong>[cite: 7].</p>
+                    <p>A streamline is a curve tangent to the direction of displacement of fluid particles at a point[cite: 8]. When the streamline and line of flow match, the flow is steady or streamline[cite: 9].</p>
+                    <p><strong>Streamlines do not cross each other</strong>[cite: 10]. Streamlined bodies do not affect the distribution of streamlines behind them[cite: 11].</p>
+                `,
+                explanation: "Streamline flow is smooth and predictable. Imagine tiny particles in water all following the exact same path and speed as the ones before them at any given spot. These paths are 'streamlines,' and they never cross, like neat lanes of traffic.",
+                diagramPlaceholder: "[Diagram: Smooth, parallel streamlines flowing around a well-shaped object (like a teardrop shape), showing no crossing of lines.]"
+            },
+            {
+                title: "Types of Flow: Laminar & Turbulent Flow",
+                content: `
+                    <p><strong>Laminar Flow:</strong> This term is sometimes used interchangeably with steady flow[cite: 12]. It describes a fluid moving in layers or streamlines, where particles in a given layer have the same velocity, although this velocity may differ from particles in parallel layers[cite: 13].</p>
+                    <p><strong>Turbulent Flow:</strong> This happens when the <strong>speed and direction</strong> of fluid particles at a point <strong>change over time</strong>[cite: 14]. Turbulent fluid flow involves the breaking of streamlines into ripples or eddies[cite: 15]. Non-streamlined shapes produce <strong>eddies (turbulence)</strong> behind them, which causes a <strong>drag</strong> on the moving shapes[cite: 16].</p>
+                    <p>Turbulence begins when the fluid flow exceeds a certain velocity called <strong>critical velocity</strong>[cite: 17].</p>
+                `,
+                explanation: "Laminar flow is like streamline flow – smooth layers. Turbulent flow is the opposite: messy, chaotic, and full of swirls (eddies), like water rushing rapidly around a rock. This turbulence creates 'drag,' which tries to slow things down. Flow becomes turbulent if it goes too fast (above its 'critical velocity').",
+                diagramPlaceholder: "[Diagram 1: Laminar flow showing smooth, parallel layers. Diagram 2: Turbulent flow showing chaotic eddies and swirls forming behind a blunt object.]"
+            },
+            {
+                title: "Effects of Objects & Speed on Flow",
+                content: `
+                    <p>Experiments involving moving objects through fluids illustrate how shape and speed affect flow[cite: 18].</p>
+                    <p>Using a ruler in water: Moving it with the sharp edge required less effort and caused fewer ripples (turbulent flow) than using the blunt side[cite: 19].</p>
+                    <p>Objects with <strong>sharper or pointed ends needed less force</strong> because they caused less turbulence (drag effect)[cite: 20]. Objects with <strong>streamlined shapes</strong> also cause less turbulence[cite: 21].</p>
+                    <p><strong>Streamlined shapes</strong> are designed to cut easily through fluids and minimize the formation of eddies behind them, thus reducing resistance to motion[cite: 22]. Examples include fish, birds, cars, jets, ships, submarines, and rockets[cite: 23].</p>
+                    <p>The <strong>speed of flow affects streamlines</strong>[cite: 24]. An experiment using potassium permanganate in water flowing through a glass tube showed that at low speeds, a fine coloured stream indicated steady flow[cite: 25]. When the water flow rate increased, the velocity increased rapidly, breaking the coloured stream and showing that <strong>turbulence had set in</strong>[cite: 26]. Turbulence starts when the fluid velocity exceeds the <strong>critical velocity</strong>[cite: 27].</p>
+                `,
+                explanation: "The shape of an object moving through a fluid really matters! Sharp, 'streamlined' shapes (like a fish or an airplane wing) cause less messy flow (turbulence) and less drag than blunt shapes. Also, if fluid flows too fast, even smooth flow can become turbulent.",
+                diagramPlaceholder: "[Diagram: Show a blunt object and a streamlined object moving through a fluid. Illustrate more turbulence/eddies behind the blunt object and smoother flow around the streamlined one. Optional: A separate diagram illustrating the potassium permanganate experiment: smooth coloured line at low speed, breaking up at high speed.]"
+            },
+            {
+                title: "Equation of Continuity: Assumptions & Flux",
+                content: `
+                    <p>This equation is based on assumptions of <strong>steady flow, incompressible fluid</strong> (insignificant density change with pressure), and <strong>non-viscous fluid</strong>[cite: 28].</p>
+                    <p><strong>Volume Flux (Flow Rate):</strong> This is defined as the <strong>volume of fluid passing through a given section of a tube of flow per unit time</strong>[cite: 29]. If A is the cross-sectional area and v is the velocity, Volume flux = <strong>Area × velocity = Av</strong>[cite: 30]. The SI unit is <strong>m³/s</strong>[cite: 31].</p>
+                    <p><strong>Mass Flux:</strong> This is the <strong>mass of fluid flowing through a given section per unit time</strong>[cite: 32]. Mass flux = density × volume flux = <strong>ρAv</strong>[cite: 33]. The unit is <strong>kg/s</strong>[cite: 34].</p>
+                `,
+                explanation: "The 'Equation of Continuity' is a rule for fluids that don't compress (like water) and aren't too sticky (non-viscous), and are flowing smoothly. 'Volume flux' is how much volume of fluid passes a point each second (Area x velocity). 'Mass flux' is how much mass of fluid passes each second (density x Area x velocity).",
+                diagramPlaceholder: "[Diagram: A section of a pipe with fluid flowing. Label cross-sectional area 'A' and velocity 'v'. Indicate a volume 'AvΔt' passing in time 'Δt'.]"
+            },
+            {
+                title: "Equation of Continuity: The Principle",
+                content: `
+                    <p>For an incompressible fluid (density ρ is constant) in a tube of flow, the <strong>mass entering a section equals the mass leaving another section in the same time</strong> (mass is conserved)[cite: 35].</p>
+                    <p>This leads to the <strong>Equation of Continuity: A₁v₁ = A₂v₂</strong>[cite: 36].</p>
+                    <p>This equation means that the product of the cross-sectional area (A) and the fluid velocity (v) is <strong>constant (Av = k)</strong> for steady, non-viscous flow[cite: 37].</p>
+                    <p>Consequently, the <strong>area of cross-section is inversely proportional to the velocity</strong> of the fluid[cite: 38].</p>
+                    <p>The fluid speed <strong>increases</strong> when flowing from a wide pipe section to a narrow one[cite: 39]. The fluid speed <strong>decreases</strong> when flowing from a narrow pipe section to a wide one[cite: 40].</p>
+                `,
+                explanation: "The big idea of the Equation of Continuity is that what goes in must come out! If a fluid (like water) is flowing through a pipe that gets narrower, the fluid has to speed up in the narrow part to keep the same amount flowing through. So, if Area (A) goes down, velocity (v) goes up (A₁v₁ = A₂v₂).",
+                diagramPlaceholder: "[Diagram: A pipe that narrows from a wide section (A₁, v₁) to a narrow section (A₂, v₂). Use arrows to indicate fluid flow and velocity, with longer arrows for v₂ in the narrow section.]"
+            },
+            {
+                title: "Bernoulli's Principle: Introduction & Experiment",
+                content: `
+                    <p>Unlike fluid at rest in a uniform horizontal tube where pressure is constant, the <strong>pressure in a flowing fluid varies</strong>[cite: 43]. A <strong>pressure gradient is needed</strong> for liquid to flow through a pipe, caused by friction with pipe walls[cite: 44].</p>
+                    <p>An experiment with a glass tube of varying cross-section fitted with vertical tubes (manometers) showed that the <strong>water level was lowest in the vertical tube at the narrow constriction</strong> (Y) compared to the wider sections (X and Z)[cite: 45, 46].</p>
+                    <p>Observation: The pressure at the narrow constriction is lower than at X and Z. Velocity is higher at the narrow constriction[cite: 47].</p>
+                `,
+                explanation: "When a fluid is flowing, its pressure can change. An experiment shows this: if water flows through a pipe that gets narrow in the middle, the water level in small vertical tubes (manometers) attached to the pipe is lowest at the narrow part. This means pressure is lowest where the pipe is narrowest.",
+                diagramPlaceholder: "[Diagram: A horizontal tube with a narrow constriction in the middle (Venturi tube). Three vertical manometer tubes attached: one to a wide section (X), one to the narrow constriction (Y), and one to another wide section (Z). Show water flowing through the main tube and different water levels in the manometers (highest in X and Z, lowest in Y).]"
+            },
+            {
+                title: "Bernoulli's Principle: Statement & Effect",
+                content: `
+                    <p>Conclusion from experiment: The <strong>higher the speed of the fluid, the lower the pressure</strong> it exerts[cite: 48]. This relationship is known as <strong>Bernoulli’s effect</strong>[cite: 49].</p>
+                    <p><strong>Bernoulli's Principle Statement:</strong> Provided a fluid is <strong>non-viscous, incompressible, and its flow is streamline</strong>, an <strong>increase in its velocity results in a corresponding decrease in the pressure</strong> it exerts[cite: 49].</p>
+                `,
+                explanation: "This leads to Bernoulli's Principle: for a smoothly flowing fluid (that's not sticky or compressible), where the fluid speeds up, its pressure drops! Fast flow = low pressure. Slow flow = high pressure. This is called Bernoulli's effect.",
+                diagramPlaceholder: null
+            },
+            {
+                title: "Bernoulli's Equation",
+                content: `
+                    <p>Bernoulli's principle can be stated in an equation for an incompressible, non-viscous fluid with streamline flow[cite: 50].</p>
+                    <p>The sum of the pressure (P), the kinetic energy per unit volume (½ ρv²), and the potential energy per unit volume (ρgh) is <strong>constant</strong> at any point along a streamline[cite: 51].</p>
+                    <p style="text-align:center; font-weight:bold; font-size:1.1em;">P + ½ ρv² + ρgh = constant [cite: 52]</p>
+                    <p>(where P=pressure, ρ=density, v=velocity, g=gravity, h=height) [cite: 53]</p>
+                `,
+                explanation: "Bernoulli's Principle can be written as a cool math equation: P + ½ρv² + ρgh = constant. This means that along a path of flowing fluid, the sum of its pressure energy (P), kinetic energy (due to speed, ½ρv²), and potential energy (due to height, ρgh) always stays the same.",
+                diagramPlaceholder: "[Diagram: A fluid flowing through a pipe that changes height and width. Label two points (1 and 2) with P₁, v₁, h₁ and P₂, v₂, h₂. Write the Bernoulli equation P₁ + ½ρv₁² + ρgh₁ = P₂ + ½ρv₂² + ρgh₂ below.]"
+            },
+            {
+                title: "Applications of Bernoulli's Principle: Air Effects (Part 1)",
+                content: `
+                    <p><strong>Blowing air between books with paper on top:</strong> Causes the paper to curve downwards. Increased air speed in the channel creates lower pressure, and higher atmospheric pressure outside pushes the paper down[cite: 55, 56].</p>
+                    <p><strong>Blowing horizontally over a light paper:</strong> Lifts it. High air speed above lowers pressure; higher pressure below provides lift[cite: 57, 58].</p>
+                    <p><strong>Blowing air between two suspended papers/pith balls:</strong> Causes them to move towards each other. Low pressure between them (due to high speed) is less than atmospheric pressure outside, pushing them together[cite: 59, 60].</p>
+                `,
+                explanation: "Bernoulli in action! Blow air between two hanging papers, and they'll move together because the fast air between them has lower pressure than the air outside. Blow over the top of a piece of paper, and it lifts up because the fast air on top has lower pressure than the air underneath.",
+                diagramPlaceholder: "[Diagrams: 1. Two papers hanging, air blown between them, showing them moving closer. 2. A single strip of paper held at one end, air blown over the top, showing it lifting.]"
+            },
+            {
+                title: "Applications of Bernoulli's Principle: Air Effects (Part 2)",
+                content: `
+                    <p>A <strong>spinning ball curves</strong> because the spin affects the relative air speed on opposite sides, creating a pressure difference and a resultant force[cite: 61]. Higher relative speed corresponds to lower pressure[cite: 62].</p>
+                    <p><strong>Blowing air down a narrow funnel neck</strong> holding a light ball lifts the ball to the neck[cite: 63]. High air speed in the narrow part creates low pressure, and higher atmospheric pressure below lifts the ball[cite: 64].</p>
+                `,
+                explanation: "A spinning ball curves in the air (like in tennis or football) because the spin makes air move faster on one side than the other, creating a pressure difference. You can also make a ping pong ball float in a funnel by blowing air down the funnel's neck – fast air, low pressure!",
+                diagramPlaceholder: "[Diagrams: 1. A spinning ball showing air moving faster on one side, slower on the other, with pressure difference and resulting curve. 2. A funnel with a ping pong ball at the wide end, air blown down the narrow neck, showing the ball being held up/lifted.]"
+            },
+            {
+                title: "Applications: The Aerofoil (Aircraft Wing)",
+                content: `
+                    <p>The <strong>Aerofoil:</strong> Structures like aircraft wings and helicopter blades are shaped so air flows faster over the longer upper surface than the lower surface[cite: 65]. Higher speed above means lower pressure (P₂), while lower speed below means higher pressure (P₁)[cite: 66]. The pressure difference (P₁ - P₂) creates an upward force called <strong>dynamic lift</strong>[cite: 67]. Lift force is given by <strong>F = (P₁ - P₂)A</strong>, where A is the aerofoil area[cite: 68].</p>
+                `,
+                explanation: "Airplane wings (aerofoils) are specially shaped so air flows faster over the curved top surface than the flat bottom. Faster air on top means lower pressure there. Slower air below means higher pressure. This pressure difference pushes the wing UP – that's lift!",
+                diagramPlaceholder: "[Diagram: Cross-section of an aerofoil (wing). Show streamlines flowing faster over the curved top surface and slower underneath. Indicate lower pressure (P₂) on top and higher pressure (P₁) below, with an upward arrow labelled 'Dynamic Lift'.]"
+            },
+            {
+                title: "Applications: Bunsen Burner & Spray Gun",
+                content: `
+                    <p><strong>Bunsen burner:</strong> Gas flows through a nozzle, increasing its speed and lowering pressure, which draws in air[cite: 69].</p>
+                    <p><strong>Spray gun:</strong> Air blown past a tube mouth dipped in liquid creates low pressure, and higher pressure on the liquid surface pushes it up to be sprayed[cite: 70].</p>
+                `,
+                explanation: "A Bunsen burner uses Bernoulli: gas rushes out of a small jet, creating low pressure that sucks air in to mix with the gas for burning. A perfume sprayer or paint gun works similarly: fast-moving air blown over a tube creates low pressure, which pulls liquid up the tube and sprays it out.",
+                diagramPlaceholder: "[Diagrams: 1. Simplified Bunsen burner showing gas jet, air intake holes, and mixing. 2. Simplified spray gun/atomizer showing air blown over the top of a tube dipped in liquid, causing the liquid to be drawn up and sprayed.]"
+            },
+            {
+                title: "Applications: Carburettor & Flow Meters",
+                content: `
+                    <p>The <strong>Carburettor:</strong> Engine pistons draw air into a narrowed section (venturi), increasing speed and lowering pressure. This low pressure draws petrol from a chamber into the air stream[cite: 71, 72].</p>
+                    <p><strong>Flow Meters:</strong> The <strong>Venturi meter</strong> measures volume flux by comparing pressure in wide and narrow sections of a pipe[cite: 73]. The <strong>Pitot-tube</strong> measures fluid velocity by comparing static and total pressure[cite: 74].</p>
+                `,
+                explanation: "Old car engines used carburettors: air rushing through a narrow part (venturi) created low pressure that sucked fuel into the engine. Special 'flow meters' like the Venturi meter also use pressure differences in narrow/wide sections to measure how fast fluid is flowing.",
+                diagramPlaceholder: "[Diagram 1: Simplified carburettor showing a venturi section where air speed increases, drawing fuel from a jet. Diagram 2: Basic Venturi meter showing pressure difference between wide and narrow sections.]"
+            },
+            {
+                title: "Applications: Real-World Scenarios (Hazards)",
+                content: `
+                    <p><strong>Road Accidents:</strong> When vehicles pass each other at high speed, the air between them moves fast, reducing pressure. Higher atmospheric pressure from the sides pushes them together, risking collision[cite: 75, 76].</p>
+                    <p><strong>Roofs being blown off:</strong> High wind speed over a roof lowers the pressure above it. The higher static pressure inside the building then pushes the roof upwards[cite: 77, 78]. Walls of close buildings might collapse towards each other due to the high wind speed (and thus low pressure) between them[cite: 79].</p>
+                `,
+                explanation: "Bernoulli's principle can explain some surprising things! When two trucks pass closely at high speed, the air between them moves fast, creating low pressure that can suck them together. Strong wind over a roof can lower the pressure outside so much that the higher pressure inside pushes the roof off!",
+                diagramPlaceholder: "[Diagrams: 1. Two vehicles passing closely at speed, arrows indicating fast air and lower pressure between them, higher pressure outside pushing them in. 2. A house roof in high wind, showing fast air and lower pressure above the roof, higher pressure inside pushing it up.]"
+            }
+        ];
+
+        let currentTopicIndex = 0;
+
+        const topicTitleElement = document.getElementById('topic-title');
+        const topicContentElement = document.getElementById('topic-content');
+        const diagramAreaElement = document.getElementById('diagram-area');
+        const explanationAreaElement = document.getElementById('explanation-area');
+        const explanationTextElement = document.getElementById('explanation-text');
+        const prevButton = document.getElementById('prev-button');
+        const nextButton = document.getElementById('next-button');
+        const progressBar = document.getElementById('progress-bar');
+        const progressText = document.getElementById('progress-text');
+        const topicMenuButton = document.getElementById('topic-menu-button');
+        const topicMenuContent = document.getElementById('topic-menu-content');
+        const menuArrow = document.getElementById('menu-arrow');
+
+
+        function displayTopic(index) {
+            currentTopicIndex = index; 
+            const topic = topics[index]; // 'topics' is for Fluid Flow sub-topics
+            topicTitleElement.textContent = topic.title;
+            topicContentElement.innerHTML = topic.content; 
+
+            if (topic.diagramPlaceholder) {
+                diagramAreaElement.innerHTML = `<div class="diagram-placeholder">${topic.diagramPlaceholder}</div>`;
+                diagramAreaElement.style.display = 'block';
+            } else {
+                diagramAreaElement.innerHTML = '';
+                diagramAreaElement.style.display = 'none';
+            }
+
+            if (topic.explanation) {
+                explanationTextElement.textContent = topic.explanation;
+                explanationAreaElement.style.display = 'block';
+            } else {
+                explanationTextElement.textContent = '';
+                explanationAreaElement.style.display = 'none';
+            }
+
+            updateNavigationButtons();
+            updateProgressBar();
+            // updateActiveMenuItem(); // This was for a sub-topic dropdown, inter-topic menu handles its own active state.
+            // topicMenuButton.firstChild.textContent = topic.title; // Removed: Main button text now handled by populateInterTopicMenu
+        }
+
+        function updateNavigationButtons() {
+            prevButton.disabled = currentTopicIndex === 0;
+            nextButton.disabled = currentTopicIndex === topics.length - 1;
+        }
+
+        function updateProgressBar() {
+            const progressPercentage = ((currentTopicIndex + 1) / topics.length) * 100;
+            progressBar.style.width = `${progressPercentage}%`;
+            progressText.textContent = `Topic ${currentTopicIndex + 1} of ${topics.length}`;
+        }
+        
+        function populateInterTopicMenu() {
+            const menuContent = document.getElementById('topic-menu-content');
+            const menuButton = document.getElementById('topic-menu-button');
+            menuContent.innerHTML = ''; 
+
+            interTopicNavigationLinks.forEach(topicLink => {
+                const menuItem = document.createElement('a');
+                menuItem.href = topicLink.href;
+                menuItem.textContent = topicLink.title;
+                menuItem.classList.add('block', 'px-4', 'py-3', 'text-sm', 'text-gray-700', 'hover:bg-gray-100', 'hover:text-gray-900');
+                
+                const currentPageFilename = window.location.pathname.split('/').pop();
+                if (currentPageFilename === topicLink.href || 
+                    ( (currentPageFilename === '' || currentPageFilename === 'index.html') && topicLink.href === 'fluid_flow.html') ) { 
+                    menuItem.classList.add('active-topic', 'bg-blue-500', 'text-white');
+                    const spanElement = Array.from(menuButton.childNodes).find(node => node.nodeName === 'SPAN');
+                    if (spanElement) {
+                        spanElement.textContent = topicLink.title;
+                    } else if (menuButton.firstChild && menuButton.firstChild.nodeType === Node.TEXT_NODE) { // Fallback for direct text node
+                         menuButton.firstChild.textContent = topicLink.title;
+                    }
+                } else {
+                     menuItem.classList.remove('active-topic', 'bg-blue-500', 'text-white');
+                }
+                menuContent.appendChild(menuItem);
+            });
+        }
+
+        // The original populateTopicMenu and updateActiveMenuItem for sub-topics are removed 
+        // as the main dropdown is now handled by populateInterTopicMenu.
+        // If a separate dropdown for sub-topics was desired, these would be re-added and modified.
+
+        topicMenuButton.addEventListener('click', () => {
+            topicMenuContent.classList.toggle('show-dropdown');
+            menuArrow.classList.toggle('up');
+            menuArrow.classList.toggle('down');
+        });
+
+        window.addEventListener('click', function(event) {
+            if (!topicMenuButton.contains(event.target) && !topicMenuContent.contains(event.target)) {
+                if (topicMenuContent.classList.contains('show-dropdown')) {
+                    topicMenuContent.classList.remove('show-dropdown');
+                    menuArrow.classList.remove('up');
+                    menuArrow.classList.add('down');
+                }
+            }
+        });
+
+        prevButton.addEventListener('click', () => {
+            if (currentTopicIndex > 0) {
+                displayTopic(currentTopicIndex - 1);
+                 window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        });
+
+        nextButton.addEventListener('click', () => {
+            if (currentTopicIndex < topics.length - 1) {
+                displayTopic(currentTopicIndex + 1);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        });
+
+        // Initial setup
+        populateInterTopicMenu(); 
+        displayTopic(currentTopicIndex); 
+    </script>
+
+</body>
+</html>

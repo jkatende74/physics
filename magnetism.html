@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guided Learning: Magnetism</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8; /* Light blue-gray background */
+        }
+        .content-card {
+            background-color: white;
+            border-radius: 0.75rem; /* More rounded corners */
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            transition: all 0.3s ease-in-out;
+        }
+        .nav-button {
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        .nav-button:hover {
+            transform: translateY(-2px);
+        }
+        .nav-button:disabled {
+            background-color: #cbd5e1; /* Tailwind gray-300 */
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+        .diagram-placeholder {
+            border: 2px dashed #94a3b8; /* Tailwind slate-400 */
+            padding: 2rem;
+            margin: 1.5rem 0;
+            text-align: center;
+            background-color: #f8fafc; /* Tailwind slate-50 */
+            border-radius: 0.5rem;
+            color: #475569; /* Tailwind slate-600 */
+            font-style: italic;
+        }
+        .explanation-box {
+            background-color: #e0f2fe; /* Tailwind sky-100 */
+            border-left: 4px solid #0ea5e9; /* Tailwind sky-500 */
+            padding: 1rem;
+            margin-top: 1.5rem;
+            border-radius: 0.375rem;
+        }
+        .explanation-box h3 {
+            color: #0369a1; /* Tailwind sky-700 */
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        .progress-bar-container {
+            width: 100%;
+            background-color: #e5e7eb; /* Tailwind gray-200 */
+            border-radius: 0.25rem;
+            overflow: hidden;
+            height: 10px;
+            margin-bottom: 0.5rem; /* Adjusted margin */
+        }
+        .progress-bar {
+            height: 100%;
+            background-color: #3b82f6; /* Tailwind blue-500 */
+            transition: width 0.3s ease-in-out;
+        }
+        h2 { /* Main topic titles */
+            font-size: 1.75rem; /* text-2xl */
+            font-weight: 700; /* bold */
+            color: #1e3a8a; /* Tailwind blue-800 */
+            margin-bottom: 0.75rem;
+        }
+        h3 { /* Sub-headings within content */
+            font-size: 1.25rem; /* text-xl */
+            font-weight: 600; /* semibold */
+            color: #1d4ed8; /* Tailwind blue-700 */
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        p, li {
+            line-height: 1.6;
+            color: #334155; /* Tailwind slate-700 */
+        }
+        ul {
+            list-style-type: disc;
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Dropdown Menu Styles */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+            width: 100%; /* Make dropdown full width of its container */
+            margin-bottom: 1.5rem;
+        }
+        .dropdown-button {
+            background-color: #4a5568; /* Tailwind gray-700 */
+            color: white;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            border-radius: 0.5rem;
+            width: 100%;
+            text-align: left;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .dropdown-button:hover {
+            background-color: #2d3748; /* Tailwind gray-800 */
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 100%; /* Full width */
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 10;
+            border-radius: 0.5rem;
+            max-height: 300px; /* Limit height and make scrollable */
+            overflow-y: auto;
+        }
+        .dropdown-content a {
+            color: black; /* Default color for dropdown items */
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            font-size: 0.9rem;
+            border-bottom: 1px solid #eee;
+        }
+        .dropdown-content a:last-child {
+            border-bottom: none;
+        }
+        .dropdown-content a:hover {
+            background-color: #f1f1f1;
+            color: black; /* Ensure hover text color is black */
+        }
+        .dropdown-content a.active-topic {
+            /* Styles for active topic are now primarily handled by JS adding Tailwind classes */
+            /* background-color: #3b82f6 !important; */ /* Tailwind blue-500, ensure it overrides */
+            /* color: white !important; */ /* Ensure text color is white for active */
+            font-weight: 600; /* Keep font weight for active */
+        }
+        .show-dropdown {
+            display: block;
+        }
+        /* Arrow for dropdown button */
+        .arrow {
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            display: inline-block;
+            padding: 3px;
+            margin-left: 8px;
+        }
+        .down {
+            transform: rotate(45deg);
+            -webkit-transform: rotate(45deg);
+        }
+        .up {
+            transform: rotate(-135deg);
+            -webkit-transform: rotate(-135deg);
+        }
+
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center p-4 md:p-8">
+
+    <div class="w-full max-w-3xl">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-gray-800">Understanding Magnetism</h1>
+            <p class="text-sm text-gray-500 mt-1">A step-by-step guide through your KCSE revision notes.</p>
+            <p class="text-gray-500 mt-1">KCSE Form 2 Physics - Kenyan Curriculum</p>
+        </header>
+
+        <!-- NEW LINK INSERTED HERE -->
+        <div class="mb-4 text-center">
+            <a href="physics_dashboard.html" class="text-blue-600 hover:text-blue-800 hover:underline font-semibold">&larr; Back to Physics Dashboard</a>
+        </div>
+
+        <div class="dropdown mb-6">
+            <button id="topic-menu-button" class="dropdown-button">
+                <span>Select Physics Topic</span>
+                <i id="menu-arrow" class="arrow down"></i>
+            </button>
+            <div id="topic-menu-content" class="dropdown-content">
+                </div>
+        </div>
+
+        <div id="progress-bar-container" class="progress-bar-container">
+            <div id="progress-bar" class="progress-bar"></div>
+        </div>
+        <p id="progress-text" class="text-center text-sm text-gray-600 mb-6">Topic 1 of N</p>
+
+
+        <div id="content-area" class="content-card p-6 md:p-8">
+            <h2 id="topic-title" class="text-2xl font-bold text-blue-700 mb-4">Topic Title</h2>
+            <div id="topic-content" class="prose max-w-none">
+                </div>
+            <div id="diagram-area">
+                </div>
+            <div id="explanation-area" class="explanation-box" style="display: none;">
+                <h3>Key Idea / Simplified</h3>
+                <p id="explanation-text"></p>
+            </div>
+        </div>
+
+        <div id="navigation" class="mt-8 flex justify-between items-center">
+            <button id="prev-button" class="nav-button bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-6 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75">
+                Previous
+            </button>
+            <button id="next-button" class="nav-button bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-6 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-75">
+                Next
+            </button>
+        </div>
+         <p class="text-center text-xs text-gray-500 mt-8">Remember to relate these concepts to real-world examples and any experiments you've done in class!</p>
+    </div>
+
+    <script>
+        const interTopicNavigationLinks = [
+            { title: "Magnetism", href: "magnetism.html" },
+            { title: "Measurement (II)", href: "measurment_2.html" },
+            { title: "Turning Effect of a Force", href: "kcse/turning_effect_of_a_force.html" },
+            { title: "Equilibrium and Centre of Gravity", href: "equillibrium_and_center_of_gravity.html" },
+            { title: "Reflection of Curved Surfaces", href: "reflection_at_curved_surfaces.html" },
+            { title: "Magnetic Effect of an Electric Current", href: "kcse/magnetic_effect_of_an_electric_current.html" },
+            { title: "Hooke’s Law", href: "hookes_law.html" },
+            { title: "Waves", href: "waves.html" },
+            { title: "Sound I", href: "sound_1.html" },
+            { title: "Fluid Flow", href: "fluid_flow.html" }
+        ];
+
+        const topics = [
+            // Section 1: Introduction to Magnetism
+            {
+                title: "Introduction to Magnetism",
+                content: `
+                    <p>A naturally occurring material known as <strong>lodestone</strong>, a form of iron ore, attracts some materials brought near it.</p>
+                    <p>When a bar of lodestone is suspended freely, it settles in the <strong>north-south direction</strong>.</p>
+                    <p>This property of lodestone has been used to make present-day magnets.</p>
+                    <p>Magnets attract certain materials known as <strong>magnetic materials</strong>. Examples include iron, nickel, cobalt, and their alloys. Magnets are made from these materials.</p>
+                    <p>Materials like copper, brass, aluminium, wood, glass, and plastics are considered <strong>non-magnetic materials</strong> as they are not attracted by a magnet. These objects have very weak magnetic properties.</p>
+                    <p>Metals such as cobalt, iron, and nickel, along with their alloys, are strongly attracted by magnets and are called <strong>ferromagnetic materials</strong>.</p>
+                `,
+                explanation: "Think of lodestone as nature's original magnet! Magnets are special because they pull certain metals towards them (magnetic materials) but ignore others (non-magnetic materials). Ferromagnetic materials are super-attracted to magnets.",
+                diagramPlaceholder: null
+            },
+            // Section 2: Properties of Magnets
+            {
+                title: "Properties of Magnets: Magnetic Poles",
+                content: `
+                    <p>When a bar magnet is dipped into iron filings, the filings cling mainly around the ends. This shows that magnetic attraction is strongest at the ends of the bar magnet.</p>
+                    <p>The ends of a magnet where the power of attraction is greatest are called the <strong>poles of the magnet</strong> or <strong>magnetic poles</strong>.</p>
+                    <p>A straight line drawn passing through the ends is called the <strong>magnetic axis</strong>.</p>
+                `,
+                explanation: "A magnet's pulling power is strongest at its ends, called poles. Imagine these are the 'hands' of the magnet doing most of the work.",
+                diagramPlaceholder: "[Diagram: Bar magnet dipped in iron filings, showing filings concentrated at the poles]"
+            },
+            {
+                title: "Properties of Magnets: Directional Property",
+                content: `
+                    <p>When a bar magnet is suspended freely so that it swings in the horizontal plane, it always comes to rest with one end pointing roughly to the north direction and the other to the southern direction of the earth.</p>
+                    <p>The pole which points towards the north is called the <strong>North-seeking</strong> or <strong>north (N) pole</strong>; the other one is the <strong>south-seeking</strong> or <strong>south (S) pole</strong>.</p>
+                    <p>A magnet can, therefore, be used as a <strong>compass</strong>. This property can be used to identify the poles of a magnet.</p>
+                `,
+                explanation: "If you let a magnet swing freely, it will always point North-South, like a natural compass. This helps us tell which end is the North pole and which is the South pole.",
+                diagramPlaceholder: "[Diagram: Freely suspended bar magnet aligning North-South, with Earth's geographic poles indicated]"
+            },
+            {
+                title: "Properties of Magnets: Effect on Materials & Attraction/Repulsion",
+                content: `
+                    <h3>Effect on Magnetic and Nonmagnetic Materials:</h3>
+                    <p>Experiments show that magnets attract magnetic materials like steel needles and steel pins, but not non-magnetic materials like chalk, aluminium strips, or carbon rods.</p>
+                    <h3>Attraction and Repulsion:</h3>
+                    <p>The basic law of magnetism states that <strong>like poles repel, unlike poles attract</strong>. For example, a north pole attracts a south pole and repels a north pole, while a south pole repels a south pole.</p>
+                `,
+                explanation: "Magnets only pull magnetic stuff. The big rule is: opposites attract (N attracts S), and sames repel (N repels N, S repels S).",
+                diagramPlaceholder: "[Diagram: Two bar magnets showing attraction (N-S) and two bar magnets showing repulsion (N-N or S-S)]"
+            },
+            {
+                title: "Properties of Magnets: Testing Polarity & Breaking a Magnet",
+                content: `
+                    <h3>Testing Polarity:</h3>
+                    <p>The polarity of a magnet can be tested by bringing its poles, in turn, near the known poles of a suspended magnet. <strong>Repulsion only occurs between the like poles of a magnet</strong> and is thus the only sure test for the polarity of a magnet. Attraction can occur between two unlike poles or between a pole and a piece of an unmagnetised magnetic material.</p>
+                    <h3>Breaking a Magnet:</h3>
+                    <p>When a bar magnet is broken into two or more pieces, each piece retains its magnetism, having a north pole and a south pole at its ends.</p>
+                `,
+                explanation: "To be sure if something is a magnet and which pole is which, look for repulsion – only like poles push each other away. If you break a magnet, you don't get separate N and S pieces; you get smaller magnets, each with its own N and S pole!",
+                diagramPlaceholder: "[Diagram: Illustrating testing polarity with repulsion. And a diagram showing a magnet broken into two, each new piece having N and S poles]"
+            },
+            // Section 3: Magnetic Field and Field Patterns
+            {
+                title: "Magnetic Field",
+                content: `
+                    <p>When a magnetic material is placed near a magnet, it is attracted, suggesting a magnetic effect in the space around the magnet. This region or space where the magnetic influence is felt is called the <strong>magnetic field</strong>.</p>
+                    <p>The magnetic field is stronger near the poles of the magnet and is weaker farther away from the poles.</p>
+                    <p>The <strong>direction of a magnetic field</strong> at a point is defined as the direction along which a free north pole would move if placed at that point.</p>
+                `,
+                explanation: "A magnetic field is the invisible area around a magnet where its 'magnetic powers' can be felt. It's strongest near the poles. The field's direction is the way a tiny North pole would try to move.",
+                diagramPlaceholder: null
+            },
+            {
+                title: "Magnetic Field Lines (Lines of Force)",
+                content: `
+                    <p>Magnetic field patterns around a magnet or arrangement of magnets have a definite pattern. These can be investigated using iron filings or a plotting compass.</p>
+                    <p><strong>Magnetic field lines</strong> or <strong>lines of force</strong> represent the magnetic field.</p>
+                    <p>Magnetic field lines have the following properties:</p>
+                    <ul>
+                        <li>They originate from the <strong>north pole</strong> and end at the <strong>south pole</strong> (outside the magnet).</li>
+                        <li>They <strong>repel each other</strong> and form closed paths, never intersecting other lines of force.</li>
+                        <li>They are <strong>closer together where the field is strongest</strong>.</li>
+                    </ul>
+                `,
+                explanation: "We draw 'magnetic field lines' to show what a magnetic field looks like. These lines always go from North to South (outside the magnet), never cross, and are packed tightly where the magnet is strongest.",
+                diagramPlaceholder: "[Diagram: General properties of magnetic field lines – originating N, ending S, not crossing, density indicating strength]"
+            },
+            {
+                title: "Field Patterns: Bar Magnet & Unlike Poles",
+                content: `
+                    <h3>Field Patterns around different magnet configurations:</h3>
+                    <p><strong>Bar Magnet:</strong> Lines originate from the North Pole and end at the South Pole.</p>
+                    <p><strong>Unlike Poles:</strong> The fields combine to produce a single field pattern. Lines go from the North pole of one magnet to the South pole of the other.</p>
+                `,
+                explanation: "For a single bar magnet, lines flow N to S. When you put a North and South pole near each other, the lines flow nicely between them, showing attraction.",
+                diagramPlaceholder: "[Diagram 1: Magnetic field pattern around a single bar magnet. Diagram 2: Magnetic field pattern between two unlike poles (N facing S)]"
+            },
+            {
+                title: "Field Patterns: Horseshoe Magnet & Like Poles (Neutral Point)",
+                content: `
+                    <p><strong>Horse-shoe Magnet:</strong> Field lines are more concentrated between the poles.</p>
+                    <p><strong>Like Poles:</strong> The field lines from the poles repel each other. This results in a region where the effect of two magnetic fields totally cancel each other, called a <strong>neutral point</strong> (where there's no magnetic force).</p>
+                `,
+                explanation: "A horseshoe magnet has a strong field between its poles. If you put two same poles (like N and N) near each other, their field lines push away, and there's a spot in between with no magnetism, called a neutral point.",
+                diagramPlaceholder: "[Diagram 1: Magnetic field pattern for a horseshoe magnet. Diagram 2: Magnetic field pattern between two like poles (e.g., N facing N), clearly showing the neutral point]"
+            },
+            {
+                title: "Effect of Soft Iron (Magnetic Shielding)",
+                content: `
+                    <p>Soft iron rods and rings can concentrate magnetic lines of force, preventing them from reaching certain regions. This property is used in <strong>magnetic shielding</strong> or <strong>screening</strong>, where a region is made totally free from magnetic influence.</p>
+                    <p>This is applied to shield instruments like electrical measuring instruments and watches from stray magnetic fields using alloys of high magnetic permeability.</p>
+                `,
+                explanation: "Soft iron is like a 'magnet vacuum cleaner' – it sucks up magnetic field lines. We use this to create 'magnetic shields' to protect sensitive devices from unwanted magnetic fields.",
+                diagramPlaceholder: "[Diagram: A soft iron ring placed in a magnetic field, showing field lines being concentrated within the ring and the area inside the ring being shielded (few or no lines)]"
+            },
+            // Section 4: Earth's Magnetic Field
+            {
+                title: "The Earth’s Magnetic Field",
+                content: `
+                    <p>The fact that a suspended bar magnet aligns itself north-south suggests that the earth has a magnetic field.</p>
+                    <p>The inner core of the earth behaves as if it were a magnet embedded in the earth’s crust.</p>
+                    <p>Using the law of magnetism (unlike poles attract), it's visualised that the earth's effective magnet has its <strong>south pole near the geographical north</strong> and its north pole near the geographical south.</p>
+                    <p>The origin of the earth’s magnetism is believed to be partly associated with the spinning liquid metallic core of iron and nickel.</p>
+                    <p>The earth's field is an example of a <strong>uniform field</strong> (over small regions).</p>
+                `,
+                explanation: "The Earth itself is like a giant magnet! That's why compasses work. Confusingly, the Earth's 'magnetic South' is near the geographic North Pole, and its 'magnetic North' is near the geographic South Pole.",
+                diagramPlaceholder: "[Diagram: The Earth showing its geographic North and South poles, and its effective internal bar magnet with its magnetic south pole near the geographic North and vice-versa, with representative field lines]"
+            },
+            {
+                title: "Neutral Points with Earth's Field",
+                content: `
+                    <p>When a bar magnet is placed near the earth's surface, its magnetic field combines with the earth's field. At certain points, the fields are equal and opposite, resulting in a <strong>zero resultant magnetic field</strong> at these neutral points.</p>
+                `,
+                explanation: "If you place a magnet on a table, its field mixes with Earth's field. Sometimes, these fields cancel each other out perfectly at certain spots, creating 'neutral points' with no magnetic force.",
+                diagramPlaceholder: "[Diagram: A bar magnet placed on a surface (e.g., N pole pointing North), showing the combined field with Earth's field lines and the location of neutral points]"
+            },
+            // Section 5: The Domain Theory
+            {
+                title: "The Domain Theory: Domains and Dipoles",
+                content: `
+                    <p>Magnetic materials contain small magnetic regions called <strong>magnetic domains</strong>.</p>
+                    <p>A domain comprises small atomic magnets called <strong>dipoles</strong>.</p>
+                    <p>The dipoles in a particular domain align themselves in a common direction, giving the domain an overall north and south pole.</p>
+                `,
+                explanation: "Inside magnetic materials are tiny zones called 'domains'. Each domain is like a mini-magnet because all its even tinier 'atomic magnets' (dipoles) are pointing the same way.",
+                diagramPlaceholder: "[Diagram: A simplified representation of a magnetic material showing several magnetic domains, with arrows inside each domain indicating dipole alignment (some aligned, some random if unmagnetised)]"
+            },
+            {
+                title: "Domain Theory: Un-magnetised vs. Magnetised State",
+                content: `
+                    <p>In the <strong>un-magnetised condition</strong>, the dipoles in neighbouring domains arrange themselves randomly or in closed loops, giving no resultant field outside the material.</p>
+                    <p>When a magnetising field is applied, domain boundaries adjust, causing some domains to grow and others to shrink, leading to the <strong>alignment of domains</strong> with their magnetic axis pointing in the same direction. The material becomes <strong>magnetised</strong>.</p>
+                `,
+                explanation: "In an unmagnetised material, these domains are all jumbled up, cancelling each other out. When you magnetise it, an external magnetic field makes these domains line up, and *bam* – it's a magnet!",
+                diagramPlaceholder: "[Diagram 1: Unmagnetised material showing domains randomly oriented. Diagram 2: Magnetised material showing domains aligned in one direction due to an external field]"
+            },
+            {
+                title: "Domain Theory: Magnetic Saturation & Field Removal",
+                content: `
+                    <p>When all dipoles are aligned in one direction, the material is <strong>magnetically saturated</strong>, and no further magnetisation can occur.</p>
+                    <p>When the magnetising field is removed, domains of <strong>hard magnetic materials</strong> (hard to magnetise) maintain their new orientation, while those of <strong>soft magnetic materials</strong> (easy to magnetise) revert to their original arrangement.</p>
+                `,
+                explanation: "If all domains line up, it's 'magnetically saturated' – it can't get any more magnetic. 'Hard' magnetic materials stay magnetised once the field is gone (like permanent magnets). 'Soft' ones lose their magnetism easily (like temporary magnets).",
+                diagramPlaceholder: "[Diagram: Material at magnetic saturation with all domains perfectly aligned]"
+            },
+            // Section 6: Magnetisation of a Magnetic Material
+            {
+                title: "Magnetisation: Definition and Methods",
+                content: `
+                    <p><strong>Magnetisation</strong> is the process of making a magnet from a magnetic material.</p>
+                    <p>Common methods include Induction, Stroking, Hammering, and Electrical method.</p>
+                `,
+                explanation: "Magnetisation is just the fancy word for 'making something into a magnet'. There are a few ways to do it.",
+                diagramPlaceholder: null
+            },
+            {
+                title: "Magnetisation: Induction Method",
+                content: `
+                    <p>Holding a magnetic material near a pole of a magnet causes it to become magnetised by induction. The end attracted to the magnet acquires the opposite polarity, and the lower end acquires a similar polarity. The dipoles align along the magnetising magnet's axis. The magnetism acquired is often temporary, as seen when pins fall off after the magnet is removed.</p>
+                `,
+                explanation: "Just bringing a magnet close to a magnetic material can make it a temporary magnet. The part closest to the magnet gets the opposite pole.",
+                diagramPlaceholder: "[Diagram: A strong magnet inducing magnetism in a steel bar or nail, showing the poles induced and iron filings being attracted to the newly magnetised bar]"
+            },
+            {
+                title: "Magnetisation: Stroking Methods",
+                content: `
+                    <p>Stroking a steel needle repeatedly with one pole of a strong magnet magnetises the needle.</p>
+                    <h3>Single Stroke:</h3>
+                    <p>Stroke from one end to the other, lifting the magnet away each time. The end where the stroking finishes acquires an opposite polarity to the stroking pole. A disadvantage is that one pole may be nearer the end than the other.</p>
+                    <h3>Double Stroke:</h3>
+                    <p>Stroke from the centre outwards in opposite directions using opposite polarities of two magnets. This method produces magnets where poles are more symmetrically placed. Using like poles on a steel bar by double stroking from the centre can create a south pole at each end and a double north pole at the centre (consequent poles).</p>
+                `,
+                explanation: "You can make a magnet by 'stroking' a steel bar with a magnet. Single stroke is simple but might be uneven. Double stroke uses two magnets and is better for even magnetisation.",
+                diagramPlaceholder: "[Diagram 1: Single stroke method. Diagram 2: Double stroke method (with opposite poles from centre out). Optional Diagram 3: Double stroke with like poles creating consequent poles]"
+            },
+            {
+                title: "Magnetisation: Hammering Method",
+                content: `
+                    <p>A steel bar placed inclined in a north-south direction and hammered several times becomes a weak magnet, utilising the Earth's magnetic field. The angle of inclination is called the angle of dip.</p>
+                `,
+                explanation: "If you point a steel bar North-South and hammer it, Earth's magnetic field can turn it into a weak magnet.",
+                diagramPlaceholder: "[Diagram: Steel bar aligned North-South, inclined at the angle of dip, being hammered]"
+            },
+            {
+                title: "Magnetisation: Electrical Method",
+                content: `
+                    <p>This is considered the <strong>best and quickest method</strong>, widely used industrially. A steel bar is placed inside a <strong>solenoid</strong> (a coil of many turns of insulated copper wire). A direct current (d.c.) is passed through the solenoid. The bar becomes magnetised, with its polarity depending on the direction of the current.</p>
+                    <p>Polarity can be identified using the <strong>Clock rule</strong> (clockwise current view indicates a south pole, anticlockwise indicates a north pole) or the <strong>Right-hand grip rule</strong> for a coil (fingers in current direction, thumb points to the north pole).</p>
+                    <p>Allowing current for too long doesn't increase saturation but causes overheating, which adversely affects magnetism. Winding coils on a soft iron core increases magnetic power in practical electromagnets.</p>
+                `,
+                explanation: "The best way to make strong magnets is using electricity. Wrap a wire (solenoid) around a steel bar and pass DC current. Use the Clock Rule or Right-Hand Grip Rule to find the North and South poles.",
+                diagramPlaceholder: "[Diagram: A steel bar inside a solenoid connected to a DC source. Separate small diagrams illustrating the Clock Rule and the Right-Hand Grip Rule for determining polarity]"
+            },
+            // Section 7: Demagnetisation
+            {
+                title: "Demagnetisation: Definition and Methods",
+                content: `
+                    <p><strong>Demagnetisation</strong> is the process of destroying the magnetic properties of a magnet. It involves the disorientation of magnetic dipoles.</p>
+                    <p>Methods include hammering, heating, or using electricity.</p>
+                `,
+                explanation: "Demagnetisation means 'killing' a magnet's power by messing up the alignment of its tiny magnetic domains.",
+                diagramPlaceholder: null
+            },
+            {
+                title: "Demagnetisation: Hammering and Heating",
+                content: `
+                    <p>A magnet is demagnetised by heating or hammering it when placed in the <strong>east-west direction</strong>. This disorients the magnetic dipoles.</p>
+                    <p>Magnets are placed in the east-west direction during these methods to prevent them from retaining magnetism due to the Earth’s magnetic field.</p>
+                `,
+                explanation: "Banging or heating a magnet (while it's pointing East-West, so Earth's field doesn't re-magnetise it) will demagnetise it.",
+                diagramPlaceholder: "[Diagram: Magnet being hammered or heated, with an arrow indicating East-West alignment]"
+            },
+            {
+                title: "Demagnetisation: Electrical Method",
+                content: `
+                    <p>This is the <strong>most effective method</strong>. The magnet is placed inside a solenoid with its axis pointing east-west, and an alternating current (a.c.) is switched on. The magnet is slowly withdrawn from the solenoid while the current is on. The alternating current reverses many times per second, disorienting the magnetic dipoles.</p>
+                `,
+                explanation: "The best way to demagnetise is to put the magnet in a coil with AC current (pointing East-West) and slowly pull it out. The rapidly changing field jumbles up the domains.",
+                diagramPlaceholder: "[Diagram: Magnet inside a solenoid connected to an AC source, showing it being withdrawn, with East-West alignment indicated]"
+            },
+            // Section 8: Hard and Soft Magnetic Materials
+            {
+                title: "Hard and Soft Magnetic Materials",
+                content: `
+                    <p><strong>Soft magnetic materials</strong> are easily magnetised but do not retain their magnetism for long after the magnetising field is removed. Examples include soft iron and nickel. They are used in making electromagnetic transformer cores.</p>
+                    <p><strong>Hard magnetic materials</strong> are not easily magnetised but retain their magnetism for long. An example is steel. They are used in making <strong>permanent magnets</strong>.</p>
+                `,
+                explanation: "'Soft' magnetic materials (like iron) are easy to magnetise but lose it quickly – good for temporary magnets (electromagnets). 'Hard' materials (like steel) are tough to magnetise but stay magnetic for a long time – good for permanent magnets.",
+                diagramPlaceholder: "[Diagram: Side-by-side comparison or simple icons representing a temporary electromagnet (soft iron core) and a permanent bar magnet (steel)]"
+            },
+            // Section 9: Storing Magnets
+            {
+                title: "Storing Magnets",
+                content: `
+                    <p>Permanent magnets, like bar magnets, tend to become weaker over time due to <strong>self-demagnetisation</strong>, caused by the internal repulsion of like poles and the tendency of dipoles to return to a random arrangement.</p>
+                    <p>To prevent self-demagnetisation, magnets are stored in pairs with small iron bars called <strong>keepers</strong> placed across their ends. The unlike poles of the magnets are placed adjacent to one another. The keepers acquire polarities, and the dipoles in the magnet and keepers form complete loops, helping the dipoles retain their orientation and magnetism.</p>
+                `,
+                explanation: "Magnets can get weaker on their own. To keep them strong, store them in pairs (North to South) with 'keepers' (soft iron bars) across the ends. This helps keep the magnetic domains aligned.",
+                diagramPlaceholder: "[Diagram: Two bar magnets stored correctly with keepers, showing unlike poles adjacent and keepers across the ends, with arrows indicating closed magnetic loops]"
+            },
+            // Section 10: Uses of Magnets
+            {
+                title: "Uses of Magnets (including Electromagnets)",
+                content: `
+                    <p>Magnets and electromagnets have wide applications:</p>
+                    <ul>
+                        <li><strong>In Medicine:</strong> Used for extracting metallic objects (e.g., from the eye), in MRI machines, and in magnetic therapy.</li>
+                        <li><strong>Sorting/Separating:</strong> Used to sort magnetic materials from non-magnetic ones (e.g., in quarries, recycling).</li>
+                        <li><strong>Magnetic Screw Drivers:</strong> To lift or position small screws.</li>
+                        <li><strong>Compasses:</strong> For direction finding.</li>
+                        <li><strong>Loudspeakers:</strong> Force on a current-carrying coil in a magnetic field produces sound.</li>
+                        <li><strong>Telephone Receivers (Earpieces):</strong> Electromagnet vibrates a diaphragm to reproduce sound.</li>
+                        <li><strong>Electric Bells:</strong> Electromagnet attracts a hammer to strike a gong.</li>
+                        <li><strong>Computer Hard Disks/Recording Heads/Video Tapes:</strong> Data stored by magnetising materials.</li>
+                        <li><strong>Bicycle Dynamos & Generators:</strong> Convert mechanical energy to electrical energy using magnetic fields.</li>
+                        <li><strong>Electric Motors:</strong> Convert electrical energy to rotational energy using magnetic fields. Practical motors use electromagnets and soft iron cores.</li>
+                    </ul>
+                `,
+                explanation: "Magnets are super useful! They're in everything from medical tools (MRIs) and compasses to everyday items like loudspeakers, electric bells, computer hard drives, and electric motors.",
+                diagramPlaceholder: "[Diagram: A collage or a few small icons representing diverse uses of magnets, e.g., an MRI machine, a compass, a loudspeaker, an electric motor]"
+            }
+            // The revision questions and solutions are not included as interactive steps here,
+            // but could be a separate section or integrated as quizzes later.
+        ];
+
+        let currentTopicIndex = 0;
+
+        const topicTitleElement = document.getElementById('topic-title');
+        const topicContentElement = document.getElementById('topic-content');
+        const diagramAreaElement = document.getElementById('diagram-area');
+        const explanationAreaElement = document.getElementById('explanation-area');
+        const explanationTextElement = document.getElementById('explanation-text');
+        const prevButton = document.getElementById('prev-button');
+        const nextButton = document.getElementById('next-button');
+        const progressBar = document.getElementById('progress-bar');
+        const progressText = document.getElementById('progress-text');
+        const topicMenuButton = document.getElementById('topic-menu-button');
+        const topicMenuContent = document.getElementById('topic-menu-content');
+        const menuArrow = document.getElementById('menu-arrow');
+
+
+        function displayTopic(index) {
+            currentTopicIndex = index; 
+            const topic = topics[index];
+            topicTitleElement.textContent = topic.title;
+            topicContentElement.innerHTML = topic.content; 
+
+            if (topic.diagramPlaceholder) {
+                diagramAreaElement.innerHTML = `<div class="diagram-placeholder">${topic.diagramPlaceholder}</div>`;
+                diagramAreaElement.style.display = 'block';
+            } else {
+                diagramAreaElement.innerHTML = '';
+                diagramAreaElement.style.display = 'none';
+            }
+
+            if (topic.explanation) {
+                explanationTextElement.textContent = topic.explanation;
+                explanationAreaElement.style.display = 'block';
+            } else {
+                explanationTextElement.textContent = '';
+                explanationAreaElement.style.display = 'none';
+            }
+
+            updateNavigationButtons();
+            updateProgressBar();
+            updateActiveMenuItem(); 
+        }
+
+        function updateNavigationButtons() {
+            prevButton.disabled = currentTopicIndex === 0;
+            nextButton.disabled = currentTopicIndex === topics.length - 1;
+        }
+
+        function updateProgressBar() {
+            const progressPercentage = ((currentTopicIndex + 1) / topics.length) * 100;
+            progressBar.style.width = `${progressPercentage}%`;
+            progressText.textContent = `Topic ${currentTopicIndex + 1} of ${topics.length}`;
+        }
+        
+        // Original function for sub-topic dropdowns (if any). Not used for the main inter-topic menu.
+        function populateTopicMenu() {
+            // This function would be used if sub-topics were listed in a dropdown.
+            // For the current Magnetism page, sub-topics are navigated via Next/Prev.
+        }
+        
+        function populateInterTopicMenu() {
+            const menuContent = document.getElementById('topic-menu-content');
+            const menuButton = document.getElementById('topic-menu-button');
+            menuContent.innerHTML = ''; 
+
+            interTopicNavigationLinks.forEach(topicLink => {
+                const menuItem = document.createElement('a');
+                menuItem.href = topicLink.href;
+                menuItem.textContent = topicLink.title;
+                menuItem.classList.add('block', 'px-4', 'py-3', 'text-sm', 'text-gray-700', 'hover:bg-gray-100', 'hover:text-gray-900');
+                
+                const currentPageFilename = window.location.pathname.split('/').pop();
+                // Handle index.html or root path for magnetism.html specifically
+                if (currentPageFilename === topicLink.href || ( (currentPageFilename === '' || currentPageFilename === 'index.html') && topicLink.href === 'magnetism.html') ) {
+                    menuItem.classList.add('active-topic', 'bg-blue-500', 'text-white');
+                     // Ensure the button text is updated correctly by targeting the span
+                    const spanElement = Array.from(menuButton.childNodes).find(node => node.nodeName === 'SPAN');
+                    if (spanElement) {
+                        spanElement.textContent = topicLink.title;
+                    } else if (menuButton.firstChild.nodeName === '#text') { // Fallback for direct text node
+                        menuButton.firstChild.textContent = topicLink.title;
+                    }
+                } else {
+                     menuItem.classList.remove('active-topic', 'bg-blue-500', 'text-white');
+                }
+                menuContent.appendChild(menuItem);
+            });
+        }
+
+        function updateActiveMenuItem() {
+            // This function is for sub-topic navigation systems (if a dropdown for sub-topics was used).
+            // It doesn't affect the main inter-topic menu's active state, which is handled by populateInterTopicMenu.
+            const subTopicMenuItems = document.querySelectorAll('#some-other-subtopic-menu a'); 
+            subTopicMenuItems.forEach(item => {
+                if (parseInt(item.dataset.index) === currentTopicIndex) {
+                    item.classList.add('active-topic', 'bg-blue-500', 'text-white');
+                } else {
+                    item.classList.remove('active-topic', 'bg-blue-500', 'text-white');
+                }
+            });
+        }
+
+        topicMenuButton.addEventListener('click', () => {
+            topicMenuContent.classList.toggle('show-dropdown');
+            menuArrow.classList.toggle('up');
+            menuArrow.classList.toggle('down');
+        });
+
+        window.addEventListener('click', function(event) {
+            if (!topicMenuButton.contains(event.target) && !topicMenuContent.contains(event.target)) {
+                if (topicMenuContent.classList.contains('show-dropdown')) {
+                    topicMenuContent.classList.remove('show-dropdown');
+                    menuArrow.classList.remove('up');
+                    menuArrow.classList.add('down');
+                }
+            }
+        });
+
+        prevButton.addEventListener('click', () => {
+            if (currentTopicIndex > 0) {
+                displayTopic(currentTopicIndex - 1);
+                 window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        });
+
+        nextButton.addEventListener('click', () => {
+            if (currentTopicIndex < topics.length - 1) {
+                displayTopic(currentTopicIndex + 1);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        });
+
+        // Initial setup
+        populateInterTopicMenu(); 
+        displayTopic(currentTopicIndex); 
+    </script>
+
+</body>
+</html>
