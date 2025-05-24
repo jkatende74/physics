@@ -178,13 +178,19 @@
             <a href="physics_dashboard.html" class="text-blue-600 hover:text-blue-800 hover:underline font-semibold">&larr; Back to Physics Dashboard</a>
         </div>
 
-        <div class="dropdown mb-6">
-            <button id="topic-menu-button" class="dropdown-button">
-                <span>Select Physics Topic</span> <!-- Default text, JS will update -->
-                <i id="menu-arrow" class="arrow down"></i>
-            </button>
-            <div id="topic-menu-content" class="dropdown-content">
-                </div>
+        <div id="audio-player-container" class="my-6 p-4 bg-white rounded-lg shadow">
+            <h3 class="text-md font-semibold mb-2 text-gray-700">Listen to this guide:</h3>
+            <audio controls class="w-full">
+                <source src="Fluid Flow.mp3" type="audio/mpeg">
+                Your browser does not support the audio element.
+            </audio>
+        </div>
+
+        <div id="subtopic-nav" class="p-4 bg-gray-100 rounded-lg shadow mb-6">
+            <h3 class="text-lg font-semibold mb-2 text-teal-700">In this guide:</h3>
+            <ul id="subtopic-menu-list" class="space-y-1">
+                <!-- JS will populate this -->
+            </ul>
         </div>
 
         <div id="progress-bar-container" class="progress-bar-container">
@@ -216,18 +222,7 @@
     </div>
 
     <script>
-        const interTopicNavigationLinks = [
-            { title: "Magnetism", href: "magnetism.html" },
-            { title: "Measurement (II)", href: "measurment_2.html" },
-            { title: "Turning Effect of a Force", href: "kcse/turning_effect_of_a_force.html" },
-            { title: "Equilibrium and Centre of Gravity", href: "equillibrium_and_center_of_gravity.html" },
-            { title: "Reflection of Curved Surfaces", href: "reflection_at_curved_surfaces.html" },
-            { title: "Magnetic Effect of an Electric Current", href: "kcse/magnetic_effect_of_an_electric_current.html" },
-            { title: "Hooke’s Law", href: "hookes_law.html" },
-            { title: "Waves", href: "waves.html" },
-            { title: "Sound I", href: "sound_1.html" },
-            { title: "Fluid Flow", href: "fluid_flow.html" }
-        ];
+        // const interTopicNavigationLinks = [...] // Removed
 
         const topics = [ // This is for the intra-page navigation (Fluid Flow sub-topics)
             {
@@ -393,14 +388,15 @@
         const nextButton = document.getElementById('next-button');
         const progressBar = document.getElementById('progress-bar');
         const progressText = document.getElementById('progress-text');
-        const topicMenuButton = document.getElementById('topic-menu-button');
-        const topicMenuContent = document.getElementById('topic-menu-content');
-        const menuArrow = document.getElementById('menu-arrow');
+        // const topicMenuButton = document.getElementById('topic-menu-button'); // Removed
+        // const topicMenuContent = document.getElementById('topic-menu-content'); // Removed
+        // const menuArrow = document.getElementById('menu-arrow'); // Removed
+        const subtopicMenuList = document.getElementById('subtopic-menu-list');
 
 
         function displayTopic(index) {
             currentTopicIndex = index; 
-            const topic = topics[index]; // 'topics' is for Fluid Flow sub-topics
+            const topic = topics[index]; 
             topicTitleElement.textContent = topic.title;
             topicContentElement.innerHTML = topic.content; 
 
@@ -422,8 +418,7 @@
 
             updateNavigationButtons();
             updateProgressBar();
-            // updateActiveMenuItem(); // This was for a sub-topic dropdown, inter-topic menu handles its own active state.
-            // topicMenuButton.firstChild.textContent = topic.title; // Removed: Main button text now handled by populateInterTopicMenu
+            updateActiveSubtopicMenuItem(index); 
         }
 
         function updateNavigationButtons() {
@@ -436,71 +431,61 @@
             progressBar.style.width = `${progressPercentage}%`;
             progressText.textContent = `Topic ${currentTopicIndex + 1} of ${topics.length}`;
         }
-        
-        function populateInterTopicMenu() {
-            const menuContent = document.getElementById('topic-menu-content');
-            const menuButton = document.getElementById('topic-menu-button');
-            menuContent.innerHTML = ''; 
 
-            interTopicNavigationLinks.forEach(topicLink => {
-                const menuItem = document.createElement('a');
-                menuItem.href = topicLink.href;
-                menuItem.textContent = topicLink.title;
-                menuItem.classList.add('block', 'px-4', 'py-3', 'text-sm', 'text-gray-700', 'hover:bg-gray-100', 'hover:text-gray-900');
-                
-                const currentPageFilename = window.location.pathname.split('/').pop();
-                if (currentPageFilename === topicLink.href || 
-                    ( (currentPageFilename === '' || currentPageFilename === 'index.html') && topicLink.href === 'fluid_flow.html') ) { 
-                    menuItem.classList.add('active-topic', 'bg-blue-500', 'text-white');
-                    const spanElement = Array.from(menuButton.childNodes).find(node => node.nodeName === 'SPAN');
-                    if (spanElement) {
-                        spanElement.textContent = topicLink.title;
-                    } else if (menuButton.firstChild && menuButton.firstChild.nodeType === Node.TEXT_NODE) { // Fallback for direct text node
-                         menuButton.firstChild.textContent = topicLink.title;
-                    }
-                } else {
-                     menuItem.classList.remove('active-topic', 'bg-blue-500', 'text-white');
-                }
-                menuContent.appendChild(menuItem);
+        function populateSubtopicMenu() {
+            subtopicMenuList.innerHTML = ''; // Clear existing items
+            topics.forEach((topic, index) => {
+                const listItem = document.createElement('li');
+                const link = document.createElement('a');
+                link.href = '#'; // Prevent page jump
+                link.textContent = topic.title;
+                link.classList.add('block', 'p-2', 'rounded-md', 'text-gray-700', 'hover:bg-teal-100', 'hover:text-teal-700', 'transition-colors', 'duration-150');
+                link.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    displayTopic(index);
+                    // Scroll to the content area, adjusting for any fixed headers if necessary
+                    const contentAreaTop = document.getElementById('content-area').offsetTop;
+                    window.scrollTo({ top: contentAreaTop - 20, behavior: 'smooth' }); // 20px offset for padding
+                });
+                listItem.appendChild(link);
+                subtopicMenuList.appendChild(listItem);
             });
         }
 
-        // The original populateTopicMenu and updateActiveMenuItem for sub-topics are removed 
-        // as the main dropdown is now handled by populateInterTopicMenu.
-        // If a separate dropdown for sub-topics was desired, these would be re-added and modified.
-
-        topicMenuButton.addEventListener('click', () => {
-            topicMenuContent.classList.toggle('show-dropdown');
-            menuArrow.classList.toggle('up');
-            menuArrow.classList.toggle('down');
-        });
-
-        window.addEventListener('click', function(event) {
-            if (!topicMenuButton.contains(event.target) && !topicMenuContent.contains(event.target)) {
-                if (topicMenuContent.classList.contains('show-dropdown')) {
-                    topicMenuContent.classList.remove('show-dropdown');
-                    menuArrow.classList.remove('up');
-                    menuArrow.classList.add('down');
+        function updateActiveSubtopicMenuItem(index) {
+            const links = subtopicMenuList.querySelectorAll('a');
+            links.forEach((link, i) => {
+                link.classList.remove('bg-teal-500', 'text-white', 'font-semibold');
+                link.classList.add('text-gray-700', 'hover:bg-teal-100', 'hover:text-teal-700');
+                if (i === index) {
+                    link.classList.add('bg-teal-500', 'text-white', 'font-semibold');
+                    link.classList.remove('hover:bg-teal-100', 'hover:text-teal-700');
                 }
-            }
-        });
+            });
+        }
+
+        // Removed event listeners for topicMenuButton and window click for dropdown
+        // topicMenuButton.addEventListener('click', () => { ... });
+        // window.addEventListener('click', function(event) { ... });
 
         prevButton.addEventListener('click', () => {
             if (currentTopicIndex > 0) {
                 displayTopic(currentTopicIndex - 1);
-                 window.scrollTo({ top: 0, behavior: 'smooth' });
+                 const contentAreaTop = document.getElementById('content-area').offsetTop;
+                 window.scrollTo({ top: contentAreaTop - 20, behavior: 'smooth' });
             }
         });
 
         nextButton.addEventListener('click', () => {
             if (currentTopicIndex < topics.length - 1) {
                 displayTopic(currentTopicIndex + 1);
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+                const contentAreaTop = document.getElementById('content-area').offsetTop;
+                window.scrollTo({ top: contentAreaTop - 20, behavior: 'smooth' });
             }
         });
 
         // Initial setup
-        populateInterTopicMenu(); 
+        populateSubtopicMenu(); 
         displayTopic(currentTopicIndex); 
     </script>
 

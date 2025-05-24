@@ -9,46 +9,73 @@
     <style>
         body { 
             font-family: 'Inter', sans-serif; 
-            background-color: #f9fafb; /* Tailwind gray-50 */ 
+            background-color: #f3f4f6; /* Tailwind gray-100 for a slightly lighter background */
         }
         .container { 
-            max-width: 800px; 
+            max-width: 768px; /* md breakpoint, good for content readability */
         }
-        h1 { 
-            font-size: 2.5rem; /* text-4xl */ 
-            font-weight: 700; /* bold */ 
-            color: #1f2937; /* gray-800 */ 
-            text-align: center; 
-            margin-bottom: 0.5rem; 
-        }
-        .subheading { 
-            font-size: 1.25rem; /* text-xl */ 
-            color: #4b5563; /* gray-600 */ 
-            text-align: center; 
-            margin-bottom: 2rem; 
-        }
-        ol li a { 
-            transition: color 0.15s ease-in-out; 
-        }
+        /* Custom styles can be reduced if Tailwind utilities suffice */
     </style>
 </head>
-<body class="min-h-screen flex flex-col items-center py-10 px-4">
-    <div class="container bg-white p-8 rounded-lg shadow-lg">
-        <h1>KCSE Form 2 Physics Dashboard</h1>
-        <p class="subheading">Kenyan Curriculum</p>
+<body class="min-h-screen flex flex-col items-center py-8 px-4 sm:py-12">
+    <div class="container w-full bg-white p-6 sm:p-8 rounded-xl shadow-2xl">
+        <header class="text-center mb-8">
+            <h1 class="text-3xl sm:text-4xl font-bold text-gray-800">KCSE Form 2 Physics Dashboard</h1>
+            <p class="text-lg sm:text-xl text-gray-600 mt-2">Kenyan Curriculum</p>
+        </header>
         
-        <ol class="list-decimal list-inside space-y-4">
-            <li class="text-xl"><a href="magnetism.html" class="text-blue-600 hover:text-blue-800 hover:underline">Magnetism</a></li>
-            <li class="text-xl"><a href="measurment_2.html" class="text-blue-600 hover:text-blue-800 hover:underline">Measurement (II)</a></li>
-            <li class="text-xl"><a href="kcse/turning_effect_of_a_force.html" class="text-blue-600 hover:text-blue-800 hover:underline">Turning Effect of a Force</a></li>
-            <li class="text-xl"><a href="equillibrium_and_center_of_gravity.html" class="text-blue-600 hover:text-blue-800 hover:underline">Equilibrium and Centre of Gravity</a></li>
-            <li class="text-xl"><a href="reflection_at_curved_surfaces.html" class="text-blue-600 hover:text-blue-800 hover:underline">Reflection of Curved Surfaces</a></li>
-            <li class="text-xl"><a href="kcse/magnetic_effect_of_an_electric_current.html" class="text-blue-600 hover:text-blue-800 hover:underline">Magnetic Effect of an Electric Current</a></li>
-            <li class="text-xl"><a href="hookes_law.html" class="text-blue-600 hover:text-blue-800 hover:underline">Hooke’s Law</a></li>
-            <li class="text-xl"><a href="waves.html" class="text-blue-600 hover:text-blue-800 hover:underline">Waves</a></li>
-            <li class="text-xl"><a href="sound_1.html" class="text-blue-600 hover:text-blue-800 hover:underline">Sound I</a></li>
-            <li class="text-xl"><a href="fluid_flow.html" class="text-blue-600 hover:text-blue-800 hover:underline">Fluid Flow</a></li>
-        </ol>
+        <div class="space-y-3">
+            <div>
+                <a href="magnetism.html" class="block bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-5 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 ease-in-out transform hover:-translate-y-0.5">
+                    Magnetism
+                </a>
+            </div>
+            <div>
+                <a href="measurment_2.html" class="block bg-green-600 hover:bg-green-700 text-white font-medium py-3 px-5 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 ease-in-out transform hover:-translate-y-0.5">
+                    Measurement (II)
+                </a>
+            </div>
+            <div>
+                <a href="kcse/turning_effect_of_a_force.html" class="block bg-purple-600 hover:bg-purple-700 text-white font-medium py-3 px-5 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 ease-in-out transform hover:-translate-y-0.5">
+                    Turning Effect of a Force
+                </a>
+            </div>
+            <div>
+                <a href="equillibrium_and_center_of_gravity.html" class="block bg-yellow-500 hover:bg-yellow-600 text-white font-medium py-3 px-5 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 ease-in-out transform hover:-translate-y-0.5">
+                    Equilibrium and Centre of Gravity
+                </a>
+            </div>
+            <div>
+                <a href="reflection_at_curved_surfaces.html" class="block bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 px-5 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 ease-in-out transform hover:-translate-y-0.5">
+                    Reflection of Curved Surfaces
+                </a>
+            </div>
+            <div>
+                <a href="kcse/magnetic_effect_of_an_electric_current.html" class="block bg-red-600 hover:bg-red-700 text-white font-medium py-3 px-5 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 ease-in-out transform hover:-translate-y-0.5">
+                    Magnetic Effect of an Electric Current
+                </a>
+            </div>
+            <div>
+                <a href="hookes_law.html" class="block bg-pink-600 hover:bg-pink-700 text-white font-medium py-3 px-5 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 ease-in-out transform hover:-translate-y-0.5">
+                    Hooke’s Law
+                </a>
+            </div>
+            <div>
+                <a href="waves.html" class="block bg-teal-600 hover:bg-teal-700 text-white font-medium py-3 px-5 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 ease-in-out transform hover:-translate-y-0.5">
+                    Waves
+                </a>
+            </div>
+            <div>
+                <a href="sound_1.html" class="block bg-orange-500 hover:bg-orange-600 text-white font-medium py-3 px-5 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 ease-in-out transform hover:-translate-y-0.5">
+                    Sound I
+                </a>
+            </div>
+            <div>
+                <a href="fluid_flow.html" class="block bg-cyan-600 hover:bg-cyan-700 text-white font-medium py-3 px-5 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 ease-in-out transform hover:-translate-y-0.5">
+                    Fluid Flow
+                </a>
+            </div>
+        </div>
     </div>
 </body>
 </html>
